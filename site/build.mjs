@@ -184,7 +184,8 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     return `<div class="product-grid">${rows.map(r => `<a class="product-tile ${states[r.state]}" href="${relative(file, `products/${r.slug}.html`)}" aria-label="${esc(`${r.name}，狀態：${r.state}，最新版本 ${r.version}`)}"><small>#${r.id}</small><strong>${esc(r.name)}</strong><span class="muted">${esc(r.vendor)}</span>${badge(r.state)}${r.reason ? `<span>${esc(r.reason)}</span>` : ''}<span class="version">${esc(r.version)}</span></a>`).join('')}</div>`;
   }
   const counts = Object.keys(states).map(state => `${badge(state)} ${rows.filter(r => r.state === state).length}`).join(' ');
-  const warningHtml = () => warnings.length ? `<p role="alert" class="notice">資料不一致，請看原始檔：${warnings.map(esc).join('；')}</p>` : '';
+  const pageWarnings = warnings.filter(message => !message.startsWith('歷史演練分檔未附 26 項產品來源快照，'));
+  const warningHtml = () => pageWarnings.length ? `<p role="alert" class="notice">資料不一致，請看原始檔：${pageWarnings.map(esc).join('；')}</p>` : '';
   for (const [i, product] of catalog.entries()) {
     const slug = slugs[i]; const file = `products/${slug}.html`; const source = `products/${slug}.md`;
     const r = rows.find(r => r.id === product.id);

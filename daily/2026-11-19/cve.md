@@ -9,7 +9,7 @@
 - 發生什麼事：NGINX 在 2026-11-18 釋出 1.31.9 與 1.30.7，修補 HTTP/2 flow control 的記憶體毀損漏洞 CVE-2026-123007。這個問題從 2015 年的 1.9.5 就存在。The Hacker News 引述 F5 的說法：在 ASLR 關閉或可被繞過時，攻擊者可以執行程式碼；Wiz 與 Xint 的研究人員表示已在測試中做到。
 - 受影響產品與版本：
   - NGINX 開源版 1.9.5 到 1.31.8（nginx.org 安全公告頁）。
-  - NGINX Plus 37.x 修補版之前的版本，以及 R34 到 R36（The Hacker News 引述原廠公告，F5 公告頁我這邊開啟後沒有內容）。
+  - NGINX Plus 37.x 修補版之前的版本，以及 R34 到 R36（The Hacker News 引述原廠公告，F5 公告頁蒐集時開啟後沒有讀到內容）。
   - 同一批修補的其他漏洞：CVE-2026-123634（resolver use-after-free，影響 0.6.18 到 1.31.8）、CVE-2026-123633（HTTP/2 use-after-free，影響 1.19.7 到 1.31.8），另有一則 HTTP/3 use-after-free（影響 1.25.0 到 1.31.8，nginx.org 頁面上的編號寫成「CVE-CVE-2026-121810」，疑似頁面筆誤）。
 - 嚴重度：nginx.org 標示 CVE-2026-123007 為 major；The Hacker News 報導原廠對這次的五個漏洞都給 CVSS 4.0 9.2 分。兩個說法來源不同，各自列出。
 - 是否已有修補：升級到 1.31.9 或 1.30.7 以上。暫時緩解做法我沒有在原廠頁面讀到。
@@ -18,11 +18,11 @@
 - 來源：
   - nginx security advisories（頁面沒有標示發布日期）：https://nginx.org/en/security_advisories.html
   - The Hacker News（2026-11-19 02:31 台北時間）：https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html
-  - F5 公告 K000163926（我這邊開啟後沒有讀到內容，發布日期未查到）：https://my.f5.com/manage/s/article/K000163926
+  - F5 公告 K000163926（蒐集時開啟後沒有讀到內容，發布日期未查到）：https://my.f5.com/manage/s/article/K000163926
 
 ### F5 BIG-IP 六個 Critical 漏洞：特定設定下未登入即可讓流量中斷，可能遠端執行程式碼
 
-> 已補原廠來源。以下保留 13:19 演練原文；Scout 比對六個 CVE、CVSS 9.8／9.3、只有 engineering hotfix、無緩解及未提遭利用，與原廠一致。來源：Scout 比對，未逐字通讀全文。
+> 已補原廠來源。以下保留 13:19 演練原文；事後比對原廠頁面六個 CVE、CVSS 9.8／9.3、只有 engineering hotfix、無緩解及未提遭利用，與原廠一致。事後比對原廠頁面，未逐字通讀全文。
 
 - 背景：BIG-IP 是 F5 的負載平衡與應用程式遞送設備，金融業常放在 WebSphere、JBoss 等應用伺服器前面。TMM（Traffic Management Microkernel）是它處理幾乎所有網路流量的資料面行程；iRule 是管理員寫來控制流量的腳本；APM 是存取控管模組。
 - 發生什麼事：F5 在 2026-11-18 揭露 BIG-IP 資料面的六個 stack-based buffer overflow，未登入的攻擊者可以讓 TMM 當掉，流量中斷到 TMM 重啟為止，F5 表示也可能導致遠端執行程式碼。管理介面不受影響。
@@ -40,13 +40,13 @@
 - 影響：不是我們的產品線，但客戶的 WebSphere、JBoss EAP、OpenShift 前面如果是 BIG-IP，要請負責 F5 的單位盤點 iRule 有沒有用到上面六個指令或 APM 設定。
 - 來源：
   - The Hacker News（2026-11-19 02:15 台北時間）：https://thehackernews.com/2026/11/f5-warns-6-critical-big-ip-flaws-can.html
-  - F5 公告 K000164058（原廠頁面我這邊開啟後沒有讀到內容，以上內容僅第三方來源）：https://my.f5.com/manage/s/article/K000164058
-  - F5 原廠公告 K000163937（CVE-2026-123637；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163937
-  - F5 原廠公告 K000163946（CVE-2026-121805；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163946
-  - F5 原廠公告 K000163941（CVE-2026-116953；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163941
-  - F5 原廠公告 K000163939（CVE-2026-120285；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163939
-  - F5 原廠公告 K000163940（CVE-2026-120292；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163940
-  - F5 原廠公告 K000163945（CVE-2026-120722；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163945
+  - F5 公告 K000164058（原廠頁面蒐集時開啟後沒有讀到內容，以上內容僅第三方來源）：https://my.f5.com/manage/s/article/K000164058
+  - F5 原廠公告 K000163937（CVE-2026-123637；發布日期未查到；事後比對原廠頁面）：https://my.f5.com/manage/s/article/K000163937
+  - F5 原廠公告 K000163946（CVE-2026-121805；發布日期未查到；事後比對原廠頁面）：https://my.f5.com/manage/s/article/K000163946
+  - F5 原廠公告 K000163941（CVE-2026-116953；發布日期未查到；事後比對原廠頁面）：https://my.f5.com/manage/s/article/K000163941
+  - F5 原廠公告 K000163939（CVE-2026-120285；發布日期未查到；事後比對原廠頁面）：https://my.f5.com/manage/s/article/K000163939
+  - F5 原廠公告 K000163940（CVE-2026-120292；發布日期未查到；事後比對原廠頁面）：https://my.f5.com/manage/s/article/K000163940
+  - F5 原廠公告 K000163945（CVE-2026-120722；發布日期未查到；事後比對原廠頁面）：https://my.f5.com/manage/s/article/K000163945
 
 ### CVE-2026-114938（Java4Shell）後續：研究人員稱可對 Jira、Jenkins、Keycloak 等六個應用程式未登入執行程式碼【與我們的產品線相關】
 
@@ -54,7 +54,7 @@
 - 發生什麼事：揭露者 Calif 表示，在預設設定下不需登入就能對 Keycloak、Atlassian Jira、Atlassian Confluence、JFrog Artifactory、Jenkins、PingFederate 執行程式碼，對 Apache Kafka 則需要登入。原因是伺服器常在確認登入狀態之前就先解 Base64（HTTP Basic 標頭、SAML artifact、CSRF token）。Calif 沒有公開這六個應用程式的攻擊程式；其他實驗室目前只重現當機與記憶體洩漏，還沒重現執行程式碼。
 - 是否已有修補：Amazon Corretto 已修補；報導發布時 Red Hat 仍在準備。
 - 攻擊現況：加拿大 Cyber Centre 表示沒有看到利用這個漏洞的攻擊。
-- 影響：名單中的 Jenkins 與 JFrog Artifactory 在我們 CI/CD 的追蹤清單內，Keycloak 是 Red Hat build of Keycloak 的上游。今天 Jenkins 安全公告頁最新一筆仍是 2026-10-28，沒有針對這個 CVE 的新公告；Red Hat errata 今天查到的最新幾筆也沒有看到對應的修補 errata（我只看了 JBoss EAP、OpenShift、JBoss Core Services 三個產品的清單）。
+- 影響：名單中的 Jenkins 與 JFrog Artifactory 在我們 CI/CD 的追蹤清單內，Keycloak 是 Red Hat build of Keycloak 的上游。今天 Jenkins 安全公告頁最新一筆仍是 2026-10-28，沒有針對這個 CVE 的新公告；Red Hat errata 今天查到的最新幾筆也沒有看到對應的修補 errata（只查了 JBoss EAP、OpenShift、JBoss Core Services 三個產品的清單）。
 - 來源：The Hacker News（2026-11-18 19:55 台北時間）：https://thehackernews.com/2026/11/java4shell-cve-2026-114938-enables-pre.html
 
 ### CISA KEV 在 2026-11-18 新增四筆：LiteLLM、Synology DSM、REDCap、Apache Axis
@@ -80,11 +80,11 @@
 - 影響：不屬於我們的產品線。Roller 是 Java 的部落格平台，會部署在 Tomcat、JBoss 這類應用伺服器上，客戶如果有舊的對外部落格或公告系統可以提醒一聲。
 - 來源：
   - iThome（2026-11-19）：https://www.ithome.com.tw/news/180639
-  - Apache 郵件清單原文（我這邊開啟後沒有讀到內容，發布日期未查到）：https://lists.apache.org/thread/lnz4s26tv6hdo03wngtdbpfj4hg4gtds
+  - Apache 郵件清單原文（蒐集時開啟後沒有讀到內容，發布日期未查到）：https://lists.apache.org/thread/lnz4s26tv6hdo03wngtdbpfj4hg4gtds
   - Apache 安全團隊公告頁（更新 2026-11-17）：https://security.apache.org/projects/roller/
   - Apache 公告信存檔（2026-11-17；Openwall 網站非 Apache 所有）：https://www.openwall.com/lists/oss-security/2026/11/17/5
 
-> 原廠比對備註（來源：Scout 比對，未逐字通讀全文）：
+> 原廠比對備註（事後比對原廠頁面，未逐字通讀全文）：
 >
 > 1. 原標題「4.0.0 以後所有版本」較原廠範圍寬；原廠範圍是 4.0.0 到 6.1.5，6.1.6 起已修正。保留原標題是為了保存演練原文，不代表原廠認定所有後續版本都受影響。
 > 2. 「只停用 XML-RPC 仍有風險」指只在管理介面停用仍不足；於 `WEB-INF/web.xml` 把 `enabledForExtensions` 設為 `false`，或移除 `/roller-services/xmlrpc` servlet mapping，是原廠認可的替代做法。

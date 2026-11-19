@@ -251,6 +251,9 @@ test('R8: breadcrumbs and footer links have minimum touch height',()=>{
 test('published historical import: 26 stories, explicit collection time, same-date primary and legacy links',()=>{
  const dir=importedFixture();const result=build({input:dir,output:newDir('import-')});
  assert.equal(result.pages.size,40);assert.equal(result.warnings.length,1);
+ assert.ok(!result.pages.get('index.html').includes('資料不一致，請看原始檔'));
+ assert.ok(result.pages.get('index.html').includes('未建立產品總表'));
+ assert.ok(!result.pages.get('products/index.html').includes('資料不一致，請看原始檔'));
  const list=result.pages.get('daily/index.html');
  assert.equal((list.match(/href="2026-11-19\/index.html"/g)||[]).length,1);
  assert.equal((list.match(/href="2026-11-19.html"/g)||[]).length,1);
