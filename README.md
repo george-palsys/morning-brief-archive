@@ -24,7 +24,7 @@
 
 ## 注意
 
-- 本 repo 為 private。
+- 本 repo 為 public(公開)。內容是從線上公開來源彙整的晨報,不放密碼、token、私鑰或客戶資料。
 - 舊資料不修改，只新增（`state/sources.json` 例外，每晚覆寫）。
 - `products.yaml` 的網址失效或改版時，GeorgeAI 會直接送 PR 並自行合併，合併後回報 PR 連結。
 - 第一份晨報：2026-11-19。
