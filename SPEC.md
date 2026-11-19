@@ -1,8 +1,8 @@
-# 晨報產生規則 v2
+# 晨報產生規則 v3
 
-給 GeorgeAI 的產生規則。v1(2026-11-19 第一份)是三段新聞;v2 加入「產品動態」與「新知識」兩段,並把新知識當成主體。
+給 GeorgeAI 的產生規則。v1(2026-11-19 第一份)是三段新聞;v2 加入「產品動態」與「新知識」兩段,並把新知識當成主體;v3 內容規則不變,只改檔案怎麼分:每天一份摘要加各段落各一個檔,另外每個產品一頁累積歷史(見第六節)。
 
-狀態:已生效。2026-11-19 合併到 `main`(PR #2),同一天做過一次演練,並依演練結果修訂(見第八節)。
+狀態:已生效。v2 於 2026-11-19 合併到 `main`(PR #2),同一天做過一次演練並依結果修訂。v3 的分檔方式同一天由 George 決定(原因:單一檔 467 行太擠,每天會變與不會變的內容混在一起,查單一產品要逐天翻),還沒有照排程實際跑過(見第八節)。
 
 ## 一、整份晨報的段落與順序
 
@@ -15,7 +15,9 @@
 | 4 | 台灣 IT 重大事件 | 已有 | 沿用 v1 |
 | 5 | 全世界 AI 新功能及重大事件 | 已有 | 沿用 v1 |
 
-目標閱讀時間:十到十五分鐘。
+目標閱讀時間:摘要一到兩分鐘,全部段落十到十五分鐘。
+
+每個段落各寫成一個檔,另有一份當天摘要;檔名與摘要的寫法見第六節。順序 0「今天最需要注意的一件事」寫在摘要的最上面。
 
 ## 二、產品動態
 
@@ -65,7 +67,7 @@
   1. 最新一筆的發布時間在「上一份晨報的蒐集時間」之後(定義見下一條)。
   2. 類別是安全公告,原廠標示的嚴重度是 Critical(或 CVSS 9.0 以上),而且發布日期在最近 7 天內。這類寫在該產品底下,標題後面加註「(建立基準時補列)」,避免剛換網址或第一次檢查時漏掉近期的重大公告。
 - 來源當晚開不到:`result` 寫 `unreachable`,`last_seen_marker` 維持原值不動。
-- 上一份晨報的蒐集時間:本機歸檔資料夾中最新的 `YYYY-MM-DD.md`(repo 上對應的是 `daily/` 目錄)frontmatter 的 `collected_at`,台灣時間。來源有寫到時分的(例如 GitHub release),換算成台灣時間後與它比較;來源只有日期的,日期等於或晚於 `collected_at` 的那一天就算在它之後。只用日期比會漏掉半夜之後才發布的項目(2026-11-19 演練時 Argo CD 三個版本是台灣時間 03:55 前後發布,上一份晨報在 02:25 蒐集)。
+- 上一份晨報的蒐集時間:本機歸檔資料夾中最新一天的 `collected_at`,台灣時間。新版面的日子讀 `daily/YYYY-MM-DD/meta.yaml`;舊版面的日子(2026-11-19)讀 `YYYY-MM-DD.md` 的 frontmatter(repo 上是 `daily/2026-11-19.md`);兩種都有時取日期最新的那一天。來源有寫到時分的(例如 GitHub release),換算成台灣時間後與它比較;來源只有日期的,日期等於或晚於 `collected_at` 的那一天就算在它之後。只用日期比會漏掉半夜之後才發布的項目(2026-11-19 演練時 Argo CD 三個版本是台灣時間 03:55 前後發布,上一份晨報在 02:25 蒐集)。
 - `url: null` 靠搜尋補查的來源,用查到的那一筆的網址當鍵值。
 
 ### 帶版本號的網址
@@ -112,12 +114,12 @@ MQ、Turbonomic、Concert、GCM、QSE、Bob、Vault、Instana 的安全公告,�
 
 ### 段落結尾固定三個清單
 
+寫在當天的 `products.md` 結尾:
+
 ```markdown
 #### 今日無更新
 
-- <產品名稱>
-- <產品名稱>
-(26 項中沒有更新的,逐一列出名稱,一項一行,不可寫「其餘無更新」)
+<N> 項,名單與各產品目前的版本見 [26 項產品現況](../../products/README.md)。
 
 #### 今日無法確認
 
@@ -128,7 +130,9 @@ MQ、Turbonomic、Concert、GCM、QSE、Bob、Vault、Instana 的安全公告,�
 - <產品名稱>(`products.yaml` 中標了 `public_sources: false` 的產品,不檢查,每天固定列出)
 ```
 
-「有更新」「今日無更新」「今日無法確認」「無公開來源」四者的產品數加起來必須等於 26。
+- 「今日無更新」只寫項數,不再逐一列名稱;逐項的狀態寫在 `products/README.md` 的 26 列表格(v2 是每天列出全部名稱,v3 改掉,因為每天有二十項左右重複)。
+- 「今日無法確認」與「無公開來源」照舊逐項列出,一項一行。
+- 「有更新」「今日無更新」「今日無法確認」「無公開來源」四者的產品數加起來必須等於 26,而且要與 `products/README.md` 表格中「當天狀態」各值的列數一致。
 
 ### CI/CD 的特別規則
 
@@ -139,12 +143,12 @@ CI/CD(id 13)底下有多個工具,每個來源用 `tool` 欄位標明屬於哪�
   1. 任何一個工具有更新:算「有更新」。
   2. 沒有工具有更新,但至少一個工具無法確認:算「今日無法確認」,原因寫明是哪幾個工具。
   3. 全部工具都確認沒有更新:算「今日無更新」。
-- 不論 CI/CD 歸在哪一類,都在「產品動態」段落結尾多列一個清單,逐一列出每個工具當天的狀態,一個工具一行:
+- 不論 CI/CD 歸在哪一類,每個工具當天的狀態都逐一寫在 CI/CD 的產品頁 `products/cicd.md`(格式見第六節),一個工具一行。當天的 `products.md` 只留一句:
 
 ```markdown
 #### CI/CD 各工具狀態
 
-- <工具名稱>:有更新 / 無更新 / 無法確認(原因)
+<N> 個工具逐一列在 [CI/CD 產品頁](../../products/cicd.md),今天有更新的:<工具名稱,沒有就寫「無」>;無法確認的:<工具名稱與原因,沒有就寫「無」>。
 ```
 
 ### 來源規則
@@ -213,12 +217,103 @@ CI/CD(id 13)底下有多個工具,每個來源用 `tool` 欄位標明屬於哪�
 
 ## 六、歸檔格式
 
-### `daily/YYYY-MM-DD.md` 的 frontmatter
+### 檔案配置
 
-沿用 v1 的欄位(`title`、`date`、`weekday`、`type`、`collected_at`、`cve_ids`、`products`、`tags`),新增五個欄位:
+本機歸檔資料夾與 repo 用同一套路徑:
+
+| 路徑 | 內容 | 寫入方式 |
+|---|---|---|
+| `daily/YYYY-MM-DD/README.md` | 當天摘要 | 每天新建 |
+| `daily/YYYY-MM-DD/products.md` | 產品動態 | 每天新建 |
+| `daily/YYYY-MM-DD/knowledge.md` | 新知識 | 每天新建 |
+| `daily/YYYY-MM-DD/cve.md` | CVE 重大新聞 | 每天新建 |
+| `daily/YYYY-MM-DD/taiwan.md` | 台灣 IT 重大事件 | 每天新建 |
+| `daily/YYYY-MM-DD/ai.md` | 全世界 AI 新功能及重大事件 | 每天新建 |
+| `daily/YYYY-MM-DD/maintenance.md` | 清單維護 | 每天新建;當天沒有內容時仍建檔,內文寫「今天沒有清單維護項目」 |
+| `daily/YYYY-MM-DD/meta.yaml` | 當天的欄位資料(原本的 frontmatter) | 每天新建 |
+| `products/README.md` | 26 項產品現況總表 | 每晚整份重寫 |
+| `products/<slug>.md` | 單一產品頁,共 26 個 | 每晚更新,「最近動態」只往上加 |
+| `items.jsonl` | 逐則紀錄 | 只往後附加 |
+| `state/sources.json` | 每個來源上次看到的內容 | 每晚整份覆寫 |
+
+- 2026-11-19 那一天是舊版面(本機 `2026-11-19.md`,repo `daily/2026-11-19.md`),保留原樣,不補拆。
+- 所有 `.md` 檔都不寫 frontmatter(GitHub 會把它顯示成檔案最上面的一張表),欄位資料放 `meta.yaml`。
+- 檔案之間一律用相對連結。內文不寫 `{{` 與 `{%` 這兩種符號組合;原文有的話放進程式碼區塊。這兩點是為了日後要用 GitHub Pages 發布成網頁時不必再改,Pages 實際轉出來的結果還沒有測過。
+- 編碼 UTF-8,換行 LF。
+
+### 當天摘要 `daily/YYYY-MM-DD/README.md`
+
+長度以一個畫面為準,不超過 80 行。只寫標題與一句話,細節都在各段落檔。格式:
+
+```markdown
+# 晨報 YYYY-MM-DD(星期X)｜摘要
+
+**今天最需要注意的一件事**:<二到三句,含要不要動作> → [<所在段落名稱>](<該段落檔名>)
+
+## 產品動態
+
+26 項:有更新 <N>、無更新 <N>、無法確認 <N>、無公開來源 <N>。→ [完整內容](products.md)｜[26 項產品現況](../../products/README.md)
+
+| 產品 | 更新 | 要不要動作 |
+|---|---|---|
+| [<產品名稱>](../../products/<slug>.md) | <一句話,含版號或公告編號與發布日期> | <一句話;不需要動作就寫「不需要」> |
+
+無法確認:
+
+- [<產品名稱>](../../products/<slug>.md):<原因>
+
+## CVE 重大新聞
+
+<N> 則。→ [完整內容](cve.md)
+
+- <一行標題;與產品線相關的保留【與我們的產品線相關】標記>
+
+## 新知識
+
+<N> 則。→ [完整內容](knowledge.md)
+
+- <一行標題>
+
+## 台灣 IT 重大事件
+
+<N> 則。→ [完整內容](taiwan.md)
+
+- <一行標題>
+
+## 全世界 AI 新功能及重大事件
+
+<N> 則。→ [完整內容](ai.md)
+
+- <一行標題>
+
+## 清單維護
+
+<一句話說明有幾項;沒有就寫「無」>。→ [完整內容](maintenance.md)
+```
+
+- 產品表格:當天每一則更新各一列,同一產品有多則就多列,不合併。CI/CD 的產品欄寫成「CI/CD/<工具名稱>」。當天沒有任何產品更新時不放表格,寫「今天 26 項都沒有更新」(有無法確認的照列)。
+- 沒有無法確認的產品時,「無法確認:」那一小段整段不寫。
+- 每個段落的標題逐則列出,一則一行,則數要與該段落檔一致。
+- 摘要中的數字、版號、日期必須與段落檔完全一致;摘要是最後才寫的,從已經寫好的段落檔摘出來,不另外查資料。
+
+### 各段落檔
+
+每個段落檔的開頭固定兩行,之後才是內容(內容的寫法照第二、三、四、七節,不變):
+
+```markdown
+# <段落名稱>｜YYYY-MM-DD
+
+[← 今日摘要](README.md)｜[產品動態](products.md)｜[新知識](knowledge.md)｜[CVE](cve.md)｜[台灣 IT](taiwan.md)｜[AI](ai.md)｜[清單維護](maintenance.md)｜[26 項產品現況](../../products/README.md)
+```
+
+`products.md` 中每個有更新的產品小節,標題下第一行加一個連到該產品頁的連結:`→ [產品頁](../../products/<slug>.md)`。
+
+### `daily/YYYY-MM-DD/meta.yaml`
+
+沿用 v1 的欄位(`title`、`date`、`weekday`、`type`、`collected_at`、`cve_ids`、`products`、`tags`)與 v2 新增的五個欄位,`spec_version` 改為 3。檔案是純 YAML,不加 `---` 分隔線:
 
 ```yaml
-spec_version: 2
+spec_version: 3
 products_checked: 26
 products_updated:
   - <當天有更新的產品名稱,與 products.yaml 的 name 一致>
@@ -228,9 +323,100 @@ cicd_tools_updated:
   - <當天有更新的 CI/CD 工具名稱,與 products.yaml 的 tool 一致>
 ```
 
+### 產品頁的檔名
+
+`products/<slug>.md` 的 `<slug>` 固定如下,不可自行改名(改名會讓舊連結失效):
+
+| id | 產品(`products.yaml` 的 `name`) | 檔名 |
+|---|---|---|
+| 1 | WebSphere Application Server | `products/websphere-application-server.md` |
+| 2 | WebSphere Liberty | `products/websphere-liberty.md` |
+| 3 | MQ | `products/mq.md` |
+| 4 | Instana | `products/instana.md` |
+| 5 | Turbonomic | `products/turbonomic.md` |
+| 6 | Black Duck SCA | `products/black-duck-sca.md` |
+| 7 | Coverity | `products/coverity.md` |
+| 8 | Seeker | `products/seeker.md` |
+| 9 | Software Risk Manager (SRM) | `products/srm.md` |
+| 10 | NeuVector | `products/neuvector.md` |
+| 11 | AppScan | `products/appscan.md` |
+| 12 | JBoss EAP | `products/jboss-eap.md` |
+| 13 | CI/CD | `products/cicd.md` |
+| 14 | Concert | `products/concert.md` |
+| 15 | GCM | `products/gcm.md` |
+| 16 | QSE | `products/qse.md` |
+| 17 | Vault | `products/vault.md` |
+| 18 | Bob | `products/bob.md` |
+| 19 | OpenShift | `products/openshift.md` |
+| 20 | 3scale | `products/3scale.md` |
+| 21 | JBCS httpd | `products/jbcs-httpd.md` |
+| 22 | Rancher / RKE2 | `products/rancher-rke2.md` |
+| 23 | NKP | `products/nkp.md` |
+| 24 | Confluent Platform | `products/confluent-platform.md` |
+| 25 | Palsys One | `products/palsys-one.md` |
+| 26 | CMC | `products/cmc.md` |
+
+表中「產品」欄的寫法與 `products.yaml` 的 `name` 不一致時,以 `products.yaml` 為準,檔名以本表的 id 對應為準。`products.yaml` 新增產品時,同一個 PR 要在本表加一列。
+
+### 單一產品頁 `products/<slug>.md`
+
+```markdown
+# <產品名稱>
+
+[← 26 項產品現況](README.md)
+
+- 全名:<products.yaml 的 full_name,沒有就不寫這一行>
+- 原廠:<vendor>
+- 最後檢查:YYYY-MM-DD
+- 當天狀態:有更新 / 無更新 / 無法確認(原因) / 無公開來源
+
+## 各來源目前看到的最新一筆
+
+| 來源 | 類別 | 工具 | 最新一筆 | 日期 | 檢查結果 |
+|---|---|---|---|---|---|
+| [<來源標題>](<網址>) | 新版本 / 安全公告 / 生命週期 | <tool,沒有寫 —> | <last_seen_marker,沒有寫「未記錄」> | <last_seen_date,沒有寫「頁面沒有日期」> | 讀得到 / 無法開啟 / 需要登入 / 頁面沒有可比對的清單 / 已轉址 |
+
+## 最近動態
+
+新的在上面,每天往上累加,舊的不刪。
+
+### YYYY-MM-DD
+
+- <類別>:<一句話,含版號或公告編號與發布日期>。來源:<網址> → [當天產品動態](../daily/YYYY-MM-DD/products.md)
+```
+
+- 每晚每個產品都更新:「最後檢查」「當天狀態」與「各來源目前看到的最新一筆」整段照當晚的 `state/sources.json` 重寫,該產品在 `products.yaml` 列出的每個來源各一列,不省略。
+- 「最近動態」只在當天該產品有內容時,在最上面加一個 `### YYYY-MM-DD` 小節;當天沒有內容就不加,舊的小節原樣保留,不改寫、不刪除。算有內容的三種情況:當天回報的更新(每則一行);建立基準時看到但不算當天更新的近期安全公告(行首寫「安全公告(建立基準時看到,不算當天更新)」);當天無法確認(寫「無法確認:<原因>」)。
+- 還沒有任何動態的產品,「最近動態」底下寫「還沒有紀錄。」;第一次有動態時把這句拿掉。
+- CI/CD 的產品頁在「各來源」表格之後多一節「## 各工具當天狀態」,每個工具一行:`- <工具名稱>:有更新 / 無更新 / 無法確認(原因)`,每晚整節重寫,`products.yaml` 中出現的每個工具都要列。
+- 沒有公開來源的產品(CMC)也有產品頁,「各來源」底下寫「這個產品沒有公開來源,不檢查。」。
+- 產品頁不存在時(第一次執行,或新增了產品)照上面的格式新建。本機有檔案就以本機為準往上加;本機沒有而 repo 有時,先從 repo 的 `main` 取回再往上加,不可用新建的蓋掉 repo 上已有的動態。
+
+### 產品現況總表 `products/README.md`
+
+每晚整份重寫:
+
+```markdown
+# 26 項產品現況
+
+最後更新:YYYY-MM-DD。每晚檢查後整張表重寫,點產品名稱看各來源的最新一筆與最近動態。
+
+「目前最新版本」是原廠頁面上讀到的最新版號;有多條版本線或無法用一個版號表示的寫「見產品頁」。
+
+| # | 產品 | 原廠 | 當天狀態 | 目前最新版本 | 最後檢查 |
+|---|---|---|---|---|---|
+| 1 | [<產品名稱>](<slug>.md) | <vendor> | 有更新 / 無更新 / 無法確認 / 無公開來源 | <版號> | YYYY-MM-DD |
+```
+
+- 26 列全部列出,依 id 排序,不合併、不省略。
+- 「目前最新版本」只寫當晚在原廠頁面上實際讀到的正式版(GA)版號,不寫公告編號、頁面修改日期或 Beta 版。同時維護多條版本線的產品(例如 WebSphere Application Server 的 9.0.5 與 8.5.5、MQ 的 LTS 與 CD)、CI/CD(多個工具)、當晚讀不到版號的產品,寫「見產品頁」;沒有公開來源的寫「—」。不確定就寫「見產品頁」,不可用推測的版號。
+- 當晚無法確認的產品,「目前最新版本」沿用上一晚的值,「最後檢查」維持上一次成功檢查的日期。
+
 ### `items.jsonl`
 
 沿用 v1 的 12 個欄位:`id`、`date`、`category`、`title`、`summary`、`impact`、`cve_ids`、`products`、`related_to_palsys`、`source_url`、`source_published`、`file`。
+
+`file` 欄位寫該則所在的段落檔路徑,例如 `daily/2026-11-20/products.md`;舊資料(指向 `daily/2026-11-19.md` 的)不改。
 
 `category` 的值:
 
@@ -259,7 +445,7 @@ cicd_tools_updated:
 
 ## 七、清單維護
 
-晨報最後加一個小節「清單維護」,只在有內容時出現:
+清單維護寫在當天的 `daily/YYYY-MM-DD/maintenance.md`,摘要只放一句話。當天沒有內容時檔案仍建立,內文寫「今天沒有清單維護項目」。要寫的項目:
 
 - `products.yaml` 中確認可用的 `unverified` 網址(列出產品與網址)。
 - 已失效或改版的網址(列出產品、舊網址、建議的新網址)。
@@ -272,12 +458,16 @@ cicd_tools_updated:
 ## 八、排程怎麼讀到這份規則
 
 - 半夜 2:00 的排程每晚先從 repo 的 `main` 分支讀 `SPEC.md` 與 `products.yaml`,照讀到的內容執行。規則不寫死在排程裡,這樣合併 PR 後當晚就生效。
-- 兩個檔案有任何一個讀不到:當晚改用 v1 的三段格式產出,並在晨報第一行寫明「今晚讀不到 v2 規則,以下是 v1 格式」。
-- 本機歸檔資料夾是產出的正本:`YYYY-MM-DD.md`、`items.jsonl`、`state/sources.json` 都先寫在本機,早上 8:30 的備份排程再上傳到 repo(`daily/YYYY-MM-DD.md`、`items.jsonl`、`state/sources.json`)。
-- 執行時間上限 90 分鐘。超過時把還沒檢查的產品列入「今日無法確認」,原因寫「超過執行時間」,不可當成「無更新」。
+- 兩個檔案有任何一個讀不到:當晚改用 v1 的三段格式,整份寫在 `daily/YYYY-MM-DD/README.md` 一個檔,並在第一行寫明「今晚讀不到規則,以下是 v1 格式」;當晚不寫其他段落檔,也不動 `products/` 底下的檔案。
+- 本機歸檔資料夾是產出的正本,路徑照第六節的檔案配置,全部先寫在本機。寫入順序:各段落檔、`meta.yaml`、產品頁與總表、`items.jsonl`、`state/sources.json`,最後才寫當天摘要;摘要存在就代表當晚寫完了。
+- 早上 7:30 的備份排程把本機的檔案上傳到 repo 的同一路徑(當天的 `daily/YYYY-MM-DD/` 整個資料夾、`products/` 全部、`items.jsonl`、`state/sources.json`)。備份排在發送之前,因為發送的摘要中有連到 repo 的連結。
+- 早上 8:00 的發送排程只貼當天摘要,摘要中的相對連結換成 repo 上的完整網址(`https://github.com/george-palsys/morning-brief-archive/blob/main/daily/YYYY-MM-DD/<檔名>` 與 `https://github.com/george-palsys/morning-brief-archive/blob/main/products/<檔名>`)。
+- 執行時間上限 90 分鐘。超過時把還沒檢查的產品列入「今日無法確認」,原因寫「超過執行時間」,不可當成「無更新」。時間不夠時的取捨順序:段落檔與摘要一定要寫完;產品頁來不及全部更新時,先更新當天有更新與無法確認的產品,其餘沒更新到的在 `maintenance.md` 逐一列出名稱。
 
-上線狀態(2026-11-19):這份規則已在 2026-11-19 合併到 `main`(PR #2),半夜 2:00、早上 8:00、早上 8:30 三個排程已在同一天改成照本節執行。
+上線狀態(2026-11-19):v2 已在 2026-11-19 合併到 `main`(PR #2),半夜 2:00、早上 8:00、早上 8:30 三個排程在同一天改成照 v2 執行;v3 合併後,同一天再改一次(見下面「v3 分檔」)。
 
 演練紀錄(2026-11-19):同一天中午照這份規則完整演練一次,產出只寫在本機的演練資料夾,沒有動正式歸檔。26 個產品全部檢查完,實際工作時間約 26 分鐘(中途因額度用完中斷一次,等待時間不計),沒有碰到 75 分鐘的停查線。演練發現的問題已修進本檔與 `products.yaml`:「上一份晨報之後」的界線改用蒐集時間、建立基準時補列近期重大安全公告、帶版本號網址的回報條件、共用網址的鍵值、沒有日期的頁面、`result` 的新值、IBM 安全公告改用公告清單頁。演練建立的來源基準已放進本機歸檔資料夾的 `state/sources.json`,所以第一次正式執行不是從零開始。
 
-第一次以 v2 正式執行是 2026-11-20 半夜 2:00,執行結果還沒有驗證。
+v3 分檔(2026-11-19):George 看過演練那份單一檔後決定拆開。用演練內容拆出來的樣子放在分支 `preview-v2-2026-11-19` 的 `preview/daily/2026-11-19/` 與 `preview/products/`,那是人工拆的版面示範,不是排程產出。三個排程同一天改成照本節執行,備份由 8:30 提前到 7:30。
+
+第一次正式執行是 2026-11-20 半夜 2:00,直接用 v3 的版面;v2 的內容規則與 v3 的分檔都還沒有照排程實際跑過,執行結果還沒有驗證。
