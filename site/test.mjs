@@ -84,7 +84,7 @@ test('G2: search results appear only for rendered matches and hide on empty/erro
   elements['search-ui'].querySelectorAll=selector=>selector.includes(':checked')?[{value:'product'}]:[];
   const context=vm.createContext({document:{querySelector:selector=>elements[selector.slice(1)],createElement:()=>new Element()},fetch:async()=>{
    if(fail)throw Error('offline');
-   return {ok:true,json:async()=>({months:[],products:[{date:'',category:'product',title:'Vault',summary:'',products:['Vault'],cve_ids:[],file:'products/vault.html'}]})};
+   return {ok:true,json:async()=>({months:[],products:[{date:'',category:'product',title:'Vault',summary:'Vault preview <img src=x onerror=alert(1)>',products:['Vault'],cve_ids:[],file:'products/vault.html'}]})};
   }});
   vm.runInContext(fs.readFileSync('site/assets/search.js','utf8'),context);
   return {elements,context};
@@ -94,6 +94,8 @@ test('G2: search results appear only for rendered matches and hide on empty/erro
  assert.equal(elements.results.hidden,true);
  elements.query.value='Vault';await vm.runInContext('update()',context);
  assert.equal(elements.results.hidden,false);assert.equal(elements.results.childElementCount,1);
+ assert.equal(elements.results.children[0].children[2].textContent,'Vault preview <img src=x onerror=alert(1)>');
+ assert.equal(elements.results.children[0].children[2].className,'search-excerpt');
  elements.query.value='no-match';await vm.runInContext('update()',context);
  assert.equal(elements.results.hidden,true);assert.equal(elements.results.childElementCount,0);
  assert.ok(elements['search-status'].textContent.includes('沒有符合'));
@@ -184,7 +186,7 @@ test('R1: 404 resources and navigation resolve at deeply missing request URLs', 
  for (const basePath of ['/morning-brief-archive/','/custom-site/','/']) {
   const result = build({input:legacyFixture(),output:newDir('404-'),basePath});
   const html = result.pages.get('404.html');
-  assert.ok(!/<base\b|<script\b/.test(html),'404 needs neither base element nor script');
+  assert.ok(!/<base\b/.test(html),'404 needs no base element');
   assert.ok(html.includes("base-uri 'none'"));
   assert.ok(!html.includes('unsafe-inline'));
   const server = createServer((req,res)=>{
@@ -231,8 +233,8 @@ test('R2: summary cards have no false scroll hint; wide tables retain it',()=>{
 });
 test('R3/R5: CVE badge survives inline code; TOC labels strip Markdown',()=>{
  const result=markdown('# CVE\n\n### 【與我們的產品線相關】CVE-2026-1234 的 `Java` **修正**\n\n內容',{section:'cve'});
- assert.match(result.html,/<h2[^>]*>【與我們的產品線相關】<code>CVE-2026-1234<\/code> 的 <code>Java<\/code> <strong>修正<\/strong><\/h2><span class="type-tag">與我們的產品線相關<\/span>/);
- assert.equal(result.toc[0].title,'【與我們的產品線相關】CVE-2026-1234 的 Java 修正');
+ assert.match(result.html,/<h2[^>]*><code>CVE-2026-1234<\/code> 的 <code>Java<\/code> <strong>修正<\/strong><\/h2><span class="type-tag">與我們的產品線相關<\/span>/);
+ assert.equal(result.toc[0].title,'CVE-2026-1234 的 Java 修正');
  assert.ok(!markdown('### CVE-2026-1234 其他新聞',{section:'cve'}).html.includes('type-tag'));
 });
 test('R7: empty maintenance shows fallback without empty TOC and keeps meaningful prose',()=>{
@@ -254,7 +256,7 @@ test('published historical import: 26 stories, explicit collection time, same-da
  assert.ok(!result.pages.get('index.html').includes('資料不一致，請看原始檔'));
  assert.ok(result.pages.get('index.html').includes('未建立產品總表'));
  assert.ok(!result.pages.get('products/index.html').includes('資料不一致，請看原始檔'));
- const list=result.pages.get('daily/index.html');
+ const list=result.pages.get('daily/index.html').match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
  assert.equal((list.match(/href="2026-11-19\/index.html"/g)||[]).length,1);
  assert.equal((list.match(/href="2026-11-19.html"/g)||[]).length,1);
  const current=result.pages.get('daily/2026-11-19/index.html'),legacy=result.pages.get('daily/2026-11-19.html');
@@ -288,4 +290,96 @@ test('next-day timeline uses calendar days and matching section, never a same-da
  assert.ok(!result.pages.get('daily/2026-11-19/products.html').includes('>← 2026-11-19'));
  assert.ok(result.pages.get('daily/2026-11-19.html').includes('href="2026-11-20/index.html">2026-11-20 →'));
  validatePages(result);
+});
+
+
+test('reading layout: semantic shell, one archive notice, correct daily current item and safe links',()=>{
+ const result=build({input:importedFixture(),output:newDir('reading-')});
+ for(const [file,html] of result.pages) {
+  assert.equal((html.match(/<main\b[^>]*id="main"/g)||[]).length,1,file);
+  assert.equal((html.match(/<nav[^>]*aria-label="主要導覽"/g)||[]).length,1,file);
+  assert.equal((html.match(/<h1(?:\s|>)/g)||[]).length,1,file);
+  for(const [,attributes] of html.matchAll(/<a\b([^>]*target="_blank"[^>]*)>/g)) assert.match(attributes,/rel="[^"]*noopener[^"]*"/);
+  const nav = html.match(/<nav class="top-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  const current = [...nav.matchAll(/aria-current="page">([^<]+)/g)].map(match => match[1]);
+  if (file.startsWith('daily/')) assert.deepEqual(current, ['每日'], file);
+  if (file.startsWith('products/')) assert.deepEqual(current, ['產品'], file);
+  if (file === 'index.html') assert.deepEqual(current, [], file);
+ }
+ const home = result.pages.get('index.html');
+ assert.equal((home.match(/class="admonition archive /g)||[]).length, 1);
+ assert.ok(home.match(/class="admonition archive [\s\S]*?<\/div><\/div>/)[0].includes('未建立產品總表'));
+ assert.ok(!home.includes('<p class="notice">'));
+ assert.ok(home.indexOf('class="home-entry"') < home.indexOf('class="attention"'));
+ assert.match(home, /<aside class="attention"><details open><summary>[^<]+<span class="attention-preview">：NGINX[\s\S]*?<\/span><\/summary>/);
+
+ const cve=result.pages.get('daily/2026-11-19/cve.html');
+ const side = cve.match(/<aside class="toc-side">[\s\S]*?<\/aside>/)[0];
+ for (const [, title, label] of side.matchAll(/<a href="#[^"]+" title="([^"]+)"><span>([^<]+)<\/span>/g)) assert.equal(title, label);
+ assert.equal((side.match(/ title="/g)||[]).length, 5);
+ assert.equal((cve.match(/class="admonition archive /g)||[]).length,1);
+ assert.ok(!cve.includes('&gt; 歷史演練分檔'));
+ assert.ok(!/<h2[^>]*>[^<]*【與我們的產品線相關】/.test(cve));
+ const desktopTree=cve.match(/<nav class="side-nav site-tree"[^>]*>([\s\S]*?)<\/nav>/)[1];
+ assert.ok(desktopTree.includes('最近 7 天')); assert.ok(desktopTree.includes('各分頁'));
+ assert.ok(!desktopTree.includes('>關於</a>')); assert.ok(!desktopTree.includes('>搜尋</a>'));
+ validatePages(result);
+});
+
+test('maintenance presentation retains source details without changing Markdown',()=>{
+ const source='# 清單維護\n\n本次未蒐集。\n\n### 來源\n\n本次未蒐集。';
+ const result=markdown(source,{section:'maintenance'});
+ assert.match(result.html,/<p>本次未蒐集。<\/p><details class="maintenance-record">/);
+ assert.match(result.html,/<summary>查看維護紀錄<\/summary>/);
+ assert.ok(result.html.includes('來源')); assert.equal(result.toc.length,0);
+ assert.equal(source,'# 清單維護\n\n本次未蒐集。\n\n### 來源\n\n本次未蒐集。');
+});
+
+test('reading CSS retains mobile typography, nested indent and desktop navigation', () => {
+ const css = fs.readFileSync(new URL('./assets/site.css', import.meta.url), 'utf8');
+ assert.match(css, /h2,\.news-card h2\s*\{[^}]*font-size:1\.5rem/);
+ assert.match(css, /@media\(min-width:960px\)\s*\{[\s\S]*?\.tabs-scroll\s*\{\s*display:none;/);
+ assert.match(css, /\.toc-side a span\s*\{[^}]*-webkit-line-clamp:2/);
+ assert.match(css, /--indent:1\.25rem/);
+ assert.match(css, /\.prose ul,\.prose ol\s*\{[^}]*padding-left:var\(--indent\)/);
+ const nested = markdown('- 第一層\n  - 第二層\n    - 第三層').html;
+ assert.match(nested, /<ul>[\s\S]*?<ul>[\s\S]*?<ul>[\s\S]*?第三層/);
+});
+
+test('home attention defaults by width while preserving manual toggles between breakpoints', () => {
+ const attention = { open: true };
+ const desktop = { matches: false, addEventListener(type, listener) { this.change = listener; } };
+ const wide = { matches: false, addEventListener() {} };
+ const listeners = {};
+ const context = vm.createContext({
+  matchMedia: query => query === '(min-width:640px)' ? desktop : wide,
+  document: { querySelector: selector => selector === '.attention details' ? attention : null, querySelectorAll: () => [] },
+  window: { addEventListener: (type, listener) => { listeners[type] = listener; } },
+ });
+ vm.runInContext(fs.readFileSync(new URL('./assets/toc.js', import.meta.url), 'utf8'), context);
+ assert.equal(attention.open, false);
+ attention.open = true;
+ listeners.resize();
+ assert.equal(attention.open, true);
+ desktop.matches = true;
+ attention.open = false;
+ desktop.change();
+ assert.equal(attention.open, true);
+ desktop.matches = false;
+ desktop.change();
+ assert.equal(attention.open, false);
+});
+
+test('home attention preview never cuts through a version at the 48-character boundary', () => {
+ const dir = importedFixture();
+ const source = path.join(dir, 'daily/2026-11-19/README.md');
+ const prefix = '甲'.repeat(44);
+ const sentence = `${prefix} 1.9.5 到 1.31.8 還需要確認。`;
+ const original = fs.readFileSync(source, 'utf8');
+ fs.writeFileSync(source, original.replace(/(?<=\*\*今天最需要注意的一件事\*\*[：:])[^\r\n]+/, sentence));
+ const result = build({input:dir,output:newDir('attention-preview-')});
+ const html = result.pages.get('index.html');
+ const attention = html.match(/<aside class="attention">([\s\S]*?)<\/aside>/)[1];
+ assert.ok(attention.includes(`<span class="attention-preview">：${prefix}…</span>`));
+ assert.ok(attention.includes(sentence));
 });
