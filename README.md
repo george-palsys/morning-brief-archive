@@ -26,5 +26,5 @@
 
 - 本 repo 為 private。
 - 舊資料不修改，只新增（`state/sources.json` 例外，每晚覆寫）。
-- `products.yaml` 的網址失效或改版時，GeorgeAI 會直接送 PR，由 George 決定是否合併。
+- `products.yaml` 的網址失效或改版時，GeorgeAI 會直接送 PR 並自行合併，合併後回報 PR 連結。
 - 第一份晨報：2026-11-19。
