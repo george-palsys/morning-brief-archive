@@ -22,7 +22,7 @@
 
 ### F5 BIG-IP 六個 Critical 漏洞：特定設定下未登入即可讓流量中斷，可能遠端執行程式碼
 
-> 原廠頁面未能取得，引自媒體。以下保留 13:19 演練原文，待原廠來源補查結果。
+> 已補原廠來源。以下保留 13:19 演練原文；Scout 比對六個 CVE、CVSS 9.8／9.3、只有 engineering hotfix、無緩解及未提遭利用，與原廠一致。來源：Scout 比對，未逐字通讀全文。
 
 - 背景：BIG-IP 是 F5 的負載平衡與應用程式遞送設備，金融業常放在 WebSphere、JBoss 等應用伺服器前面。TMM（Traffic Management Microkernel）是它處理幾乎所有網路流量的資料面行程；iRule 是管理員寫來控制流量的腳本；APM 是存取控管模組。
 - 發生什麼事：F5 在 2026-11-18 揭露 BIG-IP 資料面的六個 stack-based buffer overflow，未登入的攻擊者可以讓 TMM 當掉，流量中斷到 TMM 重啟為止，F5 表示也可能導致遠端執行程式碼。管理介面不受影響。
@@ -41,6 +41,12 @@
 - 來源：
   - The Hacker News（2026-11-19 02:15 台北時間）：https://thehackernews.com/2026/11/f5-warns-6-critical-big-ip-flaws-can.html
   - F5 公告 K000164058（原廠頁面我這邊開啟後沒有讀到內容，以上內容僅第三方來源）：https://my.f5.com/manage/s/article/K000164058
+  - F5 原廠公告 K000163937（CVE-2026-123637；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163937
+  - F5 原廠公告 K000163946（CVE-2026-121805；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163946
+  - F5 原廠公告 K000163941（CVE-2026-116953；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163941
+  - F5 原廠公告 K000163939（CVE-2026-120285；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163939
+  - F5 原廠公告 K000163940（CVE-2026-120292；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163940
+  - F5 原廠公告 K000163945（CVE-2026-120722；發布日期未查到；Scout 比對）：https://my.f5.com/manage/s/article/K000163945
 
 ### CVE-2026-114938（Java4Shell）後續：研究人員稱可對 Jira、Jenkins、Keycloak 等六個應用程式未登入執行程式碼【與我們的產品線相關】
 
@@ -64,7 +70,7 @@
 
 ### CVE-2026-82384／CVE-2026-129448：Apache Roller 反序列化漏洞已遭利用，影響範圍擴大到 4.0.0 以後所有版本
 
-> 原廠頁面未能取得，引自媒體。以下保留 13:19 演練原文，待原廠來源補查結果。
+> 已補原廠來源與 Apache 公告信存檔。以下保留 13:19 演練原文；原廠比對備註見本則末尾。
 
 - 發生什麼事：Apache 基金會在 2026-11-17 警告，9 月在 Apache Roller 6.1.6 修補的 XML-RPC 端點反序列化漏洞 CVE-2026-82384，原本認定只影響 6.1.5，現在確認 4.0.0 到 6.1.4 也有同樣問題，擴大的範圍另外登記為 CVE-2026-129448。未登入即可從遠端攻擊。
 - 受影響產品與版本：Apache Roller 4.0.0 到 6.1.5。
@@ -75,3 +81,11 @@
 - 來源：
   - iThome（2026-11-19）：https://www.ithome.com.tw/news/180639
   - Apache 郵件清單原文（我這邊開啟後沒有讀到內容，發布日期未查到）：https://lists.apache.org/thread/lnz4s26tv6hdo03wngtdbpfj4hg4gtds
+  - Apache 安全團隊公告頁（更新 2026-11-17）：https://security.apache.org/projects/roller/
+  - Apache 公告信存檔（2026-11-17；Openwall 網站非 Apache 所有）：https://www.openwall.com/lists/oss-security/2026/11/17/5
+
+> 原廠比對備註（來源：Scout 比對，未逐字通讀全文）：
+>
+> 1. 原標題「4.0.0 以後所有版本」較原廠範圍寬；原廠範圍是 4.0.0 到 6.1.5，6.1.6 起已修正。保留原標題是為了保存演練原文，不代表原廠認定所有後續版本都受影響。
+> 2. 「只停用 XML-RPC 仍有風險」指只在管理介面停用仍不足；於 `WEB-INF/web.xml` 把 `enabledForExtensions` 設為 `false`，或移除 `/roller-services/xmlrpc` servlet mapping，是原廠認可的替代做法。
+> 3. 原廠公告日為 2026-11-17；原條目的 2026-11-19 是 iThome 報導日。
