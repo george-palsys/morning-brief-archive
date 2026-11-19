@@ -1,10 +1,10 @@
-# 實作紀錄：晨報 GitHub Pages 靜態網站（PR #7，含後續 PR #8、PR #9）
+# 實作紀錄：晨報 GitHub Pages 靜態網站（PR #7，含後續 PR #8–#11 與 Pages 啟用）
 
 - 紀錄日期：2026-11-19（Asia/Taipei）
 - 撰寫：Quill（文件撰寫）。這是團隊「每次實作都要留文件」新規則的第一份紀錄。
-- 對象：`george-palsys/morning-brief-archive` 的 PR #7（分支 `feat/static-morning-brief-site`）；後續修正為 PR #8（分支 `fix/site-design-review-r1-r9`）；PR #9 為本文件第一版的文件 PR。
-- 紀錄狀態（2026-11-19 18:48 更新）：PR #7 已於 18:18 由 GeorgeAI 合併（依 Leader 自行合併規則）；PR #9 於 18:47:00、PR #8 於 18:47:14 合併（由 Lin 以連線的 GitHub 操作，見第 4 章）；Pages 尚未開啟。本文件第一版撰寫時 PR #7 仍是 open。合併資訊與 PR #8 的三方審查結果都是 Ada 轉達（Lin 讀回、各審查者自述），我沒有另外查詢，也沒有讀到 PR #8 審查者的原始報告。本文件只記錄已發生的事，沒有新增任何實測；未驗證的部分都列在第 8 章。
-- 資料來源：實作交接（Lin）、獨立驗證報告（Rigel）、設計規格（Iris）、設計審查（Iris）、安全基線（Vega）、安全審查（Vega），共六份文件。本文件第 1–5.6 節的數字與指令來自這六份文件；撰寫時我另外對照了 repo 上的 PR 內容（workflow、`package.json`、`site/build.mjs`），有出入的地方列在第 5.5 節，沒有自行挑一邊。PR #8、PR #9 的事實來自 Ada 的轉達（見上）。
+- 對象：`george-palsys/morning-brief-archive` 的 PR #7（分支 `feat/static-morning-brief-site`）；後續修正為 PR #8（分支 `fix/site-design-review-r1-r9`）；PR #9 為本文件第一版的文件 PR；PR #10 為本文件第二版的文件 PR；PR #11 為低風險小修（開立、未合併）。
+- 紀錄狀態（2026-11-19 19:19 更新）：GitHub Pages 已於 19:06–19:08 由 GeorgeAI 啟用（George 於 19:06 核准「開」），網址 `https://george-palsys.github.io/morning-brief-archive/`；PR #10 已於 18:58:24 合併；PR #11 尚未合併。19:18 起自動部署已開（repo 變數 `PAGES_DEPLOY_ENABLED` 讀回值為 true，GeorgeAI 回報；首次自動部署尚未實際跑過，**未驗證**）；Vega 對 PR #11 的安全審查已完成，四項全通過（Vega 回報，未自行重查），Iris 對 PR #11 的設計審查已回報：設計上可合併、無擋合併項目（Iris 回報，Ada 轉達）；Rigel 對 PR #11 的審查尚未回報。以下是 18:48 版的狀態，保留作為歷史：PR #7 已於 18:18 由 GeorgeAI 合併（依 Leader 自行合併規則）；PR #9 於 18:47:00、PR #8 於 18:47:14 合併（由 Lin 以連線的 GitHub 操作，見第 4 章）；Pages 當時尚未開啟。本文件第一版撰寫時 PR #7 仍是 open。合併資訊與 PR #8 的三方審查結果都是 Ada 轉達（Lin 讀回、各審查者自述），我沒有另外查詢，也沒有讀到 PR #8 審查者的原始報告。本文件只記錄已發生的事，沒有新增任何實測（19:15 更新增補的 Pages 啟用與上線驗證，也全部來自 Ada 轉達 GeorgeAI、Rigel、Vega、Iris 的回報，我沒有自行查詢）；未驗證的部分都列在第 8 章。
+- 資料來源：實作交接（Lin）、獨立驗證報告（Rigel）、設計規格（Iris）、設計審查（Iris）、安全基線（Vega）、安全審查（Vega），共六份文件；19:15 更新另引用 Rigel、Vega、Iris 對真實網址的驗證結果（Ada 轉達，我沒有讀到原始報告）。本文件第 1–5.6 節的數字與指令來自這六份文件；撰寫時我另外對照了 repo 上的 PR 內容（workflow、`package.json`、`site/build.mjs`），有出入的地方列在第 5.5 節，沒有自行挑一邊。PR #8、PR #9 的事實來自 Ada 的轉達（見上）。
 
 ---
 
@@ -21,7 +21,7 @@
 
 **範圍外（這次沒有做，且被明確禁止）**：
 
-- 沒有開啟 GitHub Pages；實作者（Lin）沒有合併 PR #7，合併由 Leader 在審查後另行執行（見第 4 章）。截至 2026-11-19 18:48，Pages 仍未開啟（Ada 轉達）。
+- PR #7 當時沒有開啟 GitHub Pages；實作者（Lin）沒有合併 PR #7，合併由 Leader 在審查後另行執行（見第 4 章）。截至 2026-11-19 18:48，Pages 仍未開啟；後來 GeorgeAI 於 19:06–19:08 啟用（George 19:06 核准「開」，Ada 轉達；見第 4 章與 5.8）。
 - PR #8（設計審查 R1–R9 修正）是 PR #7 合併後才做的後續修正，範圍見第 4 章；R10 維持現狀。
 - 沒有修改 repo 可見度、分支保護、Actions 設定。
 - 沒有修改 `SPEC.md` 與三個晨報排程（02:00、07:30、08:00）。
@@ -189,7 +189,7 @@ npm --prefix clean-clone-pr7 run build -- --output clean-clone-pr7\_site-run2
 | 5 | Pages publishing source 設為 GitHub Actions；`github-pages` environment 的 Deployment branches 只允許 `main`；開啟 Enforce HTTPS | 1-F |
 | 6 | 手動執行 `workflow_dispatch` 並設 `deploy=true` 做第一次部署，確認網站正常後再設 `PAGES_DEPLOY_ENABLED=true` | 1 |
 
-（更新：表中第 4 步「合併 PR #7」已完成，其餘 5 步仍未做；Iris 的 R1 已於 PR #8 修正，見 5.7。）另外，Iris 的 R1（404 頁在深層網址下失去樣式與連結）原本要在開 Pages 前修。這一項沒有出現在 Vega 的 6 步裡，兩份清單要合併使用（見 5.5 節與第 7 章）。
+（更新 19:15：第 4 步「合併 PR #7」已完成；第 5 步中的 Pages 來源 GitHub Actions、Enforce HTTPS、`github-pages` environment 僅允許 `main` 已完成（GeorgeAI 操作；environment 為 Vega 匿名讀回）；第 1 步的 secret scanning 與 push protection 已開（GeorgeAI 讀回，Vega 無認證讀不到，標未驗證）；第 6 步的手動部署已做（run `44511889159` 成功），`PAGES_DEPLOY_ENABLED` 已於 19:18 設為 true（GeorgeAI 回報讀回值），因此第 6 步的「設定 `PAGES_DEPLOY_ENABLED=true`」也已完成，但首次自動部署尚未實際跑過，結果**未驗證**，要等下一次有內容推上 `main` 才知道。第 2、3 步（Actions 限制、`main` 的 ruleset）沒有收到完成的回報，視為未做。Iris 的 R1 已於 PR #8 修正，見 5.7。）另外，Iris 的 R1（404 頁在深層網址下失去樣式與連結）原本要在開 Pages 前修。這一項沒有出現在 Vega 的 6 步裡，兩份清單要合併使用（見 5.5 節與第 7 章）。
 
 ---
 
@@ -199,14 +199,21 @@ npm --prefix clean-clone-pr7 run build -- --output clean-clone-pr7\_site-run2
 | --- | --- | --- |
 | PR | `https://github.com/george-palsys/morning-brief-archive/pull/7` | 2026-11-19 18:18 由 GeorgeAI 合併（依 Leader 自行合併規則）；鎖定 head `b2ed6f6`，非 squash |
 | merge commit | `d87a3d4ed15fbb00ebcc14e0af2c5e3a369c053c` | 來源：Ada 轉達 GeorgeAI 的回報；我沒有自行重查 |
-| main 上的 CI | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44504392224` | Static site，success（來源同 merge commit 列，未自行重查）；Pages 沒開、repo 設定沒動、`PAGES_DEPLOY_ENABLED` 沒設 |
+| main 上的 CI | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44504392224` | Static site，success（來源：Ada 轉達 GeorgeAI 回報，未自行重查）；當時 Pages 沒開、repo 設定沒動、`PAGES_DEPLOY_ENABLED` 沒設 |
 | commit | `b2ed6f63d76c5ac3ddd8c11c57a2f922fae1dab2` | PR 最後一個 commit |
 | 分支 | `feat/static-morning-brief-site` | |
 | CI run | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44499192164` | Static site #1，見 5.1 節 |
 | PR #9（文件） | `https://github.com/george-palsys/morning-brief-archive/pull/9` | 2026-11-19 18:47:00 合併；merge commit `8ebfb4fb1ca783e612a31e0ff51a828e155aa065`，鎖定 head `60a39525ee966cee0c249007cc4dabd659cc9bf4`（來源：Ada 轉達 Lin 讀回；我沒有自行重查） |
 | main 上的 CI（PR #9） | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44508844375` | success（Ada 轉達 Lin 讀回，未自行重查） |
 | PR #8（修正） | `https://github.com/george-palsys/morning-brief-archive/pull/8` | 分支 `fix/site-design-review-r1-r9`；2026-11-19 18:47:14 合併；merge commit `60afd0ce17a4d59a98ff4a364adf4040453034eb`，鎖定 head `ca47117c6b2ac9452a18cd88d071bfa14219dcf5`（Ada 轉達 Lin 讀回，未自行重查） |
-| main 上的 CI（PR #8） | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44508880363` | 轉達當時仍在執行中；**最終結果未驗證** |
+| main 上的 CI（PR #8） | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44508880363` | Static site completed／success（2026-11-19 18:47:33 完成，build success、deploy skipped；Rigel 以匿名 API 核實，Ada 轉達） |
+| PR #10（文件） | `https://github.com/george-palsys/morning-brief-archive/pull/10` | 本文件第二版；2026-11-19 18:58:24 由 GeorgeAI 合併；merge commit `4dc0e1e95b5a367a5ddb8d90b53a0b185c89357f`（Ada 轉達 GeorgeAI 回報，未自行重查） |
+| main 上的 CI（PR #10） | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44510546695` | success（18:58:48 完成，deploy skipped；GeorgeAI 回報） |
+| GitHub Pages 啟用 | repo 設定（Pages） | 2026-11-19 19:06–19:08，操作者 GeorgeAI，George 於 19:06 核准「開」；Pages 來源 GitHub Actions、Enforce HTTPS 開；secret scanning 與 push protection 開（GeorgeAI 讀回；Vega 無認證讀不到，**未驗證**）；`github-pages` environment 分支政策僅 `main`（Vega 匿名讀回，並指出 `can_admins_bypass=true`，是否關閉待決定） |
+| 手動部署 | `https://github.com/george-palsys/morning-brief-archive/actions/runs/44511889159` | head `4dc0e1e`；build 19:07:38、deploy 19:07:58 success（Ada 轉達） |
+| 公開網址 | `https://george-palsys.github.io/morning-brief-archive/` | 驗證結果見 5.8；驗證的是手動部署那一次的內容 |
+| 自動部署開關 | repo 變數 `PAGES_DEPLOY_ENABLED` | 2026-11-19 19:18，操作者 GeorgeAI，讀回值為 true（GeorgeAI 回報）；George 於 19:06 已核准開 Pages，依據是 Rigel、Vega、Iris 三份線上驗證都通過；首次自動部署尚未實際跑過，**結果未驗證** |
+| PR #11（小修） | `https://github.com/george-palsys/morning-brief-archive/pull/11` | 分支 `fix/site-low-risk-n1-n4`，head `841556ed27e18832ce33275d7d7b8bb0315945d3`，Lin 開立，**未合併、審查中**；處理 N1–N4，改 4 檔（`site/README.md` +23、`site/assets/site.css` +2、`site/build.mjs` +7／−1、`site/test.mjs` +5）；Lin 回報 `npm test` 16 pass、對比 48 組、33 HTML／26 產品頁、連建兩次一致、CI #11 success（皆轉達，未自行重查）。Vega 安全審查已完成：四項全通過，無新風險，可合併（白名單與 CSP 未變、無新依賴、README 無不安全指引、gitleaks 無發現；Vega 回報）。Vega 同時更正他在 PR #8 報告的敘述：實際寫死的是 workflow 傳入的 `--base-path` 字串，404 頁本身由參數產生，不是 404 頁寫死 base-path。Iris 設計審查已回報（Iris 回報，Ada 轉達；我沒有讀到原始報告）：設計上可合併、無擋合併項目。N1 在 360／640／768／1280 寬度、淺色與深色下，麵包屑各項目皆 44px 高，目前頁面與連結同高（原差約 11px 已消除）；N4 卡片外框與多餘的 Tab 停點已移除、表格不裁切、無對比或焦點退步（72 次載入溢位 0、`h1` 恰 1 個、外部請求 0）；`npm test` 16 pass、對比 48 組 OK。Iris 評估搜尋頁空的 `<ol id="results">` 不併入此 PR，列為可選的獨立小修；順帶觀察日報頁 `.tabs-scroll` 在 1280px 不需捲動時仍是 Tab 停點（低風險、非本 PR 範圍）。Iris 未驗證：螢幕閱讀器、Firefox、Safari、真實手機、200% 縮放、卡片 hover、線上網址、CI；v3 正式資料產出後要再看線上卡片表。Rigel 的審查尚未回報，**維持未驗證** |
 
 PR #8 只修改 6 個檔，合計 +110／−21（Ada 轉達；逐檔行數沒有提供，所以不列）：
 
@@ -279,7 +286,7 @@ PR #7 的 14 個新增檔案（Rigel 逐檔列出，行數加總 847）：
 | 25 | `products/palsys-one.html` |
 | 26 | `products/cmc.html` |
 
-預計網站網址：`https://george-palsys.github.io/morning-brief-archive/`。這是依 Iris 規格引用 GitHub Docs〈About GitHub Pages〉的專案站台網址形式推得（`https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages`）；Iris 報告說該頁由 JavaScript 渲染，只確認到網址形式字樣，整段文案未逐字核對。網站尚未上線，這個網址目前**不存在**。
+網站網址：`https://george-palsys.github.io/morning-brief-archive/`。這是依 Iris 規格引用 GitHub Docs〈About GitHub Pages〉的專案站台網址形式推得（`https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages`）；Iris 報告說該頁由 JavaScript 渲染，只確認到網址形式字樣，整段文案未逐字核對。19:06–19:08 啟用後，這個網址已可連線（Rigel、Vega、Iris 對真實網址的驗證結果見 5.8；我沒有自行連線）。
 
 ---
 
@@ -404,10 +411,62 @@ PR #8 審查後新增的低風險建議（不擋合併，**未處理**）：
 | --- | --- | --- |
 | N1 | 麵包屑「目前頁面」項比連結高約 11px；建議 `.breadcrumbs li{display:flex;align-items:center;min-height:var(--tap-min)}` | Iris |
 | N2 | 在 Git Bash 執行 `--base-path /morning-brief-archive/` 會被路徑轉換，需設 `MSYS_NO_PATHCONV=1`；建議 `site/README.md` 補一句 | Vega |
-| N3 | 404 頁寫死 base-path；repo 改名或換網域時要同步修改 | 審查者轉達（提出者未註明） |
+| N3 | 404 頁寫死 base-path；repo 改名或換網域時要同步修改（**Vega 後來更正**：實際寫死的是 workflow 傳入的 `--base-path` 字串，404 頁本身由參數產生；repo 改名或換網域時要同步修改的是 workflow 的字串） | 審查者轉達（提出者未註明）；更正來自 Vega 回報 |
 | N4 | 手機版表格卡片堆疊的外層仍是可用 Tab 聚焦的捲動容器 | 審查者轉達（提出者未註明） |
 
 與 5.5 的關係：D1–D11 沒有因 PR #8 產生新的不一致；D8 已結案（角色段已移除），D2 的 R1 已修正。
+
+### 5.8 真實網址驗證（2026-11-19 Pages 啟用後；全部為 Ada 轉達各審查者的報告，我沒有讀到原始報告，報告檔名與路徑不寫入本文件）
+
+網址：`https://george-palsys.github.io/morning-brief-archive/`；驗證的部署為 run `44511889159`（head `4dc0e1e`）。
+
+**Rigel（驗證）：六項全通過**
+
+| 項目 | 結果 |
+| --- | --- |
+| 首頁遞迴爬行 | 7 個 URL、74 條引用 |
+| 全站站內引用 | 33 頁、434 條站內引用；斷鏈 0、缺錨點 0 |
+| 產品頁 | 26 個產品頁 26／26 為 HTTP 200 |
+| 深層 404 | 3 層、5 層不存在網址皆回 404；`site.css` 與導覽連結皆 200 |
+| http→https | 皆 301 |
+| 線上與建置一致 | 線上 33 個 HTML 加 6 個公開非 HTML 檔的 SHA-256 與 `main` 建置 100% 一致（`.nojekyll` 不對外伺服） |
+| 外部連結 | 28 個唯一外部連結，只列出、未跟隨 |
+
+附註：目前 `main` 沒有 `products/README.md`，首頁與產品索引只顯示空狀態、不連到 26 個產品頁，v3 首份晨報產生後才會出現；Rigel 的選配建議是無資料時仍依 `products.yaml` 輸出清單。
+
+**Vega（安全）**
+
+| 項目 | 結果 |
+| --- | --- |
+| CSP 位置 | 每頁僅 meta 一份；`default-src 'none'`、`base-uri 'none'`，無 `unsafe-`；回應標頭沒有 CSP |
+| 外部資源 | 無 `<base>`、無外部資源 |
+| 瀏覽器實測 | Chrome 實測 inline script、inline style、外部 fetch 皆被擋 |
+| HSTS | `max-age=31556952` |
+| 缺少的標頭 | `X-Frame-Options`、`nosniff`、`Referrer-Policy`、`Permissions-Policy` 皆沒有 |
+| meta CSP 的限制 | `frame-ancestors`、`report-uri`、`sandbox` 在 meta 中不生效（依據 W3C CSP3 §3.3 與 MDN）；github.com 官方文件找不到明寫「Pages 不支援自訂標頭」的頁面，所以這一點只能如實寫「官方文件未說明」 |
+| 404 頁與敏感路徑 | 404 頁通過；`/.git/config` 回 404 |
+| 低風險 | 網站可被 iframe 嵌入；缺安全標頭 |
+| 建議 | 決定是否關閉 `can_admins_bypass`；`/favicon.ico` 回 404 |
+
+**Iris（設計）**：能在線上驗的都通過，沒有擋上線的項目。
+
+| 項目 | 結果 |
+| --- | --- |
+| R1 | 通過 |
+| R4 | 通過 |
+| R6 | 通過 |
+| R8 | 通過 |
+| R5 | 部分通過 |
+| R2 | 未驗證：線上只有舊版單檔 2026-11-19、沒有 v3 資料，需 2026-11-20 02:00 首份 v3 後補驗 |
+| R3 | 未驗證：線上沒有 v3 資料，需首份 v3 後補驗 |
+| R7 | 未驗證：線上沒有 v3 資料，需首份 v3 後補驗 |
+| R9 | 未驗證：線上沒有 v3 資料，需首份 v3 後補驗 |
+| 卡片表 O2 | 未驗證：線上沒有 v3 資料，需首份 v3 後補驗 |
+| N1 | 麵包屑差約 11px 仍在；Lin 已開 PR #11 修，未合併 |
+| O1 | `about.html` 仍寫「由 GeorgeAI 每天半夜 2:00 …產生」，是否公開由 George 決定 |
+| 新觀察 | 搜尋頁空的 `<ol id="results">` 螢幕閱讀器可能讀成空清單 |
+
+與 5.5 的關係：上述結果沒有與 D1–D11 衝突；D2 的 R1 已在真實網址上通過。
 
 ---
 
@@ -439,22 +498,24 @@ PR #8 審查後新增的低風險建議（不擋合併，**未處理**）：
 
 ## 7 後續維護方式
 
-1. **晨報內容更新**：每天 02:00 排程產生內容、07:30 備份到 repo、08:00 排程（三個排程本次都沒動）。網站會在下一次 `main` 的 build 時讀到新內容；部署是否自動，取決於第 3.6 節第 6 步的 `PAGES_DEPLOY_ENABLED`，目前未設定，所以**目前不會自動部署**。
+1. **晨報內容更新**：每天 02:00 排程產生內容、07:30 備份到 repo、08:00 排程（三個排程本次都沒動）。網站會在下一次 `main` 的 build 時讀到新內容；部署是否自動，取決於第 3.6 節第 6 步的 `PAGES_DEPLOY_ENABLED`，2026-11-19 19:18 起 `PAGES_DEPLOY_ENABLED` 為 true（GeorgeAI 回報讀回值），所以 `main` 的新內容理論上會自動部署；**首次自動部署尚未實際跑過，結果未驗證**，要等下一次有內容推上 `main`（例如 2026-11-20 02:00 之後的首份 v3 晨報備份）才知道。目前線上內容仍是手動部署（run `44511889159`）那一次。若要暫停自動部署，要把該變數改回非 true（官方操作方式沒有查證，未驗證）。
 2. **資料壞掉時**：缺 `meta.yaml`、缺段落檔、`meta.yaml` 欄位無效、缺產品頁時，建置會失敗並停止（不會公開不完整的一天）；`meta.yaml` 與產品總表不一致，或總表少於 26 列時，建置成功但首頁與總表頂端顯示警示。**失敗即停、整站停更、不發布壞資料，是 GeorgeAI 的決定（寧可停更，也不公開壞資料）**，也就是 Iris R10 的取捨已決定維持現狀。處理方式：
    - 誰看：晨報 repo 的 Leader（GeorgeAI、Ada、George-palsys）看 `main` 的 Static site workflow 結果；失敗時 `build` job 的紅燈與錯誤訊息會指出缺哪個檔或欄位。
    - 怎麼修：依錯誤訊息補齊該日 `meta.yaml` 欄位或缺少的段落檔，或修正該日資料夾，再走 PR 合併；合併後 `main` 會重新建置。
    - 目前沒有設計排程失敗的主動通知，所以只靠有人看 Actions 結果（未驗證是否有 GitHub 預設的失敗通知信，沒有查）。
-   - 停更期間網站（若已啟用 Pages）會維持上一次成功部署的內容；Pages 目前沒開，所以此行為未實測。
+   - 停更期間網站（若已啟用 Pages）會維持上一次成功部署的內容；Pages 已啟用，但沒有人實測過停更時線上內容是否維持上一次成功部署，所以此行為未實測。
 3. **修改本站時的檢查**：`npm test`（PR #7 為 11 項；PR #8 審查時 Rigel 回報 16 項）、`npm run check:contrast`（PR #7 為 36 組；PR #8 審查時為 48 組）、`npm run build`；修改 `search.js` 時不得改用 `innerHTML`（Vega 4-I1）。
 4. **套件與 action 升級**：Vega 建議另開 PR 升級四個 action 的大版本並重新核對 SHA，加 `dependabot.yml`（`npm` 與 `github-actions`），並開 Dependabot alerts、security updates 與 CodeQL default setup。
 5. **角色分工名單**：該段已於 PR #8 移除，不再需要維護（原本寫死在 `site/build.mjs`，Vega 7 曾指出成員異動時會過時）。
-6. **PR #8 後新增的 4 項低風險建議（未處理，見 5.7）**：
+6. **PR #8 後新增的 4 項低風險建議（見 5.7；Lin 已開 PR #11 處理；Vega 安全審查四項全通過、Iris 設計審查通過（Iris 回報，Ada 轉達），Rigel 審查未回報，未合併）**：
    - N1：麵包屑「目前頁面」項高度，建議 `.breadcrumbs li{display:flex;align-items:center;min-height:var(--tap-min)}`（Iris）。
    - N2：Git Bash 執行 `--base-path /morning-brief-archive/` 會被路徑轉換，需 `MSYS_NO_PATHCONV=1`，建議 `site/README.md` 補一句（Vega）。
-   - N3：404 頁寫死 base-path，repo 改名或換網域時要同步修改。
+   - N3：repo 改名或換網域時要同步修改 workflow 傳入的 `--base-path` 字串（Vega 更正：404 頁本身由參數產生，不是寫死在 404 頁）。
    - N4：手機版表格卡片堆疊外層仍是可 Tab 聚焦的捲動容器。
-7. **repo 設定重查**：Vega 的 repo 設定數值是 17:28–17:35 的基線。啟用 Pages 前要重查，需要 George 登入或提供只對這個 repo 有唯讀權限的 token。
-8. **這份文件本身**：新增的實作請另寫新檔 `docs/implementation/<日期>-<主題>.md`；本檔只往第 9 章往後加紀錄，不改寫過去的記載。
+7. **repo 設定重查**：Vega 的 repo 設定數值是 17:28–17:35 的基線，Pages 啟用後只有 `github-pages` environment 由 Vega 匿名讀回；其餘（secret scanning、push protection、Actions 限制、`main` 保護）要有認證才讀得到，目前沒有重查證據。需要 George 登入或提供只對這個 repo 有唯讀權限的 token。
+   - 待決定：`github-pages` environment 的 `can_admins_bypass=true` 是否關閉（Vega 提出）。
+8. **上線後與 PR #11 審查後的低風險建議（Vega、Iris、Rigel 提出，都未處理）**：搜尋頁空 `<ol id="results">` 另開獨立小修（Iris 評估不併入 PR #11，可選）、日報頁 `.tabs-scroll` 在 1280px 不需捲動時仍是 Tab 停點（Iris 新觀察，低風險）；缺安全標頭（Pages 是否能設標頭，官方文件未說明）、`/favicon.ico` 回 404、`about.html` 的產生者敘述是否公開由 George 決定、搜尋頁空 `<ol id="results">` 的螢幕閱讀器讀法、無資料時是否仍依 `products.yaml` 輸出產品清單（Rigel 選配）、首份 v3 晨報（2026-11-20 02:00）產生後補驗 R2、R3、R5、R7、R9、O2。
+9. **這份文件本身**：新增的實作請另寫新檔 `docs/implementation/<日期>-<主題>.md`；本檔只往第 9 章往後加紀錄，不改寫過去的記載。
 
 ---
 
@@ -462,11 +523,11 @@ PR #8 審查後新增的低風險建議（不擋合併，**未處理**）：
 
 | 編號 | 項目 | 為什麼未驗證 | 出處 |
 | --- | --- | --- | --- |
-| U1 | GitHub Pages 實際部署、公開網址行為、深層 404 在 Pages 上的真實行為 | Pages 沒有開；PR #8 的 R1 修正只以 Rigel 的本機伺服器模擬（兩層不存在網址，CSS 與連結皆 200）驗證，沒有在真實 Pages 上驗證 | Lin、Rigel、Iris U1 |
-| U2 | CSP 與 HTTPS 在瀏覽器與 Pages 上是否實際生效、有無違規 | 沒有在瀏覽器觀察 CSP 違規；結論來自靜態分析與 HTML 解析（PR #8 審查時 CSP 未變）；Enforce HTTPS 尚未設定 | Vega 第 6 項 |
-| U3 | repo 設定的目前值（`main` 保護、secret scanning、Actions 限制、environments） | 只有 17:28–17:35 基線，17:35 之後沒有重查（沒有認證；轉達稱 repo 設定沒動，但沒有重查證據） | Vega 第 8 項 |
+| U1 | GitHub Pages 實際部署、公開網址行為、深層 404 在 Pages 上的真實行為 | 已部分解決：真實網址的 404、連結、http→https 已由 Rigel、Iris 驗證（見 5.8，轉達）。仍未驗證：我沒有自行連線；自動部署（`PAGES_DEPLOY_ENABLED`）19:18 已開，但首次自動部署尚未實際跑過，部署流程只實際跑過一次手動部署 | Lin、Rigel、Iris U1 |
+| U2 | CSP 與 HTTPS 在瀏覽器與 Pages 上是否實際生效、有無違規 | 已部分解決：Vega 於真實網址以 Chrome 實測 CSP 擋下 inline script／style／外部 fetch，HSTS `max-age=31556952`，Enforce HTTPS 已開（5.8，轉達）。仍未驗證：HSTS 預載；meta CSP 無法設定的 `frame-ancestors` 等指令與缺少的安全標頭（官方文件未說明 Pages 是否能自訂標頭） | Vega 第 6 項 |
+| U3 | repo 設定的目前值（`main` 保護、secret scanning、Actions 限制、environments） | 17:28–17:35 基線之後，只有 `github-pages` environment（Vega 匿名讀回）與 GeorgeAI 的讀回（secret scanning、push protection、Pages 設定）；Vega 無認證讀不到 secret scanning、push protection、Actions 限制與 `main` 保護，沒有獨立重查；`can_admins_bypass=true` 是否關閉待決定 | Vega 第 8 項 |
 | U4 | 首份正式 v3 晨報（預計 2026-11-20 02:00 產生）的內容與網站建置 | v3 結構只以固定 commit 的演練快照驗證 | Lin、Rigel |
-| U5 | `github-pages` environment 在 Pages 來源設為 Actions 時會不會自動建立並限制分支 | 沒有實測，所以列為手動確認項目 | Vega 1-F |
+| U5 | `github-pages` environment 在 Pages 來源設為 Actions 時會不會自動建立並限制分支 | 部分解決：Vega 匿名讀回該 environment 的分支政策僅 `main`（轉達）；自動建立與否的行為沒有實測 | Vega 1-F |
 | U6 | fork PR 能不能取得 OIDC `id-token`；PR 的 cache 會不會影響 `main` | 依官方文件推論，沒有實測 | Vega 1-F、1-G |
 | U7 | 個人帳號 repo 的 ruleset 能不能把 deploy key 加進 bypass list（方案 B） | Vega 沒有打開設定頁確認 | Vega 第 8 項 |
 | U8 | 螢幕閱讀器朗讀、真實手機（實機）、Firefox、Safari 等其他瀏覽器、真實 200% 縮放、深色模式逐頁目視、搜尋錯誤分支 | 沒有該些工具與裝置；200% 以 180px 視窗模擬；PR #8 的審查也沒有涵蓋這些 | Iris U2–U6 |
@@ -483,7 +544,12 @@ PR #8 審查後新增的低風險建議（不擋合併，**未處理**）：
 | U19 | 本文件第 5.5 節 D1–D11 的對不上項目 | 未有人確認，我沒有自行選邊 | 本文件 |
 | U20 | 本文件第 6 章「套用到別的專案」 | 依本專案經驗整理，沒有在別的專案實際套用 | 本文件 |
 | U21 | 本文件第 3 章指令 | 為他人實跑過的指令，我沒有重新執行 | 本文件 |
-| U22 | PR #7、#8、#9 的合併資訊與 PR #8 審查結果：PR #7 18:18、merge commit `d87a3d4`、run `44504392224` success；PR #9 18:47:00、merge commit `8ebfb4f`、run `44508844375` success；PR #8 18:47:14、merge commit `60afd0c`、run `44508880363`；PR #8 的 Rigel、Vega、Iris 結論；Pages 未開、repo 設定未動、`PAGES_DEPLOY_ENABLED` 未設 | 全部來自 Ada 轉達，我沒有自行查詢，也沒有讀到 PR #8 審查者的原始報告。**run `44508880363` 轉達時仍在執行，最終結果未驗證** | Ada、GeorgeAI、Lin、Rigel、Vega、Iris |
+| U22 | PR #7、#8、#9 的合併資訊與 PR #8 審查結果：PR #7 18:18、merge commit `d87a3d4`、run `44504392224` success；PR #9 18:47:00、merge commit `8ebfb4f`、run `44508844375` success；PR #8 18:47:14、merge commit `60afd0c`、run `44508880363`；PR #8 的 Rigel、Vega、Iris 結論；18:48 時 Pages 未開、repo 設定未動、`PAGES_DEPLOY_ENABLED` 未設（之後的變化見 U23） | 全部來自 Ada 轉達，我沒有自行查詢，也沒有讀到 PR #8 審查者的原始報告。run `44508880363` 已有結果：Static site completed／success（18:47:33 完成，build success、deploy skipped；Rigel 匿名 API 核實，Ada 轉達）；Pages 啟用後的狀態見 U23 | Ada、GeorgeAI、Lin、Rigel、Vega、Iris |
+| U23 | PR #10 合併（merge commit `4dc0e1e`、18:58:24、run `44510546695` success）；Pages 啟用（19:06–19:08）、手動部署 run `44511889159`（head `4dc0e1e`，build 19:07:38、deploy 19:07:58 success）；`PAGES_DEPLOY_ENABLED` 於 19:18 設為 true（讀回值，GeorgeAI 回報） | 來自 Ada 轉達 GeorgeAI 回報與 Rigel、Vega 的讀回，我沒有自行查詢 | Ada、GeorgeAI、Rigel、Vega |
+| U24 | secret scanning 與 push protection 已開 | 只有 GeorgeAI 讀回；Vega 無認證讀不到，沒有獨立驗證 | GeorgeAI、Vega |
+| U25 | 首次自動部署的結果，以及真實網址上仍未驗證的項目：R2、R3、R5（部分通過）、R7、R9、卡片表 O2；實機、Firefox、Safari、螢幕閱讀器；HSTS 預載 | 線上只有舊版單檔 2026-11-19、沒有 v3 資料，需 2026-11-20 02:00 首份 v3 後補驗；其餘沒有工具與裝置；首次自動部署（19:18 開關開啟後）尚未實際跑過，要等下一次有內容推上 `main` 才知道，沒有人驗證 | Iris、Vega |
+| U26 | PR #11（N1–N4 小修）的審查與部署 | Lin 開立，head `841556ed27e18832ce33275d7d7b8bb0315945d3`，未合併；Vega 安全審查四項全通過、可合併（Vega 回報，我沒有讀到原始報告）；Iris 設計審查通過、無擋合併項目（Iris 回報，Ada 轉達，我沒有讀到原始報告；她未驗證螢幕閱讀器、Firefox、Safari、真實手機、200% 縮放、卡片 hover、線上網址、CI，v3 正式資料產出後要再看線上卡片表）；Rigel 尚未回報，維持未驗證；Lin 回報的測試結果沒有獨立驗證 | Lin、Ada |
+| U27 | 5.8 的真實網址驗證結果 | 全部是 Ada 轉達 Rigel、Vega、Iris 的報告，我沒有自行連線，也沒有讀到原始報告 | Rigel、Vega、Iris、Ada |
 
 ---
 
@@ -498,3 +564,14 @@ PR #8 審查後新增的低風險建議（不擋合併，**未處理**）：
 | 2026-11-19 | 補記合併結果、失敗即停為 GeorgeAI 的決定與處理方式、D8 角色分工段改為移除（進行中）、第 8 章更正 | 本文件 PR | Quill |
 | 2026-11-19 | 合併 PR #9、PR #8（由 Lin 以連線的 GitHub 操作，審查見第 5 章）：PR #9 18:47:00、merge commit `8ebfb4fb1ca783e612a31e0ff51a828e155aa065`；PR #8 18:47:14、merge commit `60afd0ce17a4d59a98ff4a364adf4040453034eb` | PR #8、PR #9 | Ada |
 | 2026-11-19 | 文件更新（18:48）：補 PR #8、#9 合併與 CI 狀態；第 4 章補 PR #8 的 6 個檔；新增 5.7（PR #8 三方審查與 N1–N4）；5.4、D2、D8 改為已於 PR #8 移除／修正；第 7 章補 N1–N4；第 8 章更新並修正兩處（資料來源改為六份文件、U22 移到 U21 之後）；舊列不動 | 本文件下一個文件 PR | Quill |
+| 2026-11-19 | 合併 PR #10（本文件第二版，18:58:24，merge commit `4dc0e1e95b5a367a5ddb8d90b53a0b185c89357f`，main run `44510546695` success） | PR #10 | GeorgeAI |
+| 2026-11-19 | 啟用 GitHub Pages（19:06–19:08；George 於 19:06 核准「開」）：來源 GitHub Actions、Enforce HTTPS、secret scanning 與 push protection、`github-pages` environment 僅 `main`；手動部署 run `44511889159` | 無（repo 設定） | GeorgeAI |
+| 2026-11-19 | 更新 run `44508880363` 結果為 success（18:47:33 完成，Rigel 匿名 API 核實） | PR #8 | Rigel（核實）、Ada（轉達） |
+| 2026-11-19 | 真實網址驗證：Rigel 六項全通過；Vega 的 CSP、HSTS、標頭與敏感路徑檢查；Iris 的設計項目（R1、R4、R6、R8 通過，R5 部分通過，其餘待 v3） | 無（網址驗證） | Rigel、Vega、Iris |
+| 2026-11-19 | 開立 PR #11（`fix/site-low-risk-n1-n4`，head `841556ed27e18832ce33275d7d7b8bb0315945d3`，N1–N4 小修，未合併、審查中） | PR #11 | Lin |
+| 2026-11-19 | 文件更新（19:15）：補 PR #10 合併、run `44508880363` 結果、Pages 啟用與手動部署、PR #11；新增 5.8 真實網址驗證；更新第 1、3.6、4、7、8 章（U1、U2、U3、U5、U22 更新，新增 U23–U27）；舊列不動 | 本文件下一個文件 PR | Quill |
+| 2026-11-19 | 開啟自動部署：repo 變數 `PAGES_DEPLOY_ENABLED` 於 19:18 讀回值為 true（George 於 19:06 已核准開 Pages；依據是 Rigel、Vega、Iris 三份線上驗證都通過）；首次自動部署尚未實際跑過，結果未驗證 | 無（repo 設定） | GeorgeAI |
+| 2026-11-19 | Vega 完成 PR #11 安全審查：四項全通過、無新風險、可合併（白名單與 CSP 未變、無新依賴、README 無不安全指引、gitleaks 無發現）；更正 PR #8 報告的 N3 敘述：寫死的是 workflow 傳入的 `--base-path` 字串，404 頁本身由參數產生；Rigel、Iris 審查未回報 | PR #11 | Vega |
+| 2026-11-19 | 文件更新（19:18）：補自動部署已開（第 3.6 第 6 步、第 4 章、第 7 章第 1 項、U1、U23、U25）；PR #11 補 Vega 審查結果與 N3 更正（第 4 章、5.7 的 N3、第 7 章、U26）；舊列不動 | 本文件下一個文件 PR | Quill |
+| 2026-11-19 | Iris 完成 PR #11（head `841556ed27e18832ce33275d7d7b8bb0315945d3`）設計審查：設計上可合併、無擋合併項目；N1 麵包屑各項目在 360／640／768／1280、淺深色下皆 44px 高，N4 卡片外框與多餘 Tab 停點已移除；搜尋頁空 `<ol id="results">` 不併入此 PR；新觀察日報頁 `.tabs-scroll` 在 1280px 仍是 Tab 停點（低風險）；來源為 Iris 回報、Ada 轉達；Rigel 審查未回報 | PR #11 | Iris（回報）、Ada（轉達） |
+| 2026-11-19 | 文件更新（19:19）：PR #11 補 Iris 設計審查結果（第 4 章、第 7 章第 8 項、U26）；舊列不動 | 本文件下一個文件 PR | Quill |
