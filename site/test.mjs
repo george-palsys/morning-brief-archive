@@ -31,6 +31,12 @@ function validatePages(result) {
   assert.ok(html.includes('Content-Security-Policy'));
   for (const [,href] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
    if (/^https?:/.test(href)) continue;
+   if (file === '404.html' && href.startsWith('/')) {
+    assert.ok(href.startsWith(result.basePath),`${file}: base path ${href}`);
+    const target = href.slice(result.basePath.length);
+    assert.ok(result.pages.has(target) || fs.existsSync(path.join(result.output,target)),`${file}: missing ${target}`);
+    continue;
+   }
    assert.ok(!href.startsWith('/'),`${file}: relative ${href}`);
    const [target,anchor] = href.split('#');
    const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(file),target || path.posix.basename(file)));
@@ -47,6 +53,8 @@ test('production: legacy banner, no-data state, 26 product pages and valid relat
  assert.ok(result.pages.get('daily/2026-11-19.html').includes('舊版單檔格式'));
  assert.ok(result.pages.get('index.html').includes('第一份新版晨報'));
  assert.equal(slugs.filter(s => result.pages.has(`products/${s}.html`)).length,26);
+ assert.ok(!result.pages.get('daily/2026-11-19.html').includes('aria-label="相鄰日期"'),'R6: single date has no empty navigation');
+ assert.ok(!/製作與審查角色|Security Code Review|本次變更已通過審查/.test(result.pages.get('about.html')),'about role block removed');
  validatePages(result);
 });
 test('v3 preview: 26 products, all status counts, sections, search and relative links', () => {
@@ -55,6 +63,10 @@ test('v3 preview: 26 products, all status counts, sections, search and relative 
  assert.equal(result.warnings.length,0);
  assert.equal(result.pages.size,40);
  assert.ok(result.pages.get('daily/2026-11-19/knowledge.html').includes('<dl class="knowledge">'));
+ assert.ok(!result.pages.get('daily/2026-11-19/maintenance.html').match(/<nav aria-label="本頁目錄">[\s\S]*?<\/nav>/)?.[0].includes('`'),'R5: no Markdown backticks in TOC');
+ const attention = result.pages.get('index.html').match(/<aside class="attention">([\s\S]*?)<\/aside>/)?.[1];
+ assert.equal((attention.match(/今天最需要注意的一件事/g)||[]).length,1,'R9: one attention label');
+ assert.ok(attention.includes('daily/2026-11-19/cve.html'),'R9: original destination retained');
  validatePages(result);
  console.log('V3 PRODUCT EVIDENCE: '+slugs.map(s=>`products/${s}.html`).join(', '));
  console.log('V3 FIXTURE OUTPUT: '+result.output);
@@ -108,5 +120,70 @@ test('workflow has SHA pins, read-only build, isolated gated deployment, no priv
  assert.deepEqual(flow.jobs.deploy.permissions,{pages:'write','id-token':'write'});
  assert.ok(!Object.keys(flow.on).includes('pull_request_target'));
  assert.ok(flow.jobs.deploy.if.includes("github.ref == 'refs/heads/main'"));
+ assert.ok(flow.jobs.build.steps.some(step=>step.run === 'npm run build -- --base-path /morning-brief-archive/'));
  for (const job of Object.values(flow.jobs)) for (const step of job.steps) if (step.uses) assert.match(step.uses,/@[a-f0-9]{40}$/);
+});
+test('R1: 404 resources and navigation resolve at deeply missing request URLs', async () => {
+ const { createServer } = await import('node:http');
+ for (const basePath of ['/morning-brief-archive/','/custom-site/','/']) {
+  const result = build({input:root,output:newDir('404-'),basePath});
+  const html = result.pages.get('404.html');
+  assert.ok(!/<base\b|<script\b/.test(html),'404 needs neither base element nor script');
+  assert.ok(html.includes("base-uri 'none'"));
+  assert.ok(!html.includes('unsafe-inline'));
+  const server = createServer((req,res)=>{
+   const pathname = new URL(req.url,'http://localhost').pathname;
+   const name = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : '';
+   const target = path.join(result.output,name);
+   if (name && fs.existsSync(target) && fs.statSync(target).isFile()) {
+    res.writeHead(200,{'Content-Type':name.endsWith('.css') ? 'text/css' : 'text/html'}); res.end(fs.readFileSync(target));
+   } else { res.writeHead(404,{'Content-Type':'text/html'}); res.end(html); }
+  });
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try {
+   const origin = `http://127.0.0.1:${server.address().port}`;
+   for (const missing of ['nope.html','daily/2099/zz/nope.html','a/b/c/d/e/nope.html']) {
+    const requestURL = new URL(basePath+missing,origin);
+    const response = await fetch(requestURL); assert.equal(response.status,404);
+    const body = await response.text();
+    const css = body.match(/<link rel="stylesheet" href="([^"]+)"/)[1];
+    assert.equal(new URL(css,requestURL).pathname,`${basePath}assets/site.css`);
+    const stylesheet = await fetch(new URL(css,requestURL));
+    assert.equal(stylesheet.status,200); assert.match(stylesheet.headers.get('content-type'),/^text\/css/);
+    for (const [,href] of body.matchAll(/href="([^"]+)"/g)) {
+     if (/^https?:|^#/.test(href)) continue;
+     assert.equal((await fetch(new URL(href,requestURL))).status,200,`${requestURL}: ${href}`);
+    }
+   }
+  } finally { await new Promise(resolve=>server.close(resolve)); }
+ }
+ assert.throws(()=>build({basePath:'//evil.example/'}),/base-path/);
+ assert.throws(()=>build({basePath:'/site/../'}),/base-path/);
+ assert.throws(()=>build({basePath:'/site/" onclick="'}),/base-path/);
+});
+test('R2: summary cards have no false scroll hint; wide tables retain it',()=>{
+ const summary=markdown('# 摘要\n\n| 產品 | 更新 | 要不要動作 |\n|---|---|---|\n| Vault | 版本更新 | 盤點 |',{summary:true}).html;
+ assert.ok(summary.includes('table-stack'));
+ assert.ok(!summary.includes('可左右捲動'));
+ assert.ok(markdown('| 來源 | 日期 |\n|---|---|\n| 官方 | 未記錄 |').html.includes('可左右捲動'));
+ const css=fs.readFileSync('site/assets/site.css','utf8');
+ assert.match(css,/\.table-stack tbody tr\s*\{[^}]*border:1px solid var\(--color-border\)[^}]*border-radius:var\(--radius-md\)[^}]*margin-block:var\(--space-3\)/);
+});
+test('R3/R5: CVE badge survives inline code; TOC labels strip Markdown',()=>{
+ const result=markdown('# CVE\n\n### 【與我們的產品線相關】CVE-2026-1234 的 `Java` **修正**\n\n內容',{section:'cve'});
+ assert.match(result.html,/<h2[^>]*>【與我們的產品線相關】<code>CVE-2026-1234<\/code> 的 <code>Java<\/code> <strong>修正<\/strong><\/h2><span class="type-tag">與我們的產品線相關<\/span>/);
+ assert.equal(result.toc[0].title,'【與我們的產品線相關】CVE-2026-1234 的 Java 修正');
+ assert.ok(!markdown('### CVE-2026-1234 其他新聞',{section:'cve'}).html.includes('type-tag'));
+});
+test('R7: empty maintenance shows fallback without empty TOC and keeps meaningful prose',()=>{
+ const dir=fixture(); const file=path.join(dir,'daily/2026-11-19/maintenance.md');
+ fs.writeFileSync(file,'# 清單維護\n\n');
+ const result=run(dir); const html=result.pages.get('daily/2026-11-19/maintenance.html');
+ assert.equal((html.match(/今天沒有清單維護項目/g)||[]).length,1);
+ assert.ok(!html.includes('class="page-toc"'));
+ assert.ok(markdown('# 清單維護\n\n今天完成來源確認。',{section:'maintenance'}).html.includes('今天完成來源確認。'));
+});
+test('R8: breadcrumbs and footer links have minimum touch height',()=>{
+ const css=fs.readFileSync('site/assets/site.css','utf8');
+ assert.match(css,/\.breadcrumbs a,footer a\s*\{[^}]*display:inline-flex[^}]*align-items:center[^}]*min-height:var\(--tap-min\)/);
 });
