@@ -228,9 +228,16 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       const previewTokens = new MarkdownIt().parseInline(source, {})[0].children;
       const firstSentence = previewTokens.map(token => token.type === 'softbreak' ? ' ' : token.content).join('').trim().split(/(?<=[。！？!?]|\.)\s+|(?<=[。！？])/u)[0];
       const preview = Array.from(firstSentence);
-      const short = preview.length > 40 ? preview.slice(0, 40).join('') + '…' : firstSentence;
+      const limit = 48;
+      let end = Math.min(limit, preview.length);
+      while (end > 0 && !/[，、；\s]/u.test(preview[end] ?? '')) end--;
+      const short = preview.length > limit && end > 0
+        ? preview.slice(0, end).join('').trimEnd() + '…'
+        : firstSentence;
+      const safePreview = esc(short).replace(/\b(?:CVE-\d{4}-\d+|v?\d+(?:\.\d+)+)\b/gi,
+        identifier => `<span class="attention-id">${identifier}</span>`);
       const body = rendered.replace(/href="(?!https?:|#)([^"]+)"/g, (_, href) => `href="${latest.base}/${href}"`);
-      attention = `<aside class="attention"><details open><summary>今天最需要注意的一件事<span class="attention-preview">：${esc(short)}</span></summary>${body}</details></aside>`;
+      attention = `<aside class="attention"><details open><summary>今天最需要注意的一件事<span class="attention-preview">：${safePreview}</span></summary>${body}</details></aside>`;
     }
     if (latest.legacy) summaryCards = `<p>最新一天是舊版格式，只有 CVE、台灣 IT、AI 三段。</p>${link('index.html', latest.href, '閱讀最新一天晨報')}`;
     else summaryCards = `<div class="summary-grid">${sections.slice(1).map(([part, label]) => {

@@ -311,7 +311,7 @@ test('reading layout: semantic shell, one archive notice, correct daily current 
  assert.ok(home.match(/class="admonition archive [\s\S]*?<\/div><\/div>/)[0].includes('未建立產品總表'));
  assert.ok(!home.includes('<p class="notice">'));
  assert.ok(home.indexOf('class="home-entry"') < home.indexOf('class="attention"'));
- assert.match(home, /<aside class="attention"><details open><summary>[^<]+<span class="attention-preview">：NGINX[^<]+<\/span><\/summary>/);
+ assert.match(home, /<aside class="attention"><details open><summary>[^<]+<span class="attention-preview">：NGINX[\s\S]*?<\/span><\/summary>/);
 
  const cve=result.pages.get('daily/2026-11-19/cve.html');
  const side = cve.match(/<aside class="toc-side">[\s\S]*?<\/aside>/)[0];
@@ -368,4 +368,18 @@ test('home attention defaults by width while preserving manual toggles between b
  desktop.matches = false;
  desktop.change();
  assert.equal(attention.open, false);
+});
+
+test('home attention preview never cuts through a version at the 48-character boundary', () => {
+ const dir = importedFixture();
+ const source = path.join(dir, 'daily/2026-11-19/README.md');
+ const prefix = '甲'.repeat(44);
+ const sentence = `${prefix} 1.9.5 到 1.31.8 還需要確認。`;
+ const original = fs.readFileSync(source, 'utf8');
+ fs.writeFileSync(source, original.replace(/(?<=\*\*今天最需要注意的一件事\*\*[：:])[^\r\n]+/, sentence));
+ const result = build({input:dir,output:newDir('attention-preview-')});
+ const html = result.pages.get('index.html');
+ const attention = html.match(/<aside class="attention">([\s\S]*?)<\/aside>/)[1];
+ assert.ok(attention.includes(`<span class="attention-preview">：${prefix}…</span>`));
+ assert.ok(attention.includes(sentence));
 });
