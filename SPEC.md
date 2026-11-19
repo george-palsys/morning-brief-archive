@@ -256,7 +256,7 @@ cicd_tools_updated:
 - 當晚第一次建立基準的來源(列出產品與網址)。
 - 版本選單出現新版本的來源(列出產品、目前網址的版本、選單中的最新版本)。
 
-上面任何一項有內容時,GeorgeAI 當天就把對應的修改做成 PR 送到 `george-palsys/morning-brief-archive`,不等 George 開口。PR 說明逐項列出改了哪個產品、舊網址、新網址、是怎麼確認的。George 只需要看 PR 並決定是否合併;GeorgeAI 不自行合併,也不直接推到 `main`。
+上面任何一項有內容時,GeorgeAI 當天就把對應的修改做成 PR 送到 `george-palsys/morning-brief-archive`,不等 George 開口。PR 說明逐項列出改了哪個產品、舊網址、新網址、是怎麼確認的。PR 由 GeorgeAI 自行合併,合併後在當天晨報的「清單維護」與回報中附上 PR 連結,George 不需要逐一核准(George 於 2026-11-19 指示)。修改一律走 PR,不直接推到 `main`,這樣每次改動都留有紀錄、可以還原。沒有實際開頁確認的網址不可標成已確認。
 
 ## 八、排程怎麼讀到這份規則
 
