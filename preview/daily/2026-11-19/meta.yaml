@@ -1,0 +1,70 @@
+title: 晨報 2026-11-19（v2 演練）
+date: 2026-11-19
+weekday: 星期四
+type: morning-brief-rehearsal
+collected_at: 2026-11-19T13:19:00+08:00
+cve_ids:
+  - CVE-2026-123007
+  - CVE-2026-123634
+  - CVE-2026-123633
+  - CVE-2026-123637
+  - CVE-2026-121805
+  - CVE-2026-120292
+  - CVE-2026-120285
+  - CVE-2026-116953
+  - CVE-2026-120722
+  - CVE-2026-114938
+  - CVE-2024-10441
+  - CVE-2026-40217
+  - CVE-2026-90817
+  - CVE-2026-90436
+  - CVE-2026-82384
+  - CVE-2026-129448
+  - CVE-2026-77299
+  - CVE-2026-88809
+products:
+  - Argo CD
+  - IBM Concert
+  - Rancher Manager
+  - RKE2
+  - NGINX
+  - NGINX Plus
+  - F5 BIG-IP
+  - OpenJDK
+  - Synology DiskStation Manager
+  - BerriAI LiteLLM
+  - REDCap
+  - Apache Axis
+  - Apache Roller
+  - Microsoft Agent Framework
+  - NuGet.org
+  - IBM Bob
+  - OpenAI Codex
+  - Google Gemini
+  - LINE
+tags:
+  - 演練
+  - 產品動態
+  - 新知識
+  - 遠端程式碼執行
+  - CISA KEV
+  - 供應鏈攻擊
+  - 個資外洩
+  - 資通安全署
+  - Passkey
+  - TPM
+  - 沙箱
+  - AI 代理
+  - Anthropic
+  - Google
+spec_version: 3
+products_checked: 26
+products_updated:
+  - CI/CD
+  - Concert
+  - Rancher / RKE2
+products_unconfirmed:
+  - Software Risk Manager (SRM)
+  - Palsys One
+cicd_tools_updated:
+  - Argo CD
