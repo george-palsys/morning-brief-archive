@@ -20,7 +20,7 @@
    npm run check:contrast
    ```
 
-   驗證預期：16 tests、16 pass、0 fail；CONTRAST OK: 48 CSS color pairs。測試中兩種故意製造的不一致會印 WARNING，該警告是測試證據。對比包含兩種模式的 border-strong／bg、surface、surface-hover，低於 3:1 會停止；另逐項印出此六組實算值。不代表完整 WCAG 合規審查。
+   驗證預期：18 tests、18 pass、0 fail；CONTRAST OK: 48 CSS color pairs。測試中兩種故意製造的不一致會印 WARNING，該警告是測試證據。對比包含兩種模式的 border-strong／bg、surface、surface-hover，低於 3:1 會停止；另逐項印出此六組實算值。不代表完整 WCAG 合規審查。
 
 3. 建置正式內容到尚不存在或空的輸出資料夾：
 

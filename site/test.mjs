@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import { build, markdown, url, slugs } from './build.mjs';
 import { parse } from 'yaml';
 
@@ -55,7 +56,52 @@ test('production: legacy banner, no-data state, 26 product pages and valid relat
  assert.equal(slugs.filter(s => result.pages.has(`products/${s}.html`)).length,26);
  assert.ok(!result.pages.get('daily/2026-11-19.html').includes('aria-label="相鄰日期"'),'R6: single date has no empty navigation');
  assert.ok(!/製作與審查角色|Security Code Review|本次變更已通過審查/.test(result.pages.get('about.html')),'about role block removed');
+ assert.ok(!result.pages.get('about.html').includes('每天半夜 2:00'),'G1: removed automation attribution sentence');
+ assert.match(result.pages.get('search/index.html'),/<ol id="results" hidden><\/ol>/,'G2: initial empty results are hidden');
  validatePages(result);
+});
+test('G2: search results appear only for rendered matches and hide on empty/error states',async()=>{
+ class Element {
+  constructor(){this.children=[];this.hidden=true;this.value='';this.textContent='';}
+  replaceChildren(){this.children=[];}
+  append(...items){this.children.push(...items);}
+  get childElementCount(){return this.children.length;}
+  addEventListener(){}
+ }
+ function setup(fail=false){
+  const elements=Object.fromEntries(['search-ui','query','search-status','results','range','all'].map(id=>[id,new Element()]));
+  elements.range.value='all';
+  elements['search-ui'].querySelectorAll=selector=>selector.includes(':checked')?[{value:'product'}]:[];
+  const context=vm.createContext({document:{querySelector:selector=>elements[selector.slice(1)],createElement:()=>new Element()},fetch:async()=>{
+   if(fail)throw Error('offline');
+   return {ok:true,json:async()=>({months:[],products:[{date:'',category:'product',title:'Vault',summary:'',products:['Vault'],cve_ids:[],file:'products/vault.html'}]})};
+  }});
+  vm.runInContext(fs.readFileSync('site/assets/search.js','utf8'),context);
+  return {elements,context};
+ }
+ const {elements,context}=setup();
+ await vm.runInContext('update()',context);
+ assert.equal(elements.results.hidden,true);
+ elements.query.value='Vault';await vm.runInContext('update()',context);
+ assert.equal(elements.results.hidden,false);assert.equal(elements.results.childElementCount,1);
+ elements.query.value='no-match';await vm.runInContext('update()',context);
+ assert.equal(elements.results.hidden,true);assert.equal(elements.results.childElementCount,0);
+ assert.ok(elements['search-status'].textContent.includes('沒有符合'));
+ elements.query.value='';await vm.runInContext('update()',context);assert.equal(elements.results.hidden,true);
+ const offline=setup(true);await vm.runInContext('update()',offline.context);
+ assert.equal(offline.elements.results.hidden,true);assert.equal(offline.elements.results.childElementCount,0);
+ assert.equal(offline.elements['search-status'].textContent,'搜尋索引載入失敗，請重新整理');
+});
+test('G3: tabs become a Tab stop only while overflowing, including resize and observation',()=>{
+ const tab={clientWidth:900,scrollWidth:900,tabIndex:-1};const details={open:false};
+ const handlers={};let observed=0;let observeCallback;
+ const media={matches:true,addEventListener:(name,fn)=>{handlers.media=fn;}};
+ const context=vm.createContext({matchMedia:()=>media,document:{querySelectorAll:selector=>selector==='.tabs-scroll'?[tab]:[details]},window:{addEventListener:(name,fn)=>{handlers[name]=fn;}},ResizeObserver:class{constructor(fn){observeCallback=fn;}observe(){observed++;}}});
+ vm.runInContext(fs.readFileSync('site/assets/toc.js','utf8'),context);
+ assert.equal(details.open,true);assert.equal(tab.tabIndex,-1);assert.equal(observed,1);
+ tab.clientWidth=320;tab.scrollWidth=740;handlers.resize();assert.equal(tab.tabIndex,0);
+ tab.clientWidth=900;tab.scrollWidth=900;observeCallback();assert.equal(tab.tabIndex,-1);
+ media.matches=false;handlers.media();assert.equal(details.open,false);assert.equal(tab.tabIndex,-1);
 });
 test('v3 preview: 26 products, all status counts, sections, search and relative links', () => {
  const dir = fixture(); const result = run(dir);

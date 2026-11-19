@@ -22,6 +22,7 @@ async function load(all = false) {
 }
 function render() {
  results.replaceChildren();
+ results.hidden = true;
  const terms = normalize(query.value).trim().split(/\s+/).filter(Boolean);
  if (!terms.length) { status.textContent = '輸入關鍵字搜尋，預設載入最近 3 個月。'; return; }
  const categories = [...ui.querySelectorAll('[name=category]:checked')].map(el => el.value);
@@ -40,10 +41,11 @@ function render() {
   meta.textContent = `${item.date} · ${{cve:'CVE','taiwan-it':'台灣 IT',ai:'AI',product:'產品',knowledge:'新知識'}[item.category]} · ${item.products.join('、')}`;
   li.append(a,meta); results.append(li);
  }
+ results.hidden = results.childElementCount === 0;
  status.textContent = matches.length ? `找到 ${matches.length} 筆${matches.length > 50 ? `，還有 ${matches.length-50} 筆，請縮小條件` : ''}` : `沒有符合『${query.value}』的結果；請換關鍵字或取消類別篩選。`;
 }
 async function update(all = false) {
- try { await load(all); render(); } catch { status.textContent = '搜尋索引載入失敗，請重新整理'; }
+ try { await load(all); render(); } catch { results.replaceChildren(); results.hidden = true; status.textContent = '搜尋索引載入失敗，請重新整理'; }
 }
 query.addEventListener('focus', () => update(), { once:true });
 query.addEventListener('input', () => update());
