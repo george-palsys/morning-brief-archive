@@ -20,7 +20,7 @@
    npm run check:contrast
    ```
 
-   驗證預期：16 tests、16 pass、0 fail；CONTRAST OK: 44 CSS color pairs。測試中兩種故意製造的不一致會印 WARNING，該警告是測試證據。44 組不含 R4 待定的 border-strong／surface；該組淺色目前已知為 2.85:1，待 Iris 更正值確認後另補，不代表全站所有色彩組合通過。
+   驗證預期：16 tests、16 pass、0 fail；CONTRAST OK: 48 CSS color pairs。測試中兩種故意製造的不一致會印 WARNING，該警告是測試證據。對比包含兩種模式的 border-strong／bg、surface、surface-hover，低於 3:1 會停止；另逐項印出此六組實算值。不代表完整 WCAG 合規審查。
 
 3. 建置正式內容到尚不存在或空的輸出資料夾：
 
@@ -56,6 +56,7 @@ fixture 來源：george-palsys/morning-brief-archive 分支 preview-v2-2026-11-1
 - 原始 HTML 轉義，來源圖片只顯示替代文字；拒絕危險 URL 協定與根路徑。來源外部連結加 noopener noreferrer，不另開視窗。
 - 每頁 CSP meta 禁止 inline script/style；搜尋以 textContent 建立結果。搜尋索引按月拆分，聚焦後才載入最近三個月，另可搜尋全部。
 - 關於頁只呈現站台用途、來源、內容範圍與產生規則。
+- R4 依 Iris 更正規格，淺色 border-strong 改 #7d8690，對 bg／surface／surface-hover 分別為 3.69／3.47／3.17:1；深色 #8b949e 維持。實際值從 CSS 讀取並在對比檢查中驗證。
 
 ## CI 與部署（本 PR 不啟用）
 
@@ -74,7 +75,6 @@ PR 與 main push 都跑建置、資料測試、對比檢查並封裝 Pages artif
 - 手動三態主題切換、列印樣式為設計規格選配，未實作；目前跟隨系統深淺色。
 - 摘要卡片無宣告則數時以「小節」數顯示，未把結尾輔助清單猜成新聞數。新聞標題錨點以 item-N 編號，重排後不保證原分享網址仍指向同一則。
 - 404 已用本機 HTTP 測試模擬三種 base-path 與三種深度，確認錯誤網址回 404、其 CSS 與站內導覽回 200；真正 Pages 部署仍未驗證。
-- R4：淺色 border-strong／surface 的 2.85:1 仍待 Iris 更正規格數值；本次先維持原值，未宣告此項修正。
 
 ## 官方依據
 

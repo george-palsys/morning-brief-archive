@@ -1,6 +1,6 @@
 :root {
  color-scheme: light dark;
- --color-bg:#ffffff; --color-surface:#f6f8fa; --color-surface-hover:#eaeef2; --color-text:#1f2328; --color-text-muted:#59636e; --color-border:#d1d9e0; --color-border-strong:#8c959f; --color-link:#0550ae; --color-link-visited:#6639ba; --color-focus:#0969da; --color-skip-bg:#0550ae; --color-skip-text:#ffffff;
+ --color-bg:#ffffff; --color-surface:#f6f8fa; --color-surface-hover:#eaeef2; --color-text:#1f2328; --color-text-muted:#59636e; --color-border:#d1d9e0; --color-border-strong:#7d8690; --color-link:#0550ae; --color-link-visited:#6639ba; --color-focus:#0969da; --color-skip-bg:#0550ae; --color-skip-text:#ffffff;
  --status-updated-bg:#ddf4ff; --status-updated-fg:#0550ae; --status-updated-bd:#0969da;
  --status-none-bg:#dafbe1; --status-none-fg:#116329; --status-none-bd:#1a7f37;
  --status-unknown-bg:#fff8c5; --status-unknown-fg:#7d4e00; --status-unknown-bd:#9a6700;
