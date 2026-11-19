@@ -64,7 +64,13 @@ export function markdown(source, { section = '', summary = false } = {}) {
       }
     }
   }
-  md.renderer.rules.table_open = (t, i) => `${t[i].meta.cls === 'table-wide' ? '<p class="scroll-hint">可左右捲動</p>' : ''}<div class="table-scroll ${t[i].meta.cls}" role="region" aria-label="${esc(t[i].meta.caption)}" tabindex="0"><table role="table"><caption class="sr-only">${esc(t[i].meta.caption)}</caption>\n`;
+  md.renderer.rules.table_open = (t, i) => {
+    const { cls, caption } = t[i].meta;
+    const wrapper = cls === 'table-wide'
+      ? `<p class="scroll-hint">可左右捲動</p><div class="table-scroll table-wide" role="region" aria-label="${esc(caption)}" tabindex="0">`
+      : '<div class="table-stack">';
+    return `${wrapper}<table role="table"><caption class="sr-only">${esc(caption)}</caption>\n`;
+  };
   md.renderer.rules.table_close = () => '</table></div>\n';
   let html = md.renderer.render(tokens, md.options, {});
   // Explicit visual emphasis while preserving original wording.
