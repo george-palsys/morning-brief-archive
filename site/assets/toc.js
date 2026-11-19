@@ -11,3 +11,20 @@ if (typeof ResizeObserver === 'function') {
  const observer = new ResizeObserver(adaptTabs);
  document.querySelectorAll('.tabs-scroll').forEach(el => observer.observe(el));
 }
+
+const menu = document.querySelector?.('.site-menu');
+if (menu) {
+ const summary = menu.querySelector('summary');
+ document.addEventListener('click', event => {
+  if (menu.open && !menu.contains(event.target)) {
+   if (menu.contains(document.activeElement)) summary.focus();
+   menu.open = false;
+  }
+ });
+ document.addEventListener('keydown', event => {
+  if (!menu.open || event.key !== 'Escape') return;
+  event.preventDefault();
+  menu.open = false;
+  summary.focus();
+ });
+}

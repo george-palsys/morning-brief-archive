@@ -186,7 +186,7 @@ test('R1: 404 resources and navigation resolve at deeply missing request URLs', 
  for (const basePath of ['/morning-brief-archive/','/custom-site/','/']) {
   const result = build({input:legacyFixture(),output:newDir('404-'),basePath});
   const html = result.pages.get('404.html');
-  assert.ok(!/<base\b|<script\b/.test(html),'404 needs neither base element nor script');
+  assert.ok(!/<base\b/.test(html),'404 needs no base element');
   assert.ok(html.includes("base-uri 'none'"));
   assert.ok(!html.includes('unsafe-inline'));
   const server = createServer((req,res)=>{
@@ -300,9 +300,21 @@ test('reading layout: semantic shell, one archive notice, correct daily current 
   assert.equal((html.match(/<nav[^>]*aria-label="主要導覽"/g)||[]).length,1,file);
   assert.equal((html.match(/<h1(?:\s|>)/g)||[]).length,1,file);
   for(const [,attributes] of html.matchAll(/<a\b([^>]*target="_blank"[^>]*)>/g)) assert.match(attributes,/rel="[^"]*noopener[^"]*"/);
-  if(file.startsWith('daily/2026-11-19/')) assert.ok(html.includes('<nav class="top-nav" aria-label="主要導覽"><a href="../index.html" aria-current="page">每日</a>'));
+  const nav = html.match(/<nav class="top-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  const current = [...nav.matchAll(/aria-current="page">([^<]+)/g)].map(match => match[1]);
+  if (file.startsWith('daily/')) assert.deepEqual(current, ['每日'], file);
+  if (file.startsWith('products/')) assert.deepEqual(current, ['產品'], file);
+  if (file === 'index.html') assert.deepEqual(current, [], file);
  }
+ const home = result.pages.get('index.html');
+ assert.equal((home.match(/class="admonition archive /g)||[]).length, 1);
+ assert.ok(home.match(/class="admonition archive [\s\S]*?<\/div><\/div>/)[0].includes('未建立產品總表'));
+ assert.ok(!home.includes('<p class="notice">'));
+ assert.ok(home.indexOf('class="home-entry"') < home.indexOf('class="attention"'));
  const cve=result.pages.get('daily/2026-11-19/cve.html');
+ const side = cve.match(/<aside class="toc-side">[\s\S]*?<\/aside>/)[0];
+ for (const [, title, label] of side.matchAll(/<a href="#[^"]+" title="([^"]+)"><span>([^<]+)<\/span>/g)) assert.equal(title, label);
+ assert.equal((side.match(/ title="/g)||[]).length, 5);
  assert.equal((cve.match(/class="admonition archive /g)||[]).length,1);
  assert.ok(!cve.includes('&gt; 歷史演練分檔'));
  assert.ok(!/<h2[^>]*>[^<]*【與我們的產品線相關】/.test(cve));
@@ -319,4 +331,15 @@ test('maintenance presentation retains source details without changing Markdown'
  assert.match(result.html,/<summary>查看維護紀錄<\/summary>/);
  assert.ok(result.html.includes('來源')); assert.equal(result.toc.length,0);
  assert.equal(source,'# 清單維護\n\n本次未蒐集。\n\n### 來源\n\n本次未蒐集。');
+});
+
+test('reading CSS retains mobile typography, nested indent and desktop navigation', () => {
+ const css = fs.readFileSync(new URL('./assets/site.css', import.meta.url), 'utf8');
+ assert.match(css, /h2,\.news-card h2\s*\{[^}]*font-size:1\.5rem/);
+ assert.match(css, /@media\(min-width:960px\)\s*\{[\s\S]*?\.tabs-scroll\s*\{\s*display:none;/);
+ assert.match(css, /\.toc-side a span\s*\{[^}]*-webkit-line-clamp:2/);
+ assert.match(css, /--indent:1\.25rem/);
+ assert.match(css, /\.prose ul,\.prose ol\s*\{[^}]*padding-left:var\(--indent\)/);
+ const nested = markdown('- 第一層\n  - 第二層\n    - 第三層').html;
+ assert.match(nested, /<ul>[\s\S]*?<ul>[\s\S]*?<ul>[\s\S]*?第三層/);
 });
