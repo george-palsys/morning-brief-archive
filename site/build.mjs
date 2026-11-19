@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 export const slugs = 'websphere-application-server websphere-liberty mq instana turbonomic black-duck-sca coverity seeker srm neuvector appscan jboss-eap cicd concert gcm qse vault bob openshift 3scale jbcs-httpd rancher-rke2 nkp confluent-platform palsys-one cmc'.split(' ');
 const sections = [['index', '摘要'], ['products', '產品動態'], ['knowledge', '新知識'], ['cve', 'CVE'], ['taiwan', '台灣 IT'], ['ai', 'AI'], ['maintenance', '清單維護']];
 const states = { '有更新': 'updated', '無更新': 'none', '無法確認': 'unknown', '無公開來源': 'nosource' };
+// Reviewed historical imports only. Other rehearsal/preview inputs stay blocked.
+const publishedRehearsals = JSON.parse(fs.readFileSync(new URL('./published-rehearsals.json', import.meta.url), 'utf8'));
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const plain = s => String(s).replace(/<[^>]*>/g, '').replace(/[*`]/g, '');
 export function url(s) {
@@ -113,11 +115,13 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       if (meta.date !== name || meta.spec_version !== 3 || meta.products_checked !== 26 || !Number.isFinite(Date.parse(meta.collected_at))) throw Error(`${base}/meta.yaml 日期、版本或檢查數無效`);
       for (const key of ['cve_ids', 'products', 'tags', 'products_updated', 'products_unconfirmed', 'cicd_tools_updated']) if (!Array.isArray(meta[key]) || meta[key].some(x => typeof x !== 'string')) throw Error(`${base}/meta.yaml ${key} 必須是字串陣列`);
       for (const key of ['title', 'date', 'weekday', 'type', 'collected_at']) if (typeof meta[key] !== 'string' || !meta[key].trim()) throw Error(`${base}/meta.yaml ${key} 必須是非空字串`);
-      if (/rehearsal|preview/i.test(meta.type) && !allowRehearsal) throw Error(`${base} 是演練資料，正式建置禁止發布`);
-      days.push({ date: name, meta, base, href: `${base}/index.html`, legacy: false });
+      const publishedRehearsal = publishedRehearsals.some(record => ['date', 'type', 'title', 'collected_at'].every(key => record[key] === meta[key]));
+      if (/rehearsal|preview/i.test(meta.type) && !allowRehearsal && !publishedRehearsal) throw Error(`${base} 是演練資料，正式建置禁止發布`);
+      days.push({ date: name, meta, base, href: `${base}/index.html`, legacy: false, publishedRehearsal });
     } else if (/^\d{4}-\d{2}-\d{2}\.md$/.test(name)) days.push({ date: name.slice(0, -3), meta: front(read(`daily/${name}`)), base: `daily/${name}`, href: `daily/${name.slice(0, -3)}.html`, legacy: true });
   }
   days.sort((a, b) => b.date.localeCompare(a.date) || Number(a.legacy) - Number(b.legacy));
+  const calendarDays = days.filter((day, index) => days.findIndex(other => other.date === day.date) === index);
   const latest = days[0]; const v3 = days.find(d => !d.legacy);
   let rows = [];
   if (exists('products')) {
@@ -137,7 +141,8 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       const a = rows.filter(r => r.state === state).map(r => r.name).sort(); const b = [...v3.meta[field]].sort();
       if (JSON.stringify(a) !== JSON.stringify(b)) warn(`${field} 與產品總表不一致，請看原始檔`);
     }
-  } else if (v3) throw Error('有 v3 晨報但缺 products/');
+  } else if (days.some(day => !day.legacy && !day.publishedRehearsal)) throw Error('有 v3 晨報但缺 products/');
+  else if (v3) warn('歷史演練分檔未附 26 項產品來源快照，產品總表未建立；不能視為目前產品現況。');
   const pages = new Map();
   // A Pages 404 is served at the failed request URL, not necessarily /404.html.
   const sitePath = (from, to) => from === '404.html' ? `${basePath}${to}` : relative(from, to);
@@ -153,9 +158,15 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     return `<div class="reading-layout"><details class="page-toc"><summary>本頁 ${rendered.toc.length} 則</summary><nav aria-label="本頁目錄"><ul>${rendered.toc.map(t => `<li><a href="#${t.id}">${esc(t.title)}</a></li>`).join('')}</ul></nav></details><div class="prose">${rendered.html}</div></div>`;
   }
   function timeline(day, part, file) {
-    const i = days.indexOf(day); const adjacent = [days[i + 1], days[i - 1]];
+    const i = calendarDays.findIndex(other => other.date === day.date); const adjacent = [calendarDays[i + 1], calendarDays[i - 1]];
     if (!adjacent.some(Boolean)) return '';
     return `<nav class="adjacent" aria-label="相鄰日期">${adjacent.map((d, j) => d ? link(file, d.legacy ? d.href : `${d.base}/${part}.html`, `${j ? '' : '← '}${d.date}${j ? ' →' : ''}`) : '').join('')}</nav>`;
+  }
+  const collectionTime = day => Number.isFinite(Date.parse(day.meta.collected_at)) ? new Intl.DateTimeFormat('zh-TW', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(day.meta.collected_at)) : '';
+  const archiveNotice = day => day?.publishedRehearsal ? `<p role="note" class="notice">歷史演練歸檔：${esc(day.date)} ${esc(collectionTime(day))} 蒐集（台灣時間），未重新蒐集或查證。</p>` : '';
+  function alternateEdition(day, file) {
+    const other = days.find(candidate => candidate.date === day.date && candidate.legacy !== day.legacy);
+    return other ? `<p>${link(file, other.href, `同日${other.legacy ? '舊版單檔' : other.publishedRehearsal ? '演練分檔' : '新版摘要'}${collectionTime(other) ? `（${collectionTime(other)} 蒐集）` : ''}`)}</p>` : '';
   }
   for (const d of days) {
     const parts = d.legacy ? [['index', '舊版格式']] : sections;
@@ -165,15 +176,16 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       const title = `${d.date} ${label}`;
       const tabs = d.legacy ? '<p role="note" class="notice">這一天是舊版單檔格式：只有 CVE、台灣 IT、AI 三段，沒有產品動態與新知識。</p>' : `<div class="tabs-scroll" role="region" aria-label="段落導覽" tabindex="-1"><nav class="section-tabs" aria-label="本日段落">${sections.map(([key, name]) => link(file, `${d.base}/${key}.html`, name, part === key)).join('')}${link(file, 'products/index.html', '26 項產品現況')}</nav></div>`;
       const rendered = markdown(read(source), { section: !d.legacy && part !== 'index' ? part : '', summary: !d.legacy && part === 'index' });
-      page(file, title, `${crumbs(file, 'daily', d.date)}<h1>${d.legacy && d.meta.title ? esc(d.meta.title) : `晨報 ${esc(d.date)}（${esc(d.meta.weekday || '')}）｜${label}`}</h1>${timeline(d, part, file)}${tabs}${tocBody(rendered)}${timeline(d, part, file)}${!d.legacy && part !== 'index' ? link(file, d.href, '回到今日摘要') : ''}`, 'daily', source);
+      page(file, title, `${crumbs(file, 'daily', d.date)}<h1>${d.legacy && d.meta.title ? esc(d.meta.title) : `晨報 ${esc(d.date)}（${esc(d.meta.weekday || '')}）｜${label}`}</h1>${archiveNotice(d)}${alternateEdition(d, file)}${timeline(d, part, file)}${tabs}${tocBody(rendered)}${timeline(d, part, file)}${!d.legacy && part !== 'index' ? link(file, d.href, '回到今日摘要') : ''}`, 'daily', source);
     }
   }
-  const empty = '<p class="notice">產品現況會在第一份新版晨報（預計 2026-11-20）產出後出現</p>';
+  const empty = v3?.publishedRehearsal && !exists('products') ? '<p class="notice">本次是歷史演練分檔，未建立產品總表或產品頁來源快照；產品版本與各來源狀態本次未蒐集。</p>' : '<p class="notice">產品現況會在第一份新版晨報（預計 2026-11-20）產出後出現</p>';
   function tiles(file) {
     return `<div class="product-grid">${rows.map(r => `<a class="product-tile ${states[r.state]}" href="${relative(file, `products/${r.slug}.html`)}" aria-label="${esc(`${r.name}，狀態：${r.state}，最新版本 ${r.version}`)}"><small>#${r.id}</small><strong>${esc(r.name)}</strong><span class="muted">${esc(r.vendor)}</span>${badge(r.state)}${r.reason ? `<span>${esc(r.reason)}</span>` : ''}<span class="version">${esc(r.version)}</span></a>`).join('')}</div>`;
   }
   const counts = Object.keys(states).map(state => `${badge(state)} ${rows.filter(r => r.state === state).length}`).join(' ');
-  const warningHtml = () => warnings.length ? `<p role="alert" class="notice">資料不一致，請看原始檔：${warnings.map(esc).join('；')}</p>` : '';
+  const pageWarnings = warnings.filter(message => !message.startsWith('歷史演練分檔未附 26 項產品來源快照，'));
+  const warningHtml = () => pageWarnings.length ? `<p role="alert" class="notice">資料不一致，請看原始檔：${pageWarnings.map(esc).join('；')}</p>` : '';
   for (const [i, product] of catalog.entries()) {
     const slug = slugs[i]; const file = `products/${slug}.html`; const source = `products/${slug}.md`;
     const r = rows.find(r => r.id === product.id);
@@ -182,8 +194,8 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   }
   const table = rows.length ? `<div class="product-table table-scroll" role="region" aria-label="26 項產品現況" tabindex="0"><table><caption>26 項產品現況</caption><thead><tr>${['#', '產品', '原廠', '當天狀態', '目前最新版本', '最後檢查'].map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr><td>${r.id}</td><th scope="row">${link('products/index.html', `products/${r.slug}.html`, r.name)}</th><td>${esc(r.vendor)}</td><td>${badge(r.state)} ${esc(r.reason)}</td><td class="version">${esc(r.version)}</td><td>${esc(r.checked)}</td></tr>`).join('')}</tbody></table></div>` : '';
   page('products/index.html', '26 項產品現況', `<h1>26 項產品現況</h1>${warningHtml()}${rows.length ? `<p class="counts">${counts}</p><div class="mobile-products">${tiles('products/index.html')}</div>${table}` : empty}`, 'products', exists('products/README.md') ? 'products/README.md' : 'products.yaml');
-  const dayList = (file, list) => `<ul class="day-list">${list.map(d => `<li>${link(file, d.href, `${d.date} ${d.meta.weekday || ''}`)} ${d.legacy ? '<span class="type-tag">舊版</span>' : `<span>有更新 ${d.meta.products_updated.length} 項產品</span>`}</li>`).join('')}</ul>`;
-  page('daily/index.html', '每日清單', `<h1>每日清單</h1>${dayList('daily/index.html', days)}`, 'daily');
+  const dayList = (file, list) => `<ul class="day-list">${list.map(d => `<li>${link(file, d.href, `${d.date} ${d.meta.weekday || ''}${d.publishedRehearsal ? `｜${collectionTime(d)} 演練分檔` : ''}`)} ${d.legacy ? '<span class="type-tag">舊版</span>' : `<span>${d.publishedRehearsal ? '原演練記錄：' : ''}有更新 ${d.meta.products_updated.length} 項產品</span>`}${alternateEdition(d, file)}</li>`).join('')}</ul>`;
+  page('daily/index.html', '每日清單', `<h1>每日清單</h1>${dayList('daily/index.html', calendarDays)}`, 'daily');
   let attention = ''; let summaryCards = '';
   if (latest) {
     const text = read(latest.legacy ? latest.base : `${latest.base}/README.md`);
@@ -200,7 +212,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   }
   let collected = '';
   if (latest?.meta.collected_at && Number.isFinite(Date.parse(latest.meta.collected_at))) collected = `<p class="muted">最後更新：${esc(new Intl.DateTimeFormat('zh-TW', { timeZone: 'Asia/Taipei', dateStyle: 'long', timeStyle: 'short', hour12: false }).format(new Date(latest.meta.collected_at)))}（台灣時間）</p>`;
-  page('index.html', '首頁', `<h1>晨報歸檔</h1><p>產品動態、技術新知與每日重大事件。</p>${collected}${warningHtml()}${attention}<section><h2>26 項產品現況</h2>${rows.length ? `<p class="counts">${counts}</p>${tiles('index.html')}` : empty}</section><section><h2>最新一天摘要</h2>${summaryCards || '<p>目前沒有晨報資料。</p>'}</section><section><h2>近 7 天</h2>${dayList('index.html', days.slice(0, 7))}</section>`);
+  page('index.html', '首頁', `<h1>晨報歸檔</h1><p>產品動態、技術新知與每日重大事件。</p>${collected}${archiveNotice(latest)}${warningHtml()}${attention}<section><h2>26 項產品現況</h2>${rows.length ? `<p class="counts">${counts}</p>${tiles('index.html')}` : empty}</section><section><h2>最新一天摘要</h2>${summaryCards || '<p>目前沒有晨報資料。</p>'}</section><section><h2>近 7 天</h2>${dayList('index.html', calendarDays.slice(0, 7))}</section>`);
   page('about.html', '關於與產生規則', `<h1>關於晨報歸檔</h1><p>內容為彙整，以原廠頁面為準。</p><p><a href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer">晨報產生規則 SPEC.md</a></p><div class="prose">${markdown(read('README.md')).html.replace(/href="(SPEC|products)\.html"/g, (_, name) => name === 'SPEC' ? 'href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer"' : 'href="products/index.html"')}</div>`, 'about', 'README.md');
   page('404.html', '找不到頁面', `<h1>找不到頁面</h1><p>這個網址可能已變更。</p>${link('404.html', 'index.html', '回到首頁')}`);
   page('search/index.html', '搜尋晨報', `<h1>搜尋晨報</h1><noscript><p>搜尋需要 JavaScript，你也可以直接用瀏覽器的頁內搜尋或 <a href="https://github.com/george-palsys/morning-brief-archive/search" rel="noopener noreferrer">GitHub 倉庫搜尋</a>。</p></noscript><div id="search-ui" hidden><label for="query">搜尋晨報</label><input id="query" type="search" autocomplete="off" enterkeyhint="search"><fieldset><legend>類別</legend>${[['cve', 'CVE'], ['taiwan-it', '台灣 IT'], ['ai', 'AI'], ['product', '產品'], ['knowledge', '新知識']].map(([k, v]) => `<label><input type="checkbox" name="category" value="${k}" checked>${v}</label>`).join('')}</fieldset><label for="range">時間範圍</label><select id="range"><option value="all">全部</option><option value="30">近 30 天</option></select><button id="all" type="button">搜尋全部（較慢）</button><p id="search-status" aria-live="polite">輸入關鍵字搜尋，預設載入最近 3 個月。</p><ol id="results" hidden></ol></div>`, 'search');

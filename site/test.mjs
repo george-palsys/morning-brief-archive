@@ -4,11 +4,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { build, markdown, url, slugs } from './build.mjs';
-import { parse } from 'yaml';
+import { parse, stringify } from 'yaml';
 
 const root = path.resolve('.');
 const work = path.join(root, '.site-test'); fs.mkdirSync(work, { recursive:true });
 const newDir = prefix => fs.mkdtempSync(path.join(work, prefix));
+function legacyFixture() {
+ const dir=newDir('legacy-');
+ for (const name of ['products.yaml','README.md','items.jsonl']) fs.copyFileSync(name,path.join(dir,name));
+ fs.mkdirSync(path.join(dir,'daily'),{recursive:true});
+ fs.copyFileSync('daily/2026-11-19.md',path.join(dir,'daily/2026-11-19.md'));
+ return dir;
+}
+function importedFixture() {
+ const dir=legacyFixture();fs.cpSync('daily/2026-11-19',path.join(dir,'daily/2026-11-19'),{recursive:true});return dir;
+}
 function fixture() {
  const dir = newDir('input-');
  for (const name of ['products.yaml','README.md','items.jsonl']) fs.copyFileSync(name,path.join(dir,name));
@@ -49,7 +59,7 @@ function validatePages(result) {
  }
 }
 test('production: legacy banner, no-data state, 26 product pages and valid relative links', () => {
- const result = build({input:root,output:newDir('production-')});
+ const result = build({input:legacyFixture(),output:newDir('production-')});
  assert.equal(result.pages.size,33);
  assert.ok(result.pages.get('daily/2026-11-19.html').includes('舊版單檔格式'));
  assert.ok(result.pages.get('index.html').includes('第一份新版晨報'));
@@ -172,7 +182,7 @@ test('workflow has SHA pins, read-only build, isolated gated deployment, no priv
 test('R1: 404 resources and navigation resolve at deeply missing request URLs', async () => {
  const { createServer } = await import('node:http');
  for (const basePath of ['/morning-brief-archive/','/custom-site/','/']) {
-  const result = build({input:root,output:newDir('404-'),basePath});
+  const result = build({input:legacyFixture(),output:newDir('404-'),basePath});
   const html = result.pages.get('404.html');
   assert.ok(!/<base\b|<script\b/.test(html),'404 needs neither base element nor script');
   assert.ok(html.includes("base-uri 'none'"));
@@ -237,4 +247,45 @@ test('R8: breadcrumbs and footer links have minimum touch height',()=>{
  const css=fs.readFileSync('site/assets/site.css','utf8');
  assert.match(css,/\.breadcrumbs a,footer a\s*\{[^}]*display:inline-flex[^}]*align-items:center[^}]*min-height:var\(--tap-min\)/);
  assert.match(css,/\.breadcrumbs li\s*\{[^}]*display:flex[^}]*align-items:center[^}]*min-height:var\(--tap-min\)/,'N1: current breadcrumb uses same alignment and height');
+});
+test('published historical import: 26 stories, explicit collection time, same-date primary and legacy links',()=>{
+ const dir=importedFixture();const result=build({input:dir,output:newDir('import-')});
+ assert.equal(result.pages.size,40);assert.equal(result.warnings.length,1);
+ assert.ok(!result.pages.get('index.html').includes('資料不一致，請看原始檔'));
+ assert.ok(result.pages.get('index.html').includes('未建立產品總表'));
+ assert.ok(!result.pages.get('products/index.html').includes('資料不一致，請看原始檔'));
+ const list=result.pages.get('daily/index.html');
+ assert.equal((list.match(/href="2026-11-19\/index.html"/g)||[]).length,1);
+ assert.equal((list.match(/href="2026-11-19.html"/g)||[]).length,1);
+ const current=result.pages.get('daily/2026-11-19/index.html'),legacy=result.pages.get('daily/2026-11-19.html');
+ assert.ok(current.includes('歷史演練歸檔：2026-11-19 13:19'));
+ assert.ok(current.includes('同日舊版單檔（02:25 蒐集）'));
+ assert.ok(legacy.includes('同日演練分檔（13:19 蒐集）'));
+ assert.ok(!current.includes('aria-label="相鄰日期"'));assert.ok(!legacy.includes('aria-label="相鄰日期"'));
+ let total=0;
+ for (const [part,count] of [['products',6],['knowledge',6],['cve',5],['taiwan',5],['ai',4]]) {
+  const source=fs.readFileSync(`daily/2026-11-19/${part}.md`,'utf8');
+  const headings=source.match(/^### /gm)||[];assert.equal(headings.length,count);total+=headings.length;
+  assert.ok(result.pages.get(`daily/2026-11-19/${part}.html`).includes('13:19'));
+ }
+ assert.equal(total,26);
+ assert.ok(result.pages.get('products/index.html').includes('未建立產品總表'));
+ validatePages(result);
+});
+test('published rehearsal exception is exact; ordinary missing product snapshots still fail',()=>{
+ const dir=importedFixture();const file=path.join(dir,'daily/2026-11-19/meta.yaml');const meta=parse(fs.readFileSync(file,'utf8'));
+ meta.collected_at='2026-11-19T13:20:00+08:00';fs.writeFileSync(file,stringify(meta));
+ assert.throws(()=>build({input:dir,output:newDir('unapproved-')}),/演練資料/);
+ meta.type='morning-brief';fs.writeFileSync(file,stringify(meta));
+ assert.throws(()=>build({input:dir,output:newDir('missing-products-')}),/缺 products/);
+});
+test('next-day timeline uses calendar days and matching section, never a same-date previous day',()=>{
+ const dir=fixture();const next=path.join(dir,'daily/2026-11-20');fs.cpSync(path.join(dir,'daily/2026-11-19'),next,{recursive:true});
+ const file=path.join(next,'meta.yaml');const meta=parse(fs.readFileSync(file,'utf8'));Object.assign(meta,{date:'2026-11-20',weekday:'星期五',type:'morning-brief',collected_at:'2026-11-20T02:00:00+08:00'});fs.writeFileSync(file,stringify(meta));
+ const result=run(dir);
+ const current=result.pages.get('daily/2026-11-20/products.html');
+ assert.ok(current.includes('href="../2026-11-19/products.html">← 2026-11-19'));
+ assert.ok(!result.pages.get('daily/2026-11-19/products.html').includes('>← 2026-11-19'));
+ assert.ok(result.pages.get('daily/2026-11-19.html').includes('href="2026-11-20/index.html">2026-11-20 →'));
+ validatePages(result);
 });
