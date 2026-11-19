@@ -39,7 +39,12 @@ function render() {
   a.href = '../' + item.file; a.textContent = item.title;
   const meta = document.createElement('p');
   meta.textContent = `${item.date} · ${{cve:'CVE','taiwan-it':'台灣 IT',ai:'AI',product:'產品',knowledge:'新知識'}[item.category]} · ${item.products.join('、')}`;
-  li.append(a,meta); results.append(li);
+  li.append(a,meta);
+  if (item.summary) {
+   const excerpt = document.createElement('p');
+   excerpt.className = 'search-excerpt'; excerpt.textContent = item.summary; li.append(excerpt);
+  }
+  results.append(li);
  }
  results.hidden = results.childElementCount === 0;
  status.textContent = matches.length ? `找到 ${matches.length} 筆${matches.length > 50 ? `，還有 ${matches.length-50} 筆，請縮小條件` : ''}` : `沒有符合『${query.value}』的結果；請換關鍵字或取消類別篩選。`;

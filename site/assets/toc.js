@@ -1,5 +1,5 @@
 // Native details remains useful without JavaScript. Desktop expands the same DOM.
-const wide = matchMedia('(min-width:840px)');
+const wide = matchMedia('(min-width:1280px)');
 function adaptTabs() {
  document.querySelectorAll('.tabs-scroll').forEach(el => { el.tabIndex = el.scrollWidth > el.clientWidth ? 0 : -1; });
 }
