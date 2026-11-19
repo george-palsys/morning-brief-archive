@@ -1,4 +1,767 @@
 {
   "version": 1,
-  "sources": {}
+  "sources": {
+    "https://www.ibm.com/support/pages/node/715559": {
+      "product_id": 1,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "9.0.5.29",
+      "last_seen_date": "2026-09-08",
+      "result": "ok"
+    },
+    "https://www.ibm.com/support/pages/node/611243": {
+      "product_id": 1,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "8.5.5.31",
+      "last_seen_date": "2026-09-08",
+      "result": "ok"
+    },
+    "https://www.ibm.com/support/pages/node/715553": {
+      "product_id": 1,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "頁面 Modified 2026-11-03（Liberty 26.0.0.12 預定 2026-12-01）",
+      "last_seen_date": "2026-11-03",
+      "result": "ok"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM WebSphere Application Server": {
+      "product_id": 1,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7295357",
+      "last_seen_date": "2026-11-13",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://www.ibm.com/support/pages/node/715557": {
+      "product_id": 2,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "26.0.0.11",
+      "last_seen_date": "2026-11-03",
+      "result": "ok"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM WebSphere Application Server Liberty": {
+      "product_id": 2,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7286642",
+      "last_seen_date": "2026-11-06",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://www.ibm.com/docs/en/ibm-mq/10.0.x?topic=mq-whats-new-changed-in-1000": {
+      "product_id": 3,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "頁面 Last Updated 2026-06-16",
+      "last_seen_date": "2026-06-16",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://www.ibm.com/docs/en/ibm-mq/10.0.x?topic=am-whats-new-changed-in-mq-100x-continuous-delivery": {
+      "product_id": 3,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "MQ 10.0.1",
+      "last_seen_date": "2026-10-22",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://www.ibm.com/docs/SSFKSJ_9.4.0/overview/mq_newchgd_cd.html": {
+      "product_id": 3,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "MQ 9.4.5",
+      "last_seen_date": "2026-05-07",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取；轉址到 /docs/en/ibm-mq/9.4.x"
+    },
+    "https://www.ibm.com/docs/SSFKSJ_9.4.0/overview/mq_newchgd_initial.html": {
+      "product_id": 3,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "頁面 Last Updated 2026-05-07",
+      "last_seen_date": "2026-05-07",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取；轉址到 /docs/en/ibm-mq/9.4.x"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM MQ": {
+      "product_id": 3,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7294504",
+      "last_seen_date": "2026-10-30",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://www.ibm.com/docs/en/instana-observability/saas?topic=notes-whats-new": {
+      "product_id": 4,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "1.0.329",
+      "last_seen_date": "2026-11-02",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://www.ibm.com/docs/en/instana-observability/saas?topic=release-notes": {
+      "product_id": 4,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Self-Hosted Standard Edition 1.15.1 / Custom Edition 1.12.1 / Classic 329",
+      "last_seen_date": "2026-11-11",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取；日期為頁面 Last Updated"
+    },
+    "https://www.ibm.com/docs/en/instana-observability/saas?topic=notes-security-compliance": {
+      "product_id": 4,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "頁面 Last Updated 2026-08-27",
+      "last_seen_date": "2026-08-27",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://www.ibm.com/docs/en/instana-observability/saas?topic=notes-deprecated-removed-features": {
+      "product_id": 4,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "頁面 Last Updated 2026-11-05",
+      "last_seen_date": "2026-11-05",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM Instana Observability": {
+      "product_id": 4,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7296273",
+      "last_seen_date": "2026-11-11",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://community.ibm.com/community/user/aiops/viewdocument/turbonomic-latest-releases-downlo": {
+      "product_id": 5,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "8.21.5",
+      "last_seen_date": "2026-11-12",
+      "result": "ok",
+      "note": "頁面寫 Released November 12, 2026，但 Last Updated 是 November 11, 2026，兩者矛盾；轉址到 /community/user/viewdocument/turbonomic-latest-releases-downlo"
+    },
+    "https://www.ibm.com/docs/en/tarm/8.16.x?topic=notes-whats-new": {
+      "product_id": 5,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "8.21.5",
+      "last_seen_date": "2026-11-11",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取；8.16.x 轉到 8.21.5；日期為頁面 Last Updated"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#Turbonomic SaaS": {
+      "product_id": 5,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7293164",
+      "last_seen_date": "2026-10-20",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://docs.blackduck.com/": {
+      "product_id": 6,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Black Duck SCA 2026.7.2；Seeker 2026.5.1；Coverity 2026.9.0；SRM 找不到 release notes 章節",
+      "last_seen_date": null,
+      "result": "ok",
+      "product_ids": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "note": "直接抓取只有空殼，改用瀏覽器與文件站目錄資料讀取；各產品 release notes 路徑見晨報清單維護"
+    },
+    "https://docs.blackduck.com/r/polaris/black-duck-polaris-platform/polaris-release-notes.html": {
+      "product_id": 7,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "November 2026",
+      "last_seen_date": "2026-11-18",
+      "result": "ok",
+      "note": "日期為文件最後更新日"
+    },
+    "https://news.blackduck.com/": {
+      "product_id": 7,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "最新一則 Nov 17, 2026",
+      "last_seen_date": "2026-11-17",
+      "result": "ok",
+      "product_ids": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "https://www.blackduck.com/blog/coverity-connect-cve-2026-1496-security-advisory.html": {
+      "product_id": 7,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Coverity Connect CVE-2026-1496 security advisory",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "單篇公告，不是清單頁"
+    },
+    "https://www.blackduck.com/company/legal/security-commitments.html": {
+      "product_id": 6,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "product_ids": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "note": "政策頁，沒有公告清單"
+    },
+    "https://documentation.suse.com/cloudnative/security/latest/en/5x.html": {
+      "product_id": 10,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "5.6.4",
+      "last_seen_date": "2026-10",
+      "result": "ok",
+      "note": "頁面只寫 October 2026；選單有 5.7 (Unreleased)"
+    },
+    "https://github.com/neuvector/neuvector/security/advisories": {
+      "product_id": 10,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "GHSA-vr77-8vmq-qfmj",
+      "last_seen_date": "2026-09-16",
+      "result": "ok"
+    },
+    "https://lists.suse.com/mailman/listinfo/neuvector-updates": {
+      "product_id": 10,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "郵件清單訂閱頁，沒有可比對的最新一筆"
+    },
+    "https://help.hcl-software.com/appscan/Standard/10.12.0/r_WhatsNew001.html": {
+      "product_id": 11,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "10.12.1",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "頁面無日期"
+    },
+    "https://help.hcl-software.com/appscan/Enterprise/10.12.0/topics/r_whats_new.html": {
+      "product_id": 11,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "10.12.1",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "頁面無日期"
+    },
+    "https://help.hcl-software.com/appscan/360/2.2.0/360_whats_new.html": {
+      "product_id": 11,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.2.0",
+      "last_seen_date": null,
+      "result": "ok",
+      "product_ids": [
+        11,
+        25
+      ],
+      "note": "頁面無日期"
+    },
+    "https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.1": {
+      "product_id": 12,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "8.1（選單有 8.2-Beta）",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.1/html-single/release_notes_for_red_hat_jboss_enterprise_application_platform_8.1/index": {
+      "product_id": 12,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "8.1 Update 9.1",
+      "last_seen_date": "2026-11-11",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取；Update 內容文章 articles/7149700 需訂閱，未讀"
+    },
+    "https://access.redhat.com/articles/6961381": {
+      "product_id": 12,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "頁面 Updated 2026-09-23",
+      "last_seen_date": "2026-09-23",
+      "result": "ok",
+      "note": "轉址到 /kb/6961381"
+    },
+    "https://www.jenkins.io/changelog-stable/": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.580.2",
+      "last_seen_date": "2026-10-28",
+      "result": "ok"
+    },
+    "https://www.jenkins.io/security/advisories/": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Jenkins Security Advisory 2026-10-28",
+      "last_seen_date": "2026-10-28",
+      "result": "ok"
+    },
+    "https://about.gitlab.com/releases/categories/releases/": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "19.5.6 / 19.4.8 / 19.3.9",
+      "last_seen_date": "2026-11-16",
+      "result": "ok",
+      "note": "轉址到 https://docs.gitlab.com/releases/"
+    },
+    "https://github.blog/changelog/": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "最新一筆 2026-11-18；Actions 相關最新 2026-11-12",
+      "last_seen_date": "2026-11-18",
+      "result": "ok"
+    },
+    "https://github.com/actions/runner/releases": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v2.338.2",
+      "last_seen_date": "2026-10-26",
+      "result": "ok"
+    },
+    "https://learn.microsoft.com/en-us/azure/devops/server/release-notes/": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Azure DevOps Server Patch 9",
+      "last_seen_date": "2026-10-13",
+      "result": "ok",
+      "note": "此網址轉到 2020 版頁面；marker 取自 azuredevopsserver?view=azure-devops"
+    },
+    "https://github.com/tektoncd/pipeline/releases": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v1.18.0",
+      "last_seen_date": "2026-10-29",
+      "result": "ok"
+    },
+    "https://github.com/tektoncd/pipeline/security/advisories": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "最新一筆 2026-04-21",
+      "last_seen_date": "2026-04-21",
+      "result": "ok"
+    },
+    "https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "1.24",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://github.com/argoproj/argo-cd/releases": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v3.6.2 / v3.5.8 / v3.4.14",
+      "last_seen_date": "2026-11-18",
+      "result": "ok"
+    },
+    "https://github.com/argoproj/argo-cd/security/advisories": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "最新一筆 2026-10-07",
+      "last_seen_date": "2026-10-07",
+      "result": "ok"
+    },
+    "https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "1.22",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://github.com/fluxcd/flux2/releases": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v2.10.0",
+      "last_seen_date": "2026-10-26",
+      "result": "ok"
+    },
+    "https://github.com/fluxcd/flux2/security/advisories": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "頁面開得到，最新一筆沒有記下"
+    },
+    "https://github.com/goharbor/harbor/releases": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v2.15.5（另有 v2.16.0，2026-11-10）",
+      "last_seen_date": "2026-11-12",
+      "result": "ok"
+    },
+    "https://github.com/goharbor/harbor/security/advisories": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "頁面開得到，最新一筆沒有記下"
+    },
+    "https://help.sonatype.com/en/release-notes.html": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "3.98.2",
+      "last_seen_date": null,
+      "result": "ok"
+    },
+    "https://jfrog.com/help/r/jfrog-release-information/artifactory-release-notes": {
+      "product_id": 13,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Self-managed 7.173.21 / SaaS 7.178.1",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "轉址到 https://docs.jfrog.com/releases/docs/artifactory-release-notes"
+    },
+    "https://www.ibm.com/docs/en/concert/3.0.x?topic=notes-whats-new": {
+      "product_id": 14,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "3.0.1.1",
+      "last_seen_date": "2026-08-25",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取；選單有 3.1.x"
+    },
+    "https://www.ibm.com/docs/en/concert/3.0.x?topic=release-notes": {
+      "product_id": 14,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "3.0.1.1",
+      "last_seen_date": "2026-08-25",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://www.ibm.com/docs/en/concert/3.1.x?topic=notes-whats-new": {
+      "product_id": 14,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "3.1.0.3",
+      "last_seen_date": "2026-11-06",
+      "result": "ok",
+      "note": "新版本線，清單尚未收錄"
+    },
+    "https://www.ibm.com/new/roadmaps/concert": {
+      "product_id": 14,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "頁面沒有可比對的清單"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM Concert": {
+      "product_id": 14,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "最新一筆 2024-08-29",
+      "last_seen_date": "2024-08-29",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果；另一產品名 IBM Concert Software 的查詢沒有回應"
+    },
+    "https://www.ibm.com/docs/en/guardium-cm/2.0.x?topic=release-notes": {
+      "product_id": 15,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.0.0",
+      "last_seen_date": "2026-06-06",
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取；日期為頁面 Last Updated"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM Guardium Cryptography Manager": {
+      "product_id": 15,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7294678",
+      "last_seen_date": "2026-10-29",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://www.ibm.com/docs/en/quantum-safe/quantum-safe-explorer/2.x?topic=release-notes": {
+      "product_id": 16,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.3.3",
+      "last_seen_date": "2026-09-25",
+      "result": "ok",
+      "note": "新找到的來源，清單尚未收錄"
+    },
+    "https://www.ibm.com/support/pages/security-bulletin-ibm-quantum-safe-explorer-affected-multiple-vulnerabilities-1": {
+      "product_id": 16,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7293815",
+      "last_seen_date": "2026-10-23",
+      "result": "ok",
+      "note": "marker 取自 IBM 公告清單頁搜尋結果"
+    },
+    "https://developer.hashicorp.com/vault/docs/updates/release-notes": {
+      "product_id": 17,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.2.2",
+      "last_seen_date": "2026-11-11",
+      "result": "ok"
+    },
+    "https://github.com/hashicorp/vault/blob/main/CHANGELOG.md": {
+      "product_id": 17,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.2.2",
+      "last_seen_date": "2026-11-11",
+      "result": "ok"
+    },
+    "https://discuss.hashicorp.com/c/security": {
+      "product_id": 17,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "HCSEC-2026-60",
+      "last_seen_date": "2026-11-13",
+      "result": "ok",
+      "note": "轉址到 /c/security/52"
+    },
+    "https://www.hashicorp.com/en/trust/security": {
+      "product_id": 17,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "unreachable",
+      "note": "直接抓取 429；安全公告改由 discuss.hashicorp.com 讀取"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM Vault Self-Managed": {
+      "product_id": 17,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7296773",
+      "last_seen_date": "2026-11-13",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://bob.ibm.com/docs/ide/changelog": {
+      "product_id": 18,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.3.0",
+      "last_seen_date": "2026-10",
+      "result": "ok",
+      "note": "頁面只寫 October 2026"
+    },
+    "https://bob.ibm.com/docs/shell/changelog": {
+      "product_id": 18,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.0.9",
+      "last_seen_date": "2026-10",
+      "result": "ok",
+      "note": "頁面只寫 October 2026"
+    },
+    "https://bob.ibm.com/blog/": {
+      "product_id": 18,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "How the Bob model router works",
+      "last_seen_date": "2026-11-04",
+      "result": "ok"
+    },
+    "https://bob.ibm.com/blog/rss.xml": {
+      "product_id": 18,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "How the Bob model router works",
+      "last_seen_date": "2026-11-04",
+      "result": "ok"
+    },
+    "https://www.ibm.com/support/pages/bulletin/#IBM Bob": {
+      "product_id": 18,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "node/7296454",
+      "last_seen_date": "2026-11-12",
+      "result": "ok",
+      "note": "演練用合成鍵：IBM 公告清單頁 https://www.ibm.com/support/pages/bulletin/ 依產品名搜尋的結果"
+    },
+    "https://docs.redhat.com/en/documentation/openshift_container_platform/": {
+      "product_id": 19,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "5.0",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://access.redhat.com/security/vulnerabilities/": {
+      "product_id": 19,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "RHSB-2026-018",
+      "last_seen_date": null,
+      "result": "ok",
+      "product_ids": [
+        12,
+        19,
+        20,
+        21
+      ]
+    },
+    "https://access.redhat.com/errata/": {
+      "product_id": 19,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "EAP: RHBA-2026:99769（2026-11-12）；OpenShift: RHBA-2026:99773（2026-11-12）；JBCS: RHSA-2026:100552（2026-11-17）",
+      "last_seen_date": "2026-11-17",
+      "result": "ok",
+      "product_ids": [
+        12,
+        19,
+        20,
+        21
+      ],
+      "note": "轉址到 /errata-search/；多產品共用，marker 為各產品合併字串；3scale 沒有另外篩選"
+    },
+    "https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16": {
+      "product_id": 20,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.16",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://access.redhat.com/products/red-hat-3scale-api-management": {
+      "product_id": 20,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.16",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "頁面無日期"
+    },
+    "https://access.redhat.com/node/2787991": {
+      "product_id": 20,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "頁面 Updated 2025-11-05",
+      "last_seen_date": "2025-11-05",
+      "result": "ok",
+      "note": "轉址到 /kb/2787991"
+    },
+    "https://docs.redhat.com/en/documentation/red_hat_jboss_core_services": {
+      "product_id": 21,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "2.4.62 SP6",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "直接抓取 403，改用瀏覽器讀取"
+    },
+    "https://documentation.suse.com/cloudnative/rancher-manager/v2.12/en/release-notes/v2.12.9.html": {
+      "product_id": 22,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v2.12.15",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "選單有 v2.13、v2.14、v2.15、v2.16 (Unreleased)"
+    },
+    "https://documentation.suse.com/cloudnative/rancher-manager/v2.15/en/release-notes/v2.15.3.html": {
+      "product_id": 22,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v2.15.3",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "新版本線，清單尚未收錄；頁面未標發布日期"
+    },
+    "https://documentation.suse.com/cloudnative/rke2/latest/en/release-notes/v1.35.X.html": {
+      "product_id": 22,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v1.35.8+rke2r1",
+      "last_seen_date": "2026-08-28",
+      "result": "ok"
+    },
+    "https://documentation.suse.com/cloudnative/rke2/latest/en/release-notes/v1.37.X.html": {
+      "product_id": 22,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "v1.37.0+rke2r1",
+      "last_seen_date": "2026-09-14",
+      "result": "ok",
+      "note": "新版本線，清單尚未收錄"
+    },
+    "https://ranchermanager.docs.rancher.com/reference-guides/rancher-security/security-advisories-and-cves": {
+      "product_id": 22,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "CVE-2026-88809",
+      "last_seen_date": "2026-10-29",
+      "result": "ok"
+    },
+    "https://github.com/rancher/rke2/security": {
+      "product_id": 22,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "最新一筆 2024-10-25",
+      "last_seen_date": "2024-10-25",
+      "result": "ok"
+    },
+    "https://www.suse.com/support/security/rancher-security/": {
+      "product_id": 22,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "product_ids": [
+        10,
+        22
+      ],
+      "note": "頁面開得到，最新一筆沒有記下"
+    },
+    "https://next.nutanix.com/product-updates": {
+      "product_id": 23,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "NKP 2.19",
+      "last_seen_date": null,
+      "result": "ok"
+    },
+    "https://portal.nutanix.com/page/documents/security-advisories/list": {
+      "product_id": 23,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Security Advisory #0062",
+      "last_seen_date": "2026-11-17",
+      "result": "ok",
+      "note": "直接抓取只有空殼，改用瀏覽器；轉到 /page/security/security-advisories/list"
+    },
+    "https://docs.confluent.io/platform/current/release-notes/index.html": {
+      "product_id": 24,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "Confluent Platform 8.4",
+      "last_seen_date": null,
+      "result": "ok"
+    },
+    "https://support.confluent.io/hc/en-us/sections/360008413952-Security-Advisories-and-Security-Release-Notes": {
+      "product_id": 24,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "CONFSA-2026-36",
+      "last_seen_date": null,
+      "result": "ok",
+      "note": "頁面無日期"
+    },
+    "https://www.ibm.com/trust/security-psirt": {
+      "product_id": null,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "product_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "note": "轉到 /trust/security-vulnerability-management，沒有公告清單；改用 https://www.ibm.com/support/pages/bulletin/"
+    },
+    "https://www.ibm.com/support/pages/ibm-security-vulnerability-management": {
+      "product_id": null,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": null,
+      "last_seen_date": null,
+      "result": "ok",
+      "product_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "note": "轉到 /trust/security-vulnerability-management，沒有公告清單"
+    },
+    "https://www.cisa.gov/known-exploited-vulnerabilities-catalog": {
+      "product_id": null,
+      "last_checked": "2026-11-19",
+      "last_seen_marker": "count 1786；最新新增 CVE-2026-40217、CVE-2024-10441、CVE-2026-90817、CVE-2026-90436",
+      "last_seen_date": "2026-11-18",
+      "result": "ok"
+    }
+  }
 }
