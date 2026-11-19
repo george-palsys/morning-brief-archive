@@ -21,9 +21,9 @@
 
 ### 檢查方式
 
-1. 讀 `products.yaml`,依 id 1 到 26 的順序逐一處理,不可跳過。
+1. 讀 `products.yaml`,依 id 1 到 26 的順序逐一處理,不可跳過。標了 `public_sources: false` 的產品(目前只有 CMC)不檢查,直接列入「無公開來源」清單。
 2. 每個產品打開它列出的每一個 `sources` 網址,找出「上一份晨報之後」新出現的內容。上一份晨報的日期看 `daily/` 目錄中最新的檔案。
-3. `status: unverified` 的網址:第一次使用時先確認頁面存在且內容正確,確認後在當天晨報的「清單維護」小節回報,不要自行改 `products.yaml`。
+3. `status: unverified` 或 `status: repo_checked` 的網址:第一次使用時先確認頁面存在且內容正確,確認後在當天晨報的「清單維護」小節回報,不要自行改 `products.yaml`。
 4. `url: null` 的來源:用網路搜尋補查,只採原廠網域的結果。
 5. 網址打不開或需要登入:在該產品底下寫明「無法開啟」,不可當成「無更新」。
 
@@ -48,7 +48,7 @@
 
 同一個產品當天有多則更新時,每一則各寫一個小節,不合併。
 
-### 段落結尾固定兩個清單
+### 段落結尾固定三個清單
 
 ```markdown
 #### 今日無更新
@@ -59,14 +59,32 @@
 
 #### 今日無法確認
 
-- <產品名稱>:<原因,例如網址無法開啟、需要登入、沒有公開來源>
+- <產品名稱>:<原因,例如網址無法開啟、需要登入>
+
+#### 無公開來源
+
+- <產品名稱>(`products.yaml` 中標了 `public_sources: false` 的產品,不檢查,每天固定列出)
 ```
 
-「有更新」「今日無更新」「今日無法確認」三者的產品數加起來必須等於 26。
+「有更新」「今日無更新」「今日無法確認」「無公開來源」四者的產品數加起來必須等於 26。
+
+### CI/CD 的特別規則
+
+CI/CD(id 13)底下有多個工具,每個來源用 `tool` 欄位標明屬於哪個工具:
+
+- 每個工具各自檢查、各自判定,有更新的工具各寫一個小節,標題寫成「CI/CD/<工具名稱>:<一句話說明>」。
+- 計算 26 項時 CI/CD 算一項:任何一個工具有更新就算「有更新」;全部工具都沒更新才列入「今日無更新」。
+- 不論 CI/CD 歸在哪一類,都在「產品動態」段落結尾多列一個清單,逐一列出每個工具當天的狀態,一個工具一行:
+
+```markdown
+#### CI/CD 各工具狀態
+
+- <工具名稱>:有更新 / 無更新 / 無法確認(原因)
+```
 
 ### 來源規則
 
-- 只採原廠來源:IBM Docs、IBM Support、Red Hat Documentation、Red Hat Customer Portal、SUSE Documentation、Black Duck、HashiCorp、Nutanix、Confluent、HCL、Jenkins、GitLab 的官方網域。
+- 只採原廠來源:IBM Docs、IBM Support、Red Hat Documentation、Red Hat Customer Portal、SUSE Documentation、Black Duck、HashiCorp、Nutanix、Confluent、HCL 的官方網域;CI/CD 工具採各工具的官方網站或官方 GitHub 專案(以 `products.yaml` 列出的為準)。
 - 媒體報導與第三方整理只能當線索,要回到原廠頁面確認後才寫入;原廠頁面查不到就寫明「原廠未查到,僅第三方來源」。
 - 每則都要有來源的發布日期;查不到就寫「發布日期未查到」。
 
@@ -132,7 +150,7 @@
 
 ### `daily/YYYY-MM-DD.md` 的 frontmatter
 
-沿用 v1 的欄位(`title`、`date`、`weekday`、`type`、`collected_at`、`cve_ids`、`products`、`tags`),新增三個欄位:
+沿用 v1 的欄位(`title`、`date`、`weekday`、`type`、`collected_at`、`cve_ids`、`products`、`tags`),新增五個欄位:
 
 ```yaml
 spec_version: 2
@@ -141,6 +159,8 @@ products_updated:
   - <當天有更新的產品名稱,與 products.yaml 的 name 一致>
 products_unconfirmed:
   - <當天無法確認的產品名稱>
+cicd_tools_updated:
+  - <當天有更新的 CI/CD 工具名稱,與 products.yaml 的 tool 一致>
 ```
 
 ### `items.jsonl`
@@ -157,12 +177,13 @@ products_unconfirmed:
 | `product` | 產品動態 | 新增 |
 | `knowledge` | 新知識 | 新增 |
 
-新增三個選填欄位,舊資料不補:
+新增四個選填欄位,舊資料不補:
 
 | 欄位 | 用在哪個 category | 值 |
 |---|---|---|
 | `update_type` | `product` | `release`、`security`、`lifecycle` 三者之一 |
 | `product_version` | `product` | 這則更新對應的版號,字串 |
+| `tool` | `product`(僅 CI/CD) | 工具名稱,與 `products.yaml` 的 `tool` 一致 |
 | `knowledge_type` | `knowledge` | `standard`、`attack-defense`、`tool`、`vendor-feature`、`architecture` 五者之一 |
 
 規則不變:只往後附加,舊資料不修改。「今日無更新」的產品不寫入 `items.jsonl`。

@@ -4,10 +4,11 @@
 #       release note、安全公告、生命週期公告。規則見 SPEC.md。
 #
 # 清單來源:2026-11-03 Business Plan 產品分工表的 25 項,加上後來加入的 CMC。
-#           【待 George 確認】第 26 項是否為 CMC。
+#           第 26 項為 IBM CMC(George 於 2026-11-19 確認)。
 #
 # status 欄位的意思(每個網址各自標示):
 #   searched   = 這個網址出現在 2026-11-19 的網路搜尋結果中,但沒有逐頁打開核對內容
+#   repo_checked = 2026-11-19 用 git 確認過該 GitHub 專案存在;releases 與 advisories 頁是 GitHub 的固定路徑,頁面本身未打開
 #   unverified = 憑既有知識填寫,2026-11-19 沒有在搜尋結果中看到,第一次使用前要先確認
 #   none       = 沒有查到公開來源
 #
@@ -277,20 +278,99 @@ products:
   - id: 13
     name: CI/CD
     vendor: 多家
-    note: 【待 George 確認】CI/CD 不是單一產品。這裡先假設追 Jenkins 與 GitLab,確認後再增減
+    note: CI/CD 不是單一產品,工具可替換性高,所以盡量多追(George 於 2026-11-19 確認)。每個來源用 tool 欄位標明屬於哪個工具,檢查與回報都以工具為單位,見 SPEC.md
     sources:
-      - type: release
+      - tool: Jenkins
+        type: release
         title: Jenkins LTS Changelog
         url: https://www.jenkins.io/changelog-stable/
         status: searched
-      - type: security
+      - tool: Jenkins
+        type: security
         title: Jenkins Security Advisories
         url: https://www.jenkins.io/security/advisories/
         status: unverified
         note: 搜尋結果出現的是個別公告(/security/advisory/2026-09-02/)與排程說明頁,清單頁網址為推定
-      - type: release
+      - tool: GitLab
+        type: release
         title: GitLab Releases
         url: https://about.gitlab.com/releases/categories/releases/
+        status: unverified
+        note: GitLab 的安全修補版(patch release)也發布在同一個 releases 頁
+      - tool: GitHub Actions
+        type: release
+        title: GitHub Changelog
+        url: https://github.blog/changelog/
+        status: unverified
+      - tool: GitHub Actions
+        type: release
+        title: actions/runner Releases(自架 runner)
+        url: https://github.com/actions/runner/releases
+        status: repo_checked
+      - tool: Azure DevOps
+        type: release
+        title: Azure DevOps Server Release Notes
+        url: https://learn.microsoft.com/en-us/azure/devops/server/release-notes/
+        status: unverified
+      - tool: Tekton
+        type: release
+        title: tektoncd/pipeline Releases
+        url: https://github.com/tektoncd/pipeline/releases
+        status: repo_checked
+      - tool: Tekton
+        type: security
+        title: tektoncd/pipeline Security Advisories
+        url: https://github.com/tektoncd/pipeline/security/advisories
+        status: repo_checked
+      - tool: OpenShift Pipelines
+        type: release
+        title: Red Hat OpenShift Pipelines 文件(各版 Release notes)
+        url: https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/
+        status: unverified
+      - tool: Argo CD
+        type: release
+        title: argoproj/argo-cd Releases
+        url: https://github.com/argoproj/argo-cd/releases
+        status: repo_checked
+      - tool: Argo CD
+        type: security
+        title: argoproj/argo-cd Security Advisories
+        url: https://github.com/argoproj/argo-cd/security/advisories
+        status: repo_checked
+      - tool: OpenShift GitOps
+        type: release
+        title: Red Hat OpenShift GitOps 文件(各版 Release notes)
+        url: https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/
+        status: unverified
+      - tool: Flux
+        type: release
+        title: fluxcd/flux2 Releases
+        url: https://github.com/fluxcd/flux2/releases
+        status: repo_checked
+      - tool: Flux
+        type: security
+        title: fluxcd/flux2 Security Advisories
+        url: https://github.com/fluxcd/flux2/security/advisories
+        status: repo_checked
+      - tool: Harbor
+        type: release
+        title: goharbor/harbor Releases
+        url: https://github.com/goharbor/harbor/releases
+        status: repo_checked
+      - tool: Harbor
+        type: security
+        title: goharbor/harbor Security Advisories
+        url: https://github.com/goharbor/harbor/security/advisories
+        status: repo_checked
+      - tool: Sonatype Nexus Repository
+        type: release
+        title: Sonatype Nexus Repository Release Notes
+        url: https://help.sonatype.com/en/release-notes.html
+        status: unverified
+      - tool: JFrog Artifactory
+        type: release
+        title: Artifactory Release Notes
+        url: https://jfrog.com/help/r/jfrog-release-information/artifactory-release-notes
         status: unverified
 
   - id: 14
@@ -530,9 +610,6 @@ products:
     name: CMC
     full_name: IBM Certificate Management Console
     vendor: IBM Expert Labs
-    note: 【待 George 確認】是否為第 26 項。Expert Labs 資產,沒有查到公開的 release note 或安全公告頁;底層是 Vault,Vault 的更新請看第 17 項
-    sources:
-      - type: release
-        title: 未查到公開來源
-        url: null
-        status: none
+    public_sources: false
+    note: IBM Expert Labs 自行建置的資產,網路上沒有公開的 release note 或安全公告(George 於 2026-11-19 確認,查不到沒關係)。每天不用檢查,固定列在「無公開來源」清單。底層是 Vault,Vault 的更新看第 17 項
+    sources: []
