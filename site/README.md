@@ -20,7 +20,7 @@
    npm run check:contrast
    ```
 
-   驗證預期：18 tests、18 pass、0 fail；CONTRAST OK: 48 CSS color pairs。測試中兩種故意製造的不一致會印 WARNING，該警告是測試證據。對比包含兩種模式的 border-strong／bg、surface、surface-hover，低於 3:1 會停止；另逐項印出此六組實算值。不代表完整 WCAG 合規審查。
+   驗證預期：21 tests、21 pass、0 fail；CONTRAST OK: 48 CSS color pairs。測試中故意製造的不一致會印 WARNING，該警告是測試證據。對比包含兩種模式的 border-strong／bg、surface、surface-hover，低於 3:1 會停止；另逐項印出此六組實算值。不代表完整 WCAG 合規審查。
 
 3. 建置正式內容到尚不存在或空的輸出資料夾：
 
@@ -68,6 +68,14 @@ Select-String -LiteralPath _site-renamed/404.html -SimpleMatch '/renamed-repo/as
 fixture 來源：george-palsys/morning-brief-archive 分支 preview-v2-2026-11-19，commit e1944ffbc1626e02e5f127360bdacadac6ee8fae 的 preview/daily/、preview/products/，合計 35 個檔案。快照只在 site/fixtures/preview.json。site/capture-fixture.mjs 記載擷取方式與固定 commit；不屬正式建置步驟。
 
 測試把 fixture 展開到忽略的 .site-test/input-*，產出在 .site-test/output-*，測試紀錄列出實際位置。演練必須明確加 --allow-rehearsal 才能建置，且每頁顯示「演練資料，非正式晨報」；production 遇到 rehearsal/preview type 一律失敗。fixtures 不會自動複製到 daily/ 或 products/。
+
+### 已核准公開的歷史演練歸檔
+
+`site/published-rehearsals.json` 逐筆列出經 PR 核准公開的歷史演練；只有 date、type、title、collected_at 四項都完全相符，才能以一般建置發布，其他演練仍須 --allow-rehearsal。每個歸檔段落及首頁都標明演練、蒐集時間與未重新查證。
+
+2026-11-19 13:19 的 v3 分檔只搬移原有 26 則（產品6、新知6、CVE5、台灣IT5、AI4），不是重新蒐集。這份未附完整26項產品來源快照，故不建立產品總表或產品歷史頁；建置印一則明確警告並顯示缺資料說明。一般 v3 晨報缺 products/ 仍會失敗；不以這個例外豁免翌日正式資料。26個產品HTML仍是無資料佔位頁，不能視為已取得產品來源快照。
+
+同一天同時有單檔與資料夾時，日期清單及首頁以資料夾為主入口，另保留同日單檔連結；上一天／下一天只跨不同日期，同名段落能接續。舊檔本身不修改。根 items.jsonl 未附加此次26則，因此站內搜尋索引仍只含原有條目，新增內容可從每日與段落頁讀取。
 
 ## 內容與導覽
 
