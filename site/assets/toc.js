@@ -28,3 +28,11 @@ if (menu) {
   summary.focus();
  });
 }
+
+const attention = document.querySelector?.('.attention details');
+if (attention) {
+ const desktop = matchMedia('(min-width:640px)');
+ const setAttentionDefault = () => { attention.open = desktop.matches; };
+ setAttentionDefault();
+ desktop.addEventListener('change', setAttentionDefault);
+}

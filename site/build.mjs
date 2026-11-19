@@ -222,7 +222,16 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   if (latest) {
     const text = read(latest.legacy ? latest.base : `${latest.base}/README.md`);
     const important = text.match(/\*\*今天最需要注意的一件事\*\*[：:][^\n]*(?:\n(?!\n)[^\n]+)*/)?.[0];
-    if (important && !latest.legacy) attention = `<aside class="attention"><details><summary>今天最需要注意的一件事</summary>${markdown(important.replace(/^\*\*今天最需要注意的一件事\*\*[：:]\s*/, '')).html.replace(/href="(?!https?:|#)([^"]+)"/g, (_, href) => `href="${latest.base}/${href}"`)}</details></aside>`;
+    if (important && !latest.legacy) {
+      const source = important.replace(/^\*\*今天最需要注意的一件事\*\*[：:]\s*/, '');
+      const rendered = markdown(source).html;
+      const previewTokens = new MarkdownIt().parseInline(source, {})[0].children;
+      const firstSentence = previewTokens.map(token => token.type === 'softbreak' ? ' ' : token.content).join('').trim().split(/(?<=[。！？!?]|\.)\s+|(?<=[。！？])/u)[0];
+      const preview = Array.from(firstSentence);
+      const short = preview.length > 40 ? preview.slice(0, 40).join('') + '…' : firstSentence;
+      const body = rendered.replace(/href="(?!https?:|#)([^"]+)"/g, (_, href) => `href="${latest.base}/${href}"`);
+      attention = `<aside class="attention"><details open><summary>今天最需要注意的一件事<span class="attention-preview">：${esc(short)}</span></summary>${body}</details></aside>`;
+    }
     if (latest.legacy) summaryCards = `<p>最新一天是舊版格式，只有 CVE、台灣 IT、AI 三段。</p>${link('index.html', latest.href, '閱讀最新一天晨報')}`;
     else summaryCards = `<div class="summary-grid">${sections.slice(1).map(([part, label]) => {
       const rendered = markdown(read(`${latest.base}/${part}.md`), { section: part });

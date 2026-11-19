@@ -197,3 +197,5 @@ th,td { padding:.75rem 1rem; }
 
 .day-sections { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; width:100%; }
 .day-sections a { min-height:var(--tap-min); }
+
+.attention details[open] .attention-preview { display:none; }

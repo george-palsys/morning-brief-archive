@@ -311,6 +311,8 @@ test('reading layout: semantic shell, one archive notice, correct daily current 
  assert.ok(home.match(/class="admonition archive [\s\S]*?<\/div><\/div>/)[0].includes('未建立產品總表'));
  assert.ok(!home.includes('<p class="notice">'));
  assert.ok(home.indexOf('class="home-entry"') < home.indexOf('class="attention"'));
+ assert.match(home, /<aside class="attention"><details open><summary>[^<]+<span class="attention-preview">：NGINX[^<]+<\/span><\/summary>/);
+
  const cve=result.pages.get('daily/2026-11-19/cve.html');
  const side = cve.match(/<aside class="toc-side">[\s\S]*?<\/aside>/)[0];
  for (const [, title, label] of side.matchAll(/<a href="#[^"]+" title="([^"]+)"><span>([^<]+)<\/span>/g)) assert.equal(title, label);
@@ -342,4 +344,28 @@ test('reading CSS retains mobile typography, nested indent and desktop navigatio
  assert.match(css, /\.prose ul,\.prose ol\s*\{[^}]*padding-left:var\(--indent\)/);
  const nested = markdown('- 第一層\n  - 第二層\n    - 第三層').html;
  assert.match(nested, /<ul>[\s\S]*?<ul>[\s\S]*?<ul>[\s\S]*?第三層/);
+});
+
+test('home attention defaults by width while preserving manual toggles between breakpoints', () => {
+ const attention = { open: true };
+ const desktop = { matches: false, addEventListener(type, listener) { this.change = listener; } };
+ const wide = { matches: false, addEventListener() {} };
+ const listeners = {};
+ const context = vm.createContext({
+  matchMedia: query => query === '(min-width:640px)' ? desktop : wide,
+  document: { querySelector: selector => selector === '.attention details' ? attention : null, querySelectorAll: () => [] },
+  window: { addEventListener: (type, listener) => { listeners[type] = listener; } },
+ });
+ vm.runInContext(fs.readFileSync(new URL('./assets/toc.js', import.meta.url), 'utf8'), context);
+ assert.equal(attention.open, false);
+ attention.open = true;
+ listeners.resize();
+ assert.equal(attention.open, true);
+ desktop.matches = true;
+ attention.open = false;
+ desktop.change();
+ assert.equal(attention.open, true);
+ desktop.matches = false;
+ desktop.change();
+ assert.equal(attention.open, false);
 });
