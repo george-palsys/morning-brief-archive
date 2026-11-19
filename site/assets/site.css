@@ -38,6 +38,7 @@ header nav a { text-align:center; padding:var(--space-2); min-height:var(--tap-m
 .sr-only { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 section { margin-block:var(--space-6); }
 .breadcrumbs { display:flex; flex-wrap:wrap; gap:var(--space-2); padding:0; list-style:none; font-size:var(--text-xs); }
+.breadcrumbs li { display:flex; align-items:center; min-height:var(--tap-min); }
 .breadcrumbs li+li:before { content:'/'; margin-right:var(--space-2); }
 .breadcrumbs a,footer a { display:inline-flex; align-items:center; min-height:var(--tap-min); }
 .product-grid,.summary-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:var(--space-3); padding:var(--space-1); }
@@ -67,6 +68,7 @@ summary { cursor:pointer; min-height:var(--tap-min); }
 .section-tabs a { display:inline-flex; align-items:center; justify-content:center; min-width:5.5rem; min-height:var(--tap-min); padding:var(--space-2); }
 .section-tabs a:last-child { border-left:1px solid var(--color-border); }
 .table-scroll { overflow-x:auto; max-width:100%; border:1px solid var(--color-border); border-radius:var(--radius-md); padding:.25rem; margin-block:var(--space-4); }
+.table-stack { max-width:100%; margin-block:var(--space-4); }
 table { border-collapse:collapse; width:100%; font-size:var(--text-sm); text-align:left; }
 th,td { border-bottom:1px solid var(--color-border); padding:.625rem; vertical-align:top; overflow-wrap:anywhere; }
 thead { background:var(--color-surface); } tr:hover { background:var(--color-surface-hover); }

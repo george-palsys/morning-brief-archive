@@ -165,6 +165,10 @@ test('R2: summary cards have no false scroll hint; wide tables retain it',()=>{
  const summary=markdown('# 摘要\n\n| 產品 | 更新 | 要不要動作 |\n|---|---|---|\n| Vault | 版本更新 | 盤點 |',{summary:true}).html;
  assert.ok(summary.includes('table-stack'));
  assert.ok(!summary.includes('可左右捲動'));
+ assert.match(summary,/<div class="table-stack"><table/,'N4: non-scrolling summary wrapper has no extra border class or tabindex');
+ assert.ok(!/class="table-stack"[^>]*(?:tabindex|role="region")/.test(summary));
+ const wide=markdown('| 來源 | 日期 |\n|---|---|\n| 官方 | 未記錄 |').html;
+ assert.match(wide,/<div class="table-scroll table-wide" role="region" aria-label="來源、日期" tabindex="0">/,'N4: wide table keeps named keyboard-scrollable region');
  assert.ok(markdown('| 來源 | 日期 |\n|---|---|\n| 官方 | 未記錄 |').html.includes('可左右捲動'));
  const css=fs.readFileSync('site/assets/site.css','utf8');
  assert.match(css,/\.table-stack tbody tr\s*\{[^}]*border:1px solid var\(--color-border\)[^}]*border-radius:var\(--radius-md\)[^}]*margin-block:var\(--space-3\)/);
@@ -186,4 +190,5 @@ test('R7: empty maintenance shows fallback without empty TOC and keeps meaningfu
 test('R8: breadcrumbs and footer links have minimum touch height',()=>{
  const css=fs.readFileSync('site/assets/site.css','utf8');
  assert.match(css,/\.breadcrumbs a,footer a\s*\{[^}]*display:inline-flex[^}]*align-items:center[^}]*min-height:var\(--tap-min\)/);
+ assert.match(css,/\.breadcrumbs li\s*\{[^}]*display:flex[^}]*align-items:center[^}]*min-height:var\(--tap-min\)/,'N1: current breadcrumb uses same alignment and height');
 });

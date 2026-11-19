@@ -41,6 +41,28 @@
 
    驗證預期：exit code 0、mode=production。產出不含原始 meta.yaml、products.yaml、items.jsonl、state/ 或測試資料，僅 HTML、本站資源、搜尋 JSON 與建置報告。
 
+### Windows Git Bash
+
+Git Bash 會將 `--base-path /morning-brief-archive/` 轉成 Windows 路徑；使用 `MSYS_NO_PATHCONV=1` 避免路徑轉換。以下每行是一個完整指令：
+
+```bash
+MSYS_NO_PATHCONV=1 npm run build -- --base-path /morning-brief-archive/
+node -p "JSON.parse(require('node:fs').readFileSync('_site/build-report.json','utf8')).basePath"
+```
+
+驗證預期：建置 exit code 0，第二行輸出 `/morning-brief-archive/`。輸出目錄仍須不存在或為空；若已建過，改用新的 `--output` 路徑。這是 Git Bash 用法，PowerShell 不使用此前綴。
+
+### 站台路徑與 404
+
+404 的 CSS 與站內連結已由建置參數 `--base-path` 產生，沒有另一份固定網址。repo 改名或改掛載路徑時，請更新 `.github/workflows/pages.yml` 建置步驟的 `--base-path`，本機建置也傳同一值；若省略參數，`site/build.mjs` 預設為 `/morning-brief-archive/`。只換網域且路徑不變時不用改參數；改掛網域根目錄時傳 `/`。
+
+```powershell
+npm run build -- --output _site-renamed --base-path /renamed-repo/
+Select-String -LiteralPath _site-renamed/404.html -SimpleMatch '/renamed-repo/assets/site.css'
+```
+
+驗證預期：建置 exit code 0，404 HTML 命中 `/renamed-repo/assets/site.css`，導覽也使用同一路徑；一般頁面仍用相對連結。不使用 base 元素，CSP 與路徑白名單維持。
+
 ## 演練資料與證據
 
 fixture 來源：george-palsys/morning-brief-archive 分支 preview-v2-2026-11-19，commit e1944ffbc1626e02e5f127360bdacadac6ee8fae 的 preview/daily/、preview/products/，合計 35 個檔案。快照只在 site/fixtures/preview.json。site/capture-fixture.mjs 記載擷取方式與固定 commit；不屬正式建置步驟。
@@ -56,6 +78,7 @@ fixture 來源：george-palsys/morning-brief-archive 分支 preview-v2-2026-11-1
 - 原始 HTML 轉義，來源圖片只顯示替代文字；拒絕危險 URL 協定與根路徑。來源外部連結加 noopener noreferrer，不另開視窗。
 - 每頁 CSP meta 禁止 inline script/style；搜尋以 textContent 建立結果。搜尋索引按月拆分，聚焦後才載入最近三個月，另可搜尋全部。
 - 關於頁只呈現站台用途、來源、內容範圍與產生規則。
+- 摘要表在手機以每列卡片呈現，外層不另加框、不提供捲動焦點；桌面恢復自動換行的表格。需要橫向捲動的來源寬表保留外框、具名 region 與 tabindex=0，沿用全站 3px focus-visible 外框，方便鍵盤使用者捲動。
 - R4 依 Iris 更正規格，淺色 border-strong 改 #7d8690，對 bg／surface／surface-hover 分別為 3.69／3.47／3.17:1；深色 #8b949e 維持。實際值從 CSS 讀取並在對比檢查中驗證。
 
 ## CI 與部署（本 PR 不啟用）
