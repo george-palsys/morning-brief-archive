@@ -1,0 +1,708 @@
+# 晨報產品追蹤清單(26 項)
+#
+# 用途:GeorgeAI 每天產生晨報的「產品動態」段落時,照這份清單逐一檢查每個產品的
+#       release note、安全公告、生命週期公告。規則見 SPEC.md。
+#
+# 清單來源:2026-11-03 Business Plan 產品分工表的 25 項,加上後來加入的 CMC。
+#           第 26 項為 IBM CMC(George 於 2026-11-19 確認)。
+#
+# status 欄位的意思(每個網址各自標示):
+#   searched   = 這個網址出現在 2026-11-19 的網路搜尋結果中,但沒有逐頁打開核對內容
+#   repo_checked = 2026-11-19 用 git 確認過該 GitHub 專案存在;releases 與 advisories 頁是 GitHub 的固定路徑,頁面本身未打開
+#   unverified = 憑既有知識填寫,2026-11-19 沒有在搜尋結果中看到,第一次使用前要先確認
+#   none       = 沒有查到公開來源
+#   verified   = 已實際打開頁面並讀到內容,日期寫在 verified_on
+#
+# version_specific: true 表示網址裡帶版本號,產品出新的主要版本時要更新網址。
+#                   每次檢查都要看頁面的版本選單,規則見 SPEC.md「帶版本號的網址」。
+# fetch: browser    表示這個網址直接抓取會被擋(403)或只回空殼,必須用瀏覽器開啟。
+#                   2026-11-19 實測:IBM Docs、docs.redhat.com、Black Duck 文件站、Nutanix Portal 屬於這類。
+# access: subscription 表示完整內容需要原廠訂閱帳號登入,未登入只看得到標題與日期。
+
+version: 2
+updated: 2026-11-19
+
+shared_sources:
+  - name: IBM Security Bulletins 入口(PSIRT)
+    url: https://www.ibm.com/trust/security-psirt
+    status: searched
+    applies_to: 所有 IBM 產品
+    note: 2026-11-19 實測:這個網址與下一個網址導到同一個總覽頁,頁面上沒有找到公告清單,「以產品名查詢」的做法沒有驗證過。MQ、Turbonomic、Concert、GCM、Bob 的安全公告目前只靠這個入口,查法見 SPEC.md「IBM 安全公告的查法」
+  - name: IBM Security Vulnerability Management
+    url: https://www.ibm.com/support/pages/ibm-security-vulnerability-management
+    status: searched
+    applies_to: 所有 IBM 產品
+    note: 2026-11-19 實測與上一個網址導到同一個總覽頁
+  - name: Red Hat Product Errata(RHSA / RHBA / RHEA)
+    url: https://access.redhat.com/errata/
+    status: searched
+    applies_to: 所有 Red Hat 產品
+    note: 搜尋結果看到的是個別 errata 頁(例如 /errata/RHSA-2026:27200),清單首頁本身未核對
+  - name: Red Hat Security Bulletins(RHSB)
+    url: https://access.redhat.com/security/vulnerabilities/
+    status: unverified
+    applies_to: 所有 Red Hat 產品
+    note: 2026-11-19 晨報引用過 /security/vulnerabilities/RHSB-2026-018,清單頁網址為推定
+  - name: SUSE Rancher Security
+    url: https://www.suse.com/support/security/rancher-security/
+    status: searched
+    applies_to: Rancher、RKE2、NeuVector
+  - name: CISA Known Exploited Vulnerabilities
+    url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    status: unverified
+    applies_to: 全部產品(交叉比對是否已遭利用)
+
+products:
+  - id: 1
+    name: WebSphere Application Server
+    vendor: IBM
+    sources:
+      - type: release
+        title: Fix list for IBM WebSphere Application Server traditional V9
+        url: https://www.ibm.com/support/pages/node/715559
+        status: searched
+      - type: release
+        title: Fix list for WebSphere Application Server V8.5(8.5.5.x)
+        url: https://www.ibm.com/support/pages/node/611243
+        status: searched
+      - type: release
+        title: Recommended updates for WebSphere Application Server
+        url: https://www.ibm.com/support/pages/node/715553
+        status: searched
+      - type: security
+        title: fix list 中標示 Security APAR 的項目;另查 IBM Security Bulletins 入口
+        url: https://www.ibm.com/support/pages/node/715559
+        status: searched
+
+  - id: 2
+    name: WebSphere Liberty
+    vendor: IBM
+    sources:
+      - type: release
+        title: Fix list for IBM WebSphere Application Server Liberty
+        url: https://www.ibm.com/support/pages/node/715557
+        status: searched
+      - type: release
+        title: Recommended updates for WebSphere Application Server
+        url: https://www.ibm.com/support/pages/node/715553
+        status: searched
+      - type: security
+        title: fix list 中標示 Security APAR 的項目;另查 IBM Security Bulletins 入口
+        url: https://www.ibm.com/support/pages/node/715557
+        status: searched
+
+  - id: 3
+    name: MQ
+    vendor: IBM
+    sources:
+      - type: release
+        title: What's new and changed in IBM MQ 10.0.0
+        url: https://www.ibm.com/docs/en/ibm-mq/10.0.x?topic=mq-whats-new-changed-in-1000
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+        note: 2026-11-19 新增。IBM Docs 的版本選單最新為 10.0.x,原清單只釘 9.4
+      - type: release
+        title: What's new and changed in IBM MQ 10.0.x Continuous Delivery
+        url: https://www.ibm.com/docs/en/ibm-mq/10.0.x?topic=am-whats-new-changed-in-mq-100x-continuous-delivery
+        status: searched
+        version_specific: true
+        fetch: browser
+        note: 2026-11-19 新增。網址取自 10.0.0 What's new 頁的目錄連結,頁面本身未打開
+      - type: release
+        title: What's new and changed in IBM MQ 9.4.x Continuous Delivery
+        url: https://www.ibm.com/docs/SSFKSJ_9.4.0/overview/mq_newchgd_cd.html
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+      - type: release
+        title: What's new and changed in IBM MQ 9.4.0(LTS)
+        url: https://www.ibm.com/docs/SSFKSJ_9.4.0/overview/mq_newchgd_initial.html
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+      - type: security
+        title: IBM Security Bulletins 入口,以產品名 IBM MQ 查詢
+        url: https://www.ibm.com/trust/security-psirt
+        status: searched
+
+  - id: 4
+    name: Instana
+    vendor: IBM
+    sources:
+      - type: release
+        title: Instana What's new
+        url: https://www.ibm.com/docs/en/instana-observability/saas?topic=notes-whats-new
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 取代失效的 /SSE1JP5/src/pages/releases/complete_notes.html(2026-11-19 顯示 Content not found)
+      - type: release
+        title: Instana Release notes(SaaS)
+        url: https://www.ibm.com/docs/en/instana-observability/saas?topic=release-notes
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 取代失效的 /SSE1JP5/src/pages/releases/self-hosted-rns/se-release-notes.html。這頁是 SaaS 版
+      - type: release
+        title: Standard Edition release notes(Self-Hosted)
+        url: null
+        status: none
+        note: 原網址 2026-11-19 顯示 Content not found,Self-Hosted Standard Edition 的對應頁沒有找到,需另外確認
+      - type: security
+        title: Instana Security and compliance
+        url: https://www.ibm.com/docs/en/instana-observability/saas?topic=notes-security-compliance
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 取代失效的 /SSE1JP5/src/pages/about/security_fixes.html
+      - type: lifecycle
+        title: Deprecated and removed features
+        url: https://www.ibm.com/docs/en/instana-observability/saas?topic=notes-deprecated-removed-features
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 取代失效的 /SSE1JP5/src/pages/releases/deprecated_features.html
+
+  - id: 5
+    name: Turbonomic
+    vendor: IBM
+    sources:
+      - type: release
+        title: Turbonomic Latest Releases(IBM Community,含 Release Notes 連結)
+        url: https://community.ibm.com/community/user/aiops/viewdocument/turbonomic-latest-releases-downlo
+        status: searched
+        note: 搜尋摘要顯示的版本是 8.16.4(2025-06-25),頁面可能已更新,以頁面現況為準
+      - type: release
+        title: Turbonomic What's new(IBM Docs)
+        url: https://www.ibm.com/docs/en/tarm/8.16.x?topic=notes-whats-new
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+        note: 2026-11-19 開啟時網址中的 8.16.x 被轉到 8.21.5,實際讀到的是 8.21.5 的內容
+      - type: security
+        title: IBM Security Bulletins 入口,以產品名 Turbonomic 查詢
+        url: https://www.ibm.com/trust/security-psirt
+        status: searched
+
+  - id: 6
+    name: Black Duck SCA
+    vendor: Black Duck
+    sources:
+      - type: release
+        title: Black Duck SCA Release Notes(官方文件入口)
+        url: https://docs.blackduck.com/
+        status: unverified
+        fetch: browser
+        note: 原網址 documentation.blackduck.com 會轉到 docs.blackduck.com(2026-11-19 入口頁讀得到)。SCA 的 release notes 頁本身沒有打開過,正確路徑待確認。搜尋結果顯示目前有 2026.4.x 版
+      - type: security
+        title: Black Duck Security Commitments
+        url: https://www.blackduck.com/company/legal/security-commitments.html
+        status: searched
+        note: 這是政策頁,不是公告清單;產品自身漏洞的公告管道未查到固定頁面
+
+  - id: 7
+    name: Coverity
+    vendor: Black Duck
+    sources:
+      - type: release
+        title: Polaris release notes(會列出支援的 Coverity 版本與變更)
+        url: https://docs.blackduck.com/r/polaris/black-duck-polaris-platform/polaris-release-notes.html
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 這是 Polaris 平台的 release notes;地端 Coverity 自己的 release notes 網址未查到。頁面內容是動態載入,一般讀法只看得到 cookie 橫幅,要等內容載入後再讀
+      - type: release
+        title: Black Duck News Releases
+        url: https://news.blackduck.com/
+        status: searched
+        note: 搜尋結果看到的是個別新聞稿(2026-07-14 Coverity 更新),首頁本身未核對
+      - type: security
+        title: Coverity Connect CVE-2026-1496 安全公告(作為公告管道的範例)
+        url: https://www.blackduck.com/blog/coverity-connect-cve-2026-1496-security-advisory.html
+        status: searched
+        note: Black Duck 這次是用官方 blog 發布產品漏洞公告,固定的公告清單頁未查到
+
+  - id: 8
+    name: Seeker
+    vendor: Black Duck
+    sources:
+      - type: release
+        title: Seeker Release Notes(官方文件入口)
+        url: https://docs.blackduck.com/
+        status: unverified
+        fetch: browser
+        note: 原網址 documentation.blackduck.com 會轉到 docs.blackduck.com(2026-11-19 入口頁讀得到)。Seeker 的 release notes 頁本身沒有打開過,正確路徑待確認
+      - type: security
+        title: 未查到公開的安全公告頁
+        url: null
+        status: none
+
+  - id: 9
+    name: Software Risk Manager (SRM)
+    vendor: Black Duck
+    sources:
+      - type: release
+        title: Software Risk Manager Release Notes(官方文件入口)
+        url: https://docs.blackduck.com/
+        status: unverified
+        fetch: browser
+        note: 原網址 documentation.blackduck.com 會轉到 docs.blackduck.com(2026-11-19 入口頁讀得到)。SRM 的 release notes 頁本身沒有打開過,正確路徑待確認
+      - type: security
+        title: 未查到公開的安全公告頁
+        url: null
+        status: none
+
+  - id: 10
+    name: NeuVector
+    vendor: SUSE
+    sources:
+      - type: release
+        title: NeuVector 5.x Release Notes(SUSE Security 文件)
+        url: https://documentation.suse.com/cloudnative/security/latest/en/5x.html
+        status: searched
+      - type: release
+        title: neuvector-updates 郵件清單(新版本通知)
+        url: https://lists.suse.com/mailman/listinfo/neuvector-updates
+        status: searched
+      - type: security
+        title: NeuVector GitHub Security Advisories
+        url: https://github.com/neuvector/neuvector/security/advisories
+        status: unverified
+        note: 搜尋結果出現的是 /security/policy,advisories 路徑為推定
+      - type: security
+        title: SUSE Rancher Security
+        url: https://www.suse.com/support/security/rancher-security/
+        status: searched
+
+  - id: 11
+    name: AppScan
+    vendor: HCL
+    sources:
+      - type: release
+        title: What's new in HCL AppScan Standard
+        url: https://help.hcl-software.com/appscan/Standard/10.12.0/r_WhatsNew001.html
+        status: searched
+        version_specific: true
+      - type: release
+        title: What's new in HCL AppScan Enterprise
+        url: https://help.hcl-software.com/appscan/Enterprise/10.12.0/topics/r_whats_new.html
+        status: searched
+        version_specific: true
+      - type: release
+        title: What's new in HCL AppScan 360°
+        url: https://help.hcl-software.com/appscan/360/2.2.0/360_whats_new.html
+        status: searched
+        version_specific: true
+      - type: security
+        title: 各版 What's new 的「Fixes and security updates」段落;HCL 的安全公告清單頁未查到
+        url: null
+        status: none
+
+  - id: 12
+    name: JBoss EAP
+    vendor: Red Hat
+    sources:
+      - type: release
+        title: Red Hat JBoss EAP 8.1 文件首頁(含 Release Notes)
+        url: https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.1
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+        note: 2026-11-19 版本選單已有 8.2-Beta
+      - type: release
+        title: Release notes for Red Hat JBoss EAP 8.1
+        url: https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.1/html-single/release_notes_for_red_hat_jboss_enterprise_application_platform_8.1/index
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+        note: 這是 8.1 GA 的 release notes。8.1 各次 Update 的 release notes 在 Red Hat Customer Portal,見下一項
+      - type: release
+        title: JBoss EAP 8.1 各次 Update 的 release notes(Red Hat Customer Portal)
+        url: null
+        status: none
+        access: subscription
+        note: 需要 Red Hat 訂閱帳號登入,未登入只看得到標題與日期。晨報只回報標題與日期,並註明「內容需訂閱登入」
+      - type: security
+        title: Red Hat Product Errata,以產品 JBoss Enterprise Application Platform 篩選
+        url: https://access.redhat.com/errata/
+        status: searched
+      - type: lifecycle
+        title: JBoss EAP 8 Supported Configurations
+        url: https://access.redhat.com/articles/6961381
+        status: verified
+        verified_on: 2026-11-19
+        note: 取代 /node/6137992(2026-11-19 開不到)。新網址免登入,頁面更新日 2026-09-23
+
+  - id: 13
+    name: CI/CD
+    vendor: 多家
+    note: CI/CD 不是單一產品,工具可替換性高,所以盡量多追(George 於 2026-11-19 確認)。每個來源用 tool 欄位標明屬於哪個工具,檢查與回報都以工具為單位,見 SPEC.md
+    sources:
+      - tool: Jenkins
+        type: release
+        title: Jenkins LTS Changelog
+        url: https://www.jenkins.io/changelog-stable/
+        status: searched
+      - tool: Jenkins
+        type: security
+        title: Jenkins Security Advisories
+        url: https://www.jenkins.io/security/advisories/
+        status: unverified
+        note: 搜尋結果出現的是個別公告(/security/advisory/2026-09-02/)與排程說明頁,清單頁網址為推定
+      - tool: GitLab
+        type: release
+        title: GitLab Releases
+        url: https://about.gitlab.com/releases/categories/releases/
+        status: unverified
+        note: GitLab 的安全修補版(patch release)也發布在同一個 releases 頁
+      - tool: GitHub Actions
+        type: release
+        title: GitHub Changelog
+        url: https://github.blog/changelog/
+        status: unverified
+      - tool: GitHub Actions
+        type: release
+        title: actions/runner Releases(自架 runner)
+        url: https://github.com/actions/runner/releases
+        status: repo_checked
+      - tool: Azure DevOps
+        type: release
+        title: Azure DevOps Server Release Notes
+        url: https://learn.microsoft.com/en-us/azure/devops/server/release-notes/
+        status: unverified
+      - tool: Tekton
+        type: release
+        title: tektoncd/pipeline Releases
+        url: https://github.com/tektoncd/pipeline/releases
+        status: repo_checked
+      - tool: Tekton
+        type: security
+        title: tektoncd/pipeline Security Advisories
+        url: https://github.com/tektoncd/pipeline/security/advisories
+        status: repo_checked
+      - tool: OpenShift Pipelines
+        type: release
+        title: Red Hat OpenShift Pipelines 文件(各版 Release notes)
+        url: https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 2026-11-19 頁面顯示目前版本 1.24
+      - tool: Argo CD
+        type: release
+        title: argoproj/argo-cd Releases
+        url: https://github.com/argoproj/argo-cd/releases
+        status: repo_checked
+      - tool: Argo CD
+        type: security
+        title: argoproj/argo-cd Security Advisories
+        url: https://github.com/argoproj/argo-cd/security/advisories
+        status: repo_checked
+      - tool: OpenShift GitOps
+        type: release
+        title: Red Hat OpenShift GitOps 文件(各版 Release notes)
+        url: https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 2026-11-19 頁面顯示目前版本 1.22
+      - tool: Flux
+        type: release
+        title: fluxcd/flux2 Releases
+        url: https://github.com/fluxcd/flux2/releases
+        status: repo_checked
+      - tool: Flux
+        type: security
+        title: fluxcd/flux2 Security Advisories
+        url: https://github.com/fluxcd/flux2/security/advisories
+        status: repo_checked
+      - tool: Harbor
+        type: release
+        title: goharbor/harbor Releases
+        url: https://github.com/goharbor/harbor/releases
+        status: repo_checked
+      - tool: Harbor
+        type: security
+        title: goharbor/harbor Security Advisories
+        url: https://github.com/goharbor/harbor/security/advisories
+        status: repo_checked
+      - tool: Sonatype Nexus Repository
+        type: release
+        title: Sonatype Nexus Repository Release Notes
+        url: https://help.sonatype.com/en/release-notes.html
+        status: unverified
+      - tool: JFrog Artifactory
+        type: release
+        title: Artifactory Release Notes
+        url: https://jfrog.com/help/r/jfrog-release-information/artifactory-release-notes
+        status: unverified
+
+  - id: 14
+    name: Concert
+    vendor: IBM
+    sources:
+      - type: release
+        title: IBM Concert Release notes
+        url: https://www.ibm.com/docs/en/concert/3.0.x?topic=release-notes
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+      - type: release
+        title: IBM Concert What's new
+        url: https://www.ibm.com/docs/en/concert/3.0.x?topic=notes-whats-new
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+      - type: release
+        title: IBM Concert roadmap
+        url: https://www.ibm.com/new/roadmaps/concert
+        status: searched
+      - type: security
+        title: IBM Security Bulletins 入口,以產品名 IBM Concert 查詢
+        url: https://www.ibm.com/trust/security-psirt
+        status: searched
+
+  - id: 15
+    name: GCM
+    full_name: IBM Guardium Cryptography Manager
+    vendor: IBM
+    sources:
+      - type: release
+        title: Guardium Cryptography Manager Release notes
+        url: https://www.ibm.com/docs/en/guardium-cm/2.0.x?topic=release-notes
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+        note: 2026-11-19 用瀏覽器開啟讀得到;網址中的 2.0.x 實際落在 2.0.0
+      - type: security
+        title: IBM Security Bulletins 入口,以產品名 Guardium Cryptography Manager 查詢
+        url: https://www.ibm.com/trust/security-psirt
+        status: searched
+
+  - id: 16
+    name: QSE
+    full_name: IBM Quantum Safe Explorer
+    vendor: IBM
+    sources:
+      - type: release
+        title: Quantum Safe Explorer release notes
+        url: null
+        status: none
+        note: 2026-11-19 的搜尋沒有找到 release notes 頁,需另外確認 IBM Docs 路徑
+      - type: security
+        title: Security Bulletin - IBM Quantum Safe Explorer is affected by multiple vulnerabilities(作為公告管道的範例)
+        url: https://www.ibm.com/support/pages/security-bulletin-ibm-quantum-safe-explorer-affected-multiple-vulnerabilities-1
+        status: searched
+      - type: security
+        title: IBM Security Bulletins 入口,以產品名 Quantum Safe Explorer 查詢
+        url: https://www.ibm.com/trust/security-psirt
+        status: searched
+
+  - id: 17
+    name: Vault
+    vendor: HashiCorp (IBM)
+    sources:
+      - type: release
+        title: Vault release notes(不帶版本號,固定指向最新版)
+        url: https://developer.hashicorp.com/vault/docs/updates/release-notes
+        status: verified
+        verified_on: 2026-11-19
+        note: 取代釘在 v1.20.x 的網址。2026-11-19 這個網址顯示的是 v2.x (latest),GA 日期 2026-04-14
+      - type: release
+        title: Vault CHANGELOG(GitHub)
+        url: https://github.com/hashicorp/vault/blob/main/CHANGELOG.md
+        status: searched
+      - type: security
+        title: HashiCorp Security Bulletins(HCSEC,Discuss 論壇 security 分類)
+        url: https://discuss.hashicorp.com/c/security
+        status: unverified
+        note: 搜尋結果出現的是個別 HCSEC 公告貼文,分類頁網址為推定
+      - type: security
+        title: Security at HashiCorp
+        url: https://www.hashicorp.com/en/trust/security
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 原網址 /security 會轉到這裡(直接抓取被限流 429)。這是總覽頁,不是公告清單,不能用來判斷有沒有新公告;新公告以 HCSEC 與 IBM Security Bulletin 為準
+      - type: security
+        title: IBM Security Bulletins 入口(IBM 也會為 Vault 發 Security Bulletin,例如 2026-11-12 那則)
+        url: https://www.ibm.com/trust/security-psirt
+        status: searched
+
+  - id: 18
+    name: Bob
+    full_name: IBM Bob
+    vendor: IBM
+    sources:
+      - type: release
+        title: IBM Bob IDE Changelog
+        url: https://bob.ibm.com/docs/ide/changelog
+        status: searched
+      - type: release
+        title: Bob Shell Changelog
+        url: https://bob.ibm.com/docs/shell/changelog
+        status: searched
+      - type: release
+        title: IBM Bob Blog(每月 release 文章)
+        url: https://bob.ibm.com/blog/
+        status: searched
+      - type: release
+        title: IBM Bob Blog RSS
+        url: https://bob.ibm.com/blog/rss.xml
+        status: searched
+      - type: security
+        title: IBM Security Bulletins 入口,以產品名 IBM Bob 查詢
+        url: https://www.ibm.com/trust/security-psirt
+        status: searched
+
+  - id: 19
+    name: OpenShift
+    vendor: Red Hat
+    sources:
+      - type: release
+        title: OpenShift Container Platform 文件(各版 Release notes)
+        url: https://docs.redhat.com/en/documentation/openshift_container_platform/
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 2026-11-19 頁面顯示目前版本 5.0
+      - type: security
+        title: Red Hat Product Errata,以產品 OpenShift Container Platform 篩選
+        url: https://access.redhat.com/errata/
+        status: searched
+      - type: security
+        title: Red Hat Security Bulletins(RHSB)
+        url: https://access.redhat.com/security/vulnerabilities/
+        status: unverified
+
+  - id: 20
+    name: 3scale
+    vendor: Red Hat
+    sources:
+      - type: release
+        title: Red Hat 3scale API Management 2.16 文件首頁(含 Release Notes)
+        url: https://docs.redhat.com/en/documentation/red_hat_3scale_api_management/2.16
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        fetch: browser
+      - type: security
+        title: Red Hat 3scale API Management 產品頁(含 Latest security advisories)
+        url: https://access.redhat.com/products/red-hat-3scale-api-management
+        status: searched
+      - type: lifecycle
+        title: Red Hat 3scale API Management - Component Details
+        url: https://access.redhat.com/node/2787991
+        status: searched
+
+  - id: 21
+    name: JBCS httpd
+    full_name: Red Hat JBoss Core Services Apache HTTP Server
+    vendor: Red Hat
+    sources:
+      - type: release
+        title: Red Hat JBoss Core Services 文件首頁(含各 Service Pack Release Notes)
+        url: https://docs.redhat.com/en/documentation/red_hat_jboss_core_services
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 2026-11-19 頁面顯示目前版本 2.4.62
+      - type: security
+        title: Red Hat Product Errata,以產品 Red Hat JBoss Core Services 篩選
+        url: https://access.redhat.com/errata/
+        status: searched
+        note: 搜尋結果看到的最新一則是 RHSA-2026:27200(mod_proxy_ajp CVE-2026-28780)
+
+  - id: 22
+    name: Rancher / RKE2
+    vendor: SUSE
+    sources:
+      - type: release
+        title: Rancher Manager v2.12 Release Notes(以 v2.12.9 頁為入口)
+        url: https://documentation.suse.com/cloudnative/rancher-manager/v2.12/en/release-notes/v2.12.9.html
+        status: searched
+        version_specific: true
+      - type: release
+        title: RKE2 Release Notes(以 v1.35.X 頁為入口)
+        url: https://documentation.suse.com/cloudnative/rke2/latest/en/release-notes/v1.35.X.html
+        status: verified
+        verified_on: 2026-11-19
+        version_specific: true
+        note: 取代 v1.32.X.html(2026-11-19 回 404,v1.32 已移到舊版區)。現行另有 v1.34.X,該頁網址未逐一打開
+      - type: security
+        title: Rancher Security Advisories and CVEs
+        url: https://ranchermanager.docs.rancher.com/reference-guides/rancher-security/security-advisories-and-cves
+        status: searched
+      - type: security
+        title: RKE2 GitHub Security
+        url: https://github.com/rancher/rke2/security
+        status: searched
+      - type: security
+        title: SUSE Rancher Security
+        url: https://www.suse.com/support/security/rancher-security/
+        status: searched
+
+  - id: 23
+    name: NKP
+    full_name: Nutanix Kubernetes Platform
+    vendor: Nutanix
+    sources:
+      - type: release
+        title: Nutanix Community Product Updates(NKP 各版公告)
+        url: https://next.nutanix.com/product-updates
+        status: searched
+        note: 完整 release notes 在 Nutanix Portal,需要登入;搜尋結果顯示目前有 NKP 2.19
+      - type: security
+        title: Nutanix Security Advisories
+        url: https://portal.nutanix.com/page/documents/security-advisories/list
+        status: verified
+        verified_on: 2026-11-19
+        fetch: browser
+        note: 訪客身分即可讀,不用登入
+
+  - id: 24
+    name: Confluent Platform
+    vendor: Confluent
+    sources:
+      - type: release
+        title: Confluent Platform Release Notes
+        url: https://docs.confluent.io/platform/current/release-notes/index.html
+        status: unverified
+      - type: security
+        title: Security Advisories and Security Release Notes(Confluent Support Portal)
+        url: https://support.confluent.io/hc/en-us/sections/360008413952-Security-Advisories-and-Security-Release-Notes
+        status: searched
+
+  - id: 25
+    name: Palsys One
+    vendor: Palsys(底層為 HCL AppScan 雲端掃描)
+    note: 自有品牌服務,沒有外部 release note。這裡改追底層的 HCL AppScan 雲端服務
+    sources:
+      - type: release
+        title: HCL AppScan on Cloud What's new
+        url: null
+        status: none
+        note: 2026-11-19 的搜尋沒有找到 AppScan on Cloud 的更新頁,需另外確認
+      - type: release
+        title: What's new in HCL AppScan 360°(頁面會提到 AppScan on Cloud 的整合更新)
+        url: https://help.hcl-software.com/appscan/360/2.2.0/360_whats_new.html
+        status: searched
+        version_specific: true
+
+  - id: 26
+    name: CMC
+    full_name: IBM Certificate Management Console
+    vendor: IBM Expert Labs
+    public_sources: false
+    note: IBM Expert Labs 自行建置的資產,網路上沒有公開的 release note 或安全公告(George 於 2026-11-19 確認,查不到沒關係)。每天不用檢查,固定列在「無公開來源」清單。底層是 Vault,Vault 的更新看第 17 項
+    sources: []
