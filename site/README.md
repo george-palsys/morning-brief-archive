@@ -20,12 +20,12 @@
    npm run check:contrast
    ```
 
-   驗證預期：11 tests、11 pass、0 fail；CONTRAST OK: 36 CSS color pairs。測試中兩種故意製造的不一致會印 WARNING，該警告是測試證據。
+   驗證預期：16 tests、16 pass、0 fail；CONTRAST OK: 48 CSS color pairs。測試中兩種故意製造的不一致會印 WARNING，該警告是測試證據。對比包含兩種模式的 border-strong／bg、surface、surface-hover，低於 3:1 會停止；另逐項印出此六組實算值。不代表完整 WCAG 合規審查。
 
 3. 建置正式內容到尚不存在或空的輸出資料夾：
 
    ```powershell
-   npm run build
+   npm run build -- --base-path /morning-brief-archive/
    Get-Content -Encoding UTF8 _site/build-report.json
    (Get-ChildItem -LiteralPath _site/products -Filter *.html -File | Where-Object Name -ne index.html).Count
    ```
@@ -49,13 +49,14 @@ fixture 來源：george-palsys/morning-brief-archive 分支 preview-v2-2026-11-1
 
 ## 內容與導覽
 
-- README.md 轉 index.html，其他 .md 轉同名 .html；站內使用相對連結，支援 /morning-brief-archive/ 子路徑。
+- README.md 轉 index.html，其他 .md 轉同名 .html；一般頁面站內使用相對連結，支援 /morning-brief-archive/ 子路徑。只有 404 頁使用 --base-path 指定的絕對站內路徑（預設 /morning-brief-archive/），避免深層錯誤網址使資源解析錯誤；不使用 base 元素、404 不載入腳本，CSP base-uri 'none' 維持。base-path 只接受 /，或以 / 開頭及結尾、由英數字、底線與連字號組成的路徑。
 - daily/2026-11-19.md 保留原樣，轉 daily/2026-11-19.html，剝除 frontmatter，顯示「舊版格式」提示；不拿演練摘要取代舊版。
 - v3 日期資料夾需有 README.md、products.md、knowledge.md、cve.md、taiwan.md、ai.md、maintenance.md、meta.yaml，缺任何一個立即失敗；meta 欄位及型別也檢查。
 - 逐產品狀態取 products/README.md，與最新 v3 meta 的 products_updated、products_unconfirmed 交叉比對，不一致則印警告且在首頁與總表顯示。總表列數錯誤顯示實際列數；個別產品檔缺失會失敗。
 - 原始 HTML 轉義，來源圖片只顯示替代文字；拒絕危險 URL 協定與根路徑。來源外部連結加 noopener noreferrer，不另開視窗。
 - 每頁 CSP meta 禁止 inline script/style；搜尋以 textContent 建立結果。搜尋索引按月拆分，聚焦後才載入最近三個月，另可搜尋全部。
-- 關於頁列出製作與審查角色，包含 Vega 的 Security Code Review；列出分工不表示已完成審查。
+- 關於頁只呈現站台用途、來源、內容範圍與產生規則。
+- R4 依 Iris 更正規格，淺色 border-strong 改 #7d8690，對 bg／surface／surface-hover 分別為 3.69／3.47／3.17:1；深色 #8b949e 維持。實際值從 CSS 讀取並在對比檢查中驗證。
 
 ## CI 與部署（本 PR 不啟用）
 
@@ -73,7 +74,7 @@ PR 與 main push 都跑建置、資料測試、對比檢查並封裝 Pages artif
 - Rigel 的獨立內容／連結／產出驗證與 Vega 的獨立 Security Code Review。
 - 手動三態主題切換、列印樣式為設計規格選配，未實作；目前跟隨系統深淺色。
 - 摘要卡片無宣告則數時以「小節」數顯示，未把結尾輔助清單猜成新聞數。新聞標題錨點以 item-N 編號，重排後不保證原分享網址仍指向同一則。
-- 404.html 含相對首頁連結；Pages 對任意深層不存在網址套用 404 時，相對資源與連結的實際行為仍待上線驗證。
+- 404 已用本機 HTTP 測試模擬三種 base-path 與三種深度，確認錯誤網址回 404、其 CSS 與站內導覽回 200；真正 Pages 部署仍未驗證。
 
 ## 官方依據
 
