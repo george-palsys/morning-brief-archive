@@ -127,7 +127,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       for (const file of ['README.md', 'products.md', 'knowledge.md', 'cve.md', 'taiwan.md', 'ai.md', 'maintenance.md', 'meta.yaml']) if (!exists(`${base}/${file}`)) throw Error(`${base}/${file} 缺檔，停止建置`);
       const meta = parse(read(`${base}/meta.yaml`));
       for (const key of ['title', 'date', 'weekday', 'type', 'collected_at', 'cve_ids', 'products', 'tags', 'spec_version', 'products_checked', 'products_updated', 'products_unconfirmed', 'cicd_tools_updated']) if (meta?.[key] === undefined || meta[key] === null) throw Error(`${base}/meta.yaml 缺欄位 ${key}`);
-      if (meta.date !== name || meta.spec_version !== 3 || meta.products_checked !== 26 || !Number.isFinite(Date.parse(meta.collected_at))) throw Error(`${base}/meta.yaml 日期、版本或檢查數無效`);
+      if (meta.date !== name || ![3, 4].includes(meta.spec_version) || meta.products_checked !== 26 || !Number.isFinite(Date.parse(meta.collected_at))) throw Error(`${base}/meta.yaml 日期、版本或檢查數無效`);
       for (const key of ['cve_ids', 'products', 'tags', 'products_updated', 'products_unconfirmed', 'cicd_tools_updated']) if (!Array.isArray(meta[key]) || meta[key].some(x => typeof x !== 'string')) throw Error(`${base}/meta.yaml ${key} 必須是字串陣列`);
       for (const key of ['title', 'date', 'weekday', 'type', 'collected_at']) if (typeof meta[key] !== 'string' || !meta[key].trim()) throw Error(`${base}/meta.yaml ${key} 必須是非空字串`);
       const publishedRehearsal = publishedRehearsals.some(record => ['date', 'type', 'title', 'collected_at'].every(key => record[key] === meta[key]));
