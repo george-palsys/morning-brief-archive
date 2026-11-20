@@ -550,11 +550,37 @@ for (const weekly of [false, true]) {
   f.meta.weekday = '星期五';
   if (weekly) f.edit('knowledge.md', s => s + '\n## 本週回顧\n\n本週學習回顧內容。\n\n## 本週動手題\n\n實作目標與預期結果。\n');
   const html = f.run()('knowledge');
-  assert.equal((html.match(/class="news-card v4-entry"/g) || []).length, 6);
+  assert.equal((html.match(/class="news-card v4-entry"/g) || []).length, weekly ? 8 : 6);
   if (weekly) {
    assert.match(html, /本週回顧<\/h2>[\s\S]*本週學習回顧內容。/);
    assert.match(html, /本週動手題<\/h2>[\s\S]*實作目標與預期結果。/);
    assert.equal((html.match(/class="item-title"/g) || []).length, 6);
+   assert.equal((html.match(/class="v4-keyword"/g) || []).length, 6);
+   assert.equal((html.match(/class="weekly-title"/g) || []).length, 2);
   }
  });
 }
+test('SPEC v4 rejects weekly sections before knowledge entries', () => {
+ const f = v4CaseFixture();
+ f.edit('knowledge.md', s => s.replace(/^### /m, '## 本週回顧\n\n回顧內容。\n\n### '));
+ assert.throws(() => f.run(), /週五小節必須放在所有條目之後/);
+});
+test('SPEC v4 rejects knowledge entries after a weekly section', () => {
+ const f = v4CaseFixture();
+ let entry = 0;
+ f.edit('knowledge.md', s => s.replace(/^### /gm, heading => ++entry === 4
+  ? '## 本週回顧\n\n回顧內容。\n\n' + heading : heading));
+ assert.throws(() => f.run(), /週五小節之後不得再有條目標題/);
+});
+test('display rendering rejects fewer output entries than metadata', () => {
+ assert.throws(() => markdown('# 新知識\n\n一般文字。', {
+  section: 'knowledge', display: [{ short: '測試', keyword: 'TEST' }]
+ }), /display.knowledge 項目數與輸出條目數不一致/);
+});
+test('SPEC v4 rejects entries after weekly section even across another h2', () => {
+ const f = v4CaseFixture();
+ let entry = 0;
+ f.edit('knowledge.md', s => s.replace(/^### /gm, heading => ++entry === 4
+  ? '## 本週回顧\n\n回顧內容。\n\n## 其他內容\n\n' + heading : heading));
+ assert.throws(() => f.run(), /週五小節之後不得再有條目標題/);
+});

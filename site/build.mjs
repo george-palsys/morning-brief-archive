@@ -34,14 +34,20 @@ export function markdown(source, { section = '', summary = false, display } = {}
     .split(/\r?\n/).filter(line => !/^\[← (?:今日摘要|26 項產品現況)\]/.test(line)).join('\n');
   source = source.replace(/^> 歷史演練分檔：[^\n]*(?:\n|$)/gm, '');
   const tokens = md.parse(source, {});
-  const toc = []; let n = 0; let headers = []; let tableN = 0; let weekly = false;
+  const toc = []; let n = 0; let headers = []; let tableN = 0; let weeklyStarted = false;
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
     if (t.type === 'heading_open') {
       let level = Number(t.tag.slice(1));
-      if (section === 'knowledge' && level === 2) {
-        weekly = ['本週回顧', '本週動手題'].includes(plain(tokens[i + 1].content));
-        if (weekly) t.attrSet('class', 'weekly-title');
+      const weekly = section === 'knowledge' && level === 2 &&
+        ['本週回顧', '本週動手題'].includes(plain(tokens[i + 1].content));
+      if (weekly) {
+        if (weekly && n === 0) throw Error('knowledge：週五小節必須放在所有條目之後');
+        weeklyStarted = true;
+        t.attrSet('class', 'weekly-title');
+      }
+      if (section === 'knowledge' && level >= 3 && weeklyStarted) {
+        throw Error('knowledge：週五小節之後不得再有條目標題');
       }
       if (section && level >= 3) level--;
       if (level === 1) { tokens[i + 1].content = ''; tokens[i + 1].children = []; t.hidden = true; tokens[i + 2].hidden = true; continue; }
@@ -96,7 +102,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
     const html = starts.map((start, index) => {
       const part = tokens.slice(start + 3, starts[index + 1]);
       if (tokens[start].attrGet('class') === 'weekly-title') {
-        return `<article class="news-card">${render(tokens.slice(start, starts[index + 1]))}</article>`;
+        return `<article class="news-card v4-entry">${render(tokens.slice(start, starts[index + 1]))}</article>`;
       }
       const body = [], impact = [], sources = [];
       for (let i = 0; i < part.length; i++) {
@@ -124,6 +130,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
       return renderEntry(render(tokens.slice(start, start + 3)), main, display[entryIndex++], section,
         impact.length ? render(impact) : '', sources.length ? render(sources) : '');
     }).join('');
+    if (entryIndex !== display.length) throw Error(`display.${section} 項目數與輸出條目數不一致`);
     return { html, toc };
   }
   let html = md.renderer.render(tokens, md.options, {});
