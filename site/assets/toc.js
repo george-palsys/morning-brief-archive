@@ -46,3 +46,24 @@ if (typeof IntersectionObserver === 'function') {
  });
  document.querySelectorAll('.v4-fill').forEach(fill => scores.observe(fill));
 }
+const wave = document.querySelector?.('.v4-wave');
+if (wave && typeof IntersectionObserver === 'function') {
+ const articles = [...document.querySelectorAll('.v4-entry')];
+ const peaks = [...wave.children];
+ const active = new Set();
+ let selected = -1;
+ const readings = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+   const index = articles.indexOf(entry.target);
+   if (entry.isIntersecting) active.add(index);
+   else active.delete(index);
+  }
+  if (!active.size) return;
+  const next = Math.min(...active);
+  if (next === selected) return;
+  peaks[selected]?.classList.remove('current');
+  peaks[next]?.classList.add('current');
+  selected = next;
+ }, { rootMargin: '-20% 0px -50% 0px' });
+ articles.forEach(article => readings.observe(article));
+}
