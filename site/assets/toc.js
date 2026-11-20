@@ -36,3 +36,13 @@ if (attention) {
  setAttentionDefault();
  desktop.addEventListener('change', setAttentionDefault);
 }
+
+if (typeof IntersectionObserver === 'function') {
+ const scores = new IntersectionObserver((entries, observer) => {
+  for (const entry of entries) if (entry.isIntersecting) {
+   entry.target.classList.add('in');
+   observer.unobserve(entry.target);
+  }
+ });
+ document.querySelectorAll('.v4-fill').forEach(fill => scores.observe(fill));
+}

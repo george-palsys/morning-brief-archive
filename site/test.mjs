@@ -397,3 +397,40 @@ test('daily metadata accepts numeric v3 and v4, rejects unsupported versions', (
   assert.throws(() => run(dir), /meta.yaml 日期、版本或檢查數無效/);
  }
 });
+
+test('v4 fixture builds structured panels, source-specific scores and optional fallbacks', () => {
+ const dir = fixture();
+ const daily = path.join(dir, 'daily/2026-11-19');
+ fs.cpSync('daily/2026-11-19', daily, { recursive: true });
+ const source = path.join(daily, 'meta.yaml');
+ const base = parse(fs.readFileSync(source, 'utf8'));
+ const example = parse(fs.readFileSync('site/fixtures/meta.example.yaml', 'utf8'));
+ fs.writeFileSync(source, stringify({ ...base, ...example }));
+ const result = build({ input: dir, output: newDir('production-v4-') });
+ const overview = result.pages.get('daily/2026-11-19/index.html');
+ const cve = result.pages.get('daily/2026-11-19/cve.html');
+ const ai = result.pages.get('daily/2026-11-19/ai.html');
+ assert.ok(overview.includes(example.attention.title));
+ assert.ok(overview.includes(example.attention.summary));
+ assert.ok(overview.includes(example.display.knowledge[0].digest));
+ assert.ok(overview.includes(example.display.ai_summary));
+ assert.equal((overview.match(/class="v4-tile/g) || []).length, 26);
+ assert.match(cve, /w-100[^]*?CVSS 3\.1（The Hacker News）[^]*?w-95[^]*?CVSS 4\.0（The Hacker News）/);
+ assert.ok(cve.includes(example.display.cve[0].exploited_detail));
+ assert.ok(cve.includes(example.display.cve[2].patch_detail));
+ assert.ok(ai.includes(example.display.ai[2].caveat));
+ assert.match(overview, /class="v4-drill"/);
+ validatePages(result);
+ console.log('V4 FIXTURE OUTPUT: ' + result.output);
+ example.drill = false;
+ delete example.attention.facts;
+ delete example.display.ai_summary;
+ fs.writeFileSync(source, stringify({ ...base, ...example }));
+ const fallback = build({ input: dir, output: newDir('fallback-v4-') }).pages.get('daily/2026-11-19/index.html');
+ assert.ok(!fallback.includes('class="v4-drill"'));
+ assert.ok(!fallback.includes('with-facts'));
+ assert.ok(fallback.includes('4 則'));
+ example.display.cve.pop();
+ fs.writeFileSync(source, stringify({ ...base, ...example }));
+ assert.throws(() => build({ input: dir, output: newDir('invalid-v4-') }), /2026-11-19 cve：摘要則數/);
+});
