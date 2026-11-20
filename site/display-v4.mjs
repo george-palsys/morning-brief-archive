@@ -99,7 +99,7 @@ function scores(entry) {
 
 function badges(entry, section) {
   const values = [entry.date, entry.kind];
-  if (section === 'cve') values.push(...entry.cve_ids, entry.related ? relatedLabel : '');
+  if (section === 'cve') values.push(...entry.cve_ids, entry.related ? '與我們的產品線相關' : '');
   return values.filter(Boolean).map(value => `<span class="tag">${esc(value)}</span>`).join('');
 }
 

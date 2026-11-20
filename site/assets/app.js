@@ -54,7 +54,7 @@ if (bar) {
       const ok = (state === 'all' || li.dataset.status === state) && (!q || li.textContent.normalize('NFKC').toLowerCase().includes(q));
       li.hidden = !ok; if (ok) shown++;
     }
-    count.textContent = shown === items.length ? `共 ${shown} 項` : `顯示 ${shown} / ${items.length} 項產品`;
+    count.textContent = `目前顯示 ${shown} / ${items.length} 項`;
     empty.hidden = shown !== 0;
   };
   chips.forEach(c => c.addEventListener('click', () => { state = c.dataset.filter; chips.forEach(x => x.setAttribute('aria-pressed', String(x === c))); apply(); }));

@@ -137,6 +137,24 @@ test('v3 preview: 26 products, all status counts, sections, search and relative 
  console.log('V3 PRODUCT EVIDENCE: '+slugs.map(s=>`products/${s}.html`).join(', '));
  console.log('V3 FIXTURE OUTPUT: '+result.output);
 });
+test('home and search reject unlisted story paths and keep legacy original links', () => {
+ const dir = legacyFixture();
+ const indexFile = path.join(dir, 'items.jsonl');
+ const original = JSON.parse(fs.readFileSync(indexFile,'utf8').trim().split('\n')[0]);
+ fs.writeFileSync(indexFile, [
+  { ...original, id:'valid', category:'cve', title:'Verified legacy story', file:'2026-11-19.md' },
+  { ...original, id:'invalid', category:'cve', title:'Unlisted story', file:'daily/../SPEC.md' },
+ ].map(item=>JSON.stringify(item)).join('\n'));
+ const result = run(dir);
+ const home = result.pages.get('index.html');
+ assert.match(home, /https:\/\/github\.com\/george-palsys\/morning-brief-archive\/blob\/main\/daily\/2026-11-19\.md/);
+ assert.ok(home.includes('Verified legacy story'));
+ assert.ok(!home.includes('Unlisted story'));
+ assert.ok(result.warnings.some(warning=>warning.includes('invalid')));
+ const index = JSON.parse(fs.readFileSync(path.join(result.output,'search/index-2026-11.json'),'utf8'));
+ assert.deepEqual(index.map(item=>item.id), ['valid']);
+});
+
 test('missing meta.yaml fails before writing output', () => {
  const dir = fixture(); fs.unlinkSync(path.join(dir,'daily/2026-11-19/meta.yaml'));
  assert.throws(()=>run(dir),/meta.yaml 缺檔/);

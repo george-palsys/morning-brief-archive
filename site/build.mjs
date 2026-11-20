@@ -326,7 +326,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     page(file, `${product.name} – 產品現況`, `${crumbs(file, 'products', product.name)}<h1>${esc(product.name)}</h1>${link(file, 'products/index.html', '← 26 項產品現況')}${r ? `<p>${badge(r.state)} ${esc(r.reason)}</p>` : ''}${content}<nav class="adjacent" aria-label="相鄰產品">${i ? link(file, `products/${slugs[i - 1]}.html`, `← ${catalog[i - 1].name}`) : ''}${i < 25 ? link(file, `products/${slugs[i + 1]}.html`, `${catalog[i + 1].name} →`) : ''}</nav>`, 'products', exists(source) ? source : 'products.yaml');
   }
   const directoryFile = 'products/index.html';
-  const boundLink = file => (target,label,klass) => `<a${klass ? ` class="${klass}"` : ''} href="${esc(sitePath(file,target))}">${esc(label)}</a>`;
+  const boundLink = file => (target,label,klass,decoration = '') => `<a${klass ? ` class="${klass}"` : ''} href="${esc(sitePath(file,target))}">${esc(label)}${decoration}</a>`;
   page(directoryFile, '26 項產品追蹤', directory({
     rows, catalog:catalog.map((product,i)=>({ ...product, slug:slugs[i] })), link:boundLink(directoryFile),
     badge, warnings:warningHtml(), empty,
@@ -368,18 +368,25 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   const homeFile = 'index.html';
   const dateLink = latest ? `<p class="home-entry">${link(homeFile, latest.href, '閱讀最新一天晨報 →')}</p>` : '';
   const fallback = dateLink + attention + (summaryCards || '<p>目前沒有晨報資料。</p>');
+  const index = [];
+  const linkedStories = [];
+  for (const item of stories) {
+    let source = typeof item.file === 'string' ? item.file : '';
+    if (/^\d{4}-\d{2}-\d{2}\.md$/.test(source)) source = `daily/${source}`;
+    const file = url(source);
+    if (!/^(?:daily|products)\/[A-Za-z0-9_/-]+\.md$/.test(source) || !pages.has(file) || !exists(source)) {
+      warn(`搜尋項目 ${item.id} 指向不存在的頁面 ${file}，不加入索引`);
+      continue;
+    }
+    linkedStories.push({ ...item, source });
+    index.push({ id:item.id, date:item.date, category:item.category, title:item.title,
+      products:item.products || [], cve_ids:item.cve_ids || [], summary:String(item.summary || '').slice(0, 160), file });
+  }
   page(homeFile, '今日晨報', archiveNotice(latest, homeFile, mergedSnapshotNotice ? `<p>${missingSnapshot}</p>` : '') + warningHtml() +
-    homepage({day:latest, time:latest ? collectionTime(latest) : '', rows, catalog, stories, link:boundLink(homeFile), badge, fallback}));
+    homepage({day:latest, time:latest ? collectionTime(latest) : '', rows, catalog, stories:linkedStories, link:boundLink(homeFile), badge, fallback}));
   page('about.html', '關於與產生規則', `<h1>關於晨報歸檔</h1><p>內容為彙整，以原廠頁面為準。</p><p><a href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer">晨報產生規則 SPEC.md</a></p><div class="prose">${markdown(read('README.md')).html.replace(/href="(SPEC|products)\.html"/g, (_, name) => name === 'SPEC' ? 'href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer"' : 'href="products/index.html"')}</div>`, 'about', 'README.md');
   page('404.html', '找不到頁面', `<h1>找不到頁面</h1><p>這個網址可能已變更，或這一天還沒有晨報。可以從下面三個入口繼續。</p><p class="actions"><a class="btn btn--primary" href="${esc(sitePath('404.html', 'index.html'))}">回到首頁</a><a class="btn" href="${esc(sitePath('404.html', 'daily/index.html'))}">每日清單</a><a class="btn" href="${esc(sitePath('404.html', 'search/index.html'))}">搜尋晨報</a></p>`);
   page('search/index.html', '搜尋晨報', `<h1>搜尋晨報</h1><noscript><p>搜尋需要 JavaScript，你也可以直接用瀏覽器的頁內搜尋或 <a href="https://github.com/george-palsys/morning-brief-archive/search" rel="noopener noreferrer">GitHub 倉庫搜尋</a>。</p></noscript><div id="search-ui" hidden><label for="query">搜尋晨報</label><input id="query" type="search" autofocus autocomplete="off" enterkeyhint="search"><fieldset><legend>類別</legend>${[['cve', 'CVE'], ['taiwan-it', '台灣 IT'], ['ai', 'AI'], ['product', '產品'], ['knowledge', '新知識']].map(([k, v]) => `<label><input type="checkbox" name="category" value="${k}" checked>${v}</label>`).join('')}</fieldset><label for="range">時間範圍</label><select id="range"><option value="all">全部</option><option value="30">近 30 天</option></select><button id="all" type="button">搜尋全部（較慢）</button><p id="search-status" aria-live="polite">輸入關鍵字搜尋，預設載入最近 3 個月。</p><ol id="results" hidden></ol></div>`, 'search');
-  const index = [];
-  for (const item of stories) { let file = String(item.file || '');
-    if (/^\d{4}-\d{2}-\d{2}\.md$/.test(file)) file = `daily/${file}`;
-    file = url(file);
-    if (!pages.has(file)) { warn(`搜尋項目 ${item.id} 指向不存在的頁面 ${file}，不加入索引`); continue; }
-    index.push({ id: item.id, date: item.date, category: item.category, title: item.title, products: item.products || [], cve_ids: item.cve_ids || [], summary: String(item.summary || '').slice(0, 160), file });
-  }
   const months = [...new Set(index.map(i => i.date.slice(0, 7)))].sort().reverse();
   const productIndex = catalog.map((p, i) => ({ id: `product-${p.id}`, date: '', category: 'product', title: p.name, products: [p.name], cve_ids: [], summary: '', file: `products/${slugs[i]}.html` }));
   const files = new Map(pages);
