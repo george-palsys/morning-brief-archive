@@ -4,7 +4,7 @@
 - 撰寫：Quill（文件撰寫）。本文件是整理，不是驗收；不是顧問服務紀錄。
 - 對象：`george-palsys/morning-brief-archive` 的 PR #27「feat: 將方案 C 套用到晨報網站」，分支 `feat/design-c-phase2`，base 為 `main` 的 `aa18f7d`（PR #26 合併後）。
 - 紀錄狀態：PR #27 **未合併**（Quill 以匿名 GitHub API 讀取：state open、draft false、merged false、mergeable_state clean）。目前 head 為 `e741e0e682f0ba016011d25b047aa659525e1b58`。本文件寫的是合併前的狀態；合併後要補第 4、9 章。
-- **後續狀態（2026-11-20 補記）**：上一行「未合併」是撰寫當時的狀態。PR #27 已於 2026-11-20 20:07:22（台灣時間）以 squash 合併為 `ef7c1ce358c48effeb576f76e9a8d12d87d71335`（Quill 用 `git log` 讀到 commit 時間與 parent `aa18f7d`；合併 commit 含本文件，370 行）。Static site 第 60 次部署成功、線上複驗見 5.10（部署次數與線上結果來自 Rigel 報告與 Ada 轉達，Quill 未獨立查證）。後續 PR #28（分支 `fix/design-c-followup`，從 `ef7c1ce` 開出）處理 Iris 的後續建議，經兩輪設計審查（第一輪退修 B1、B2）後，已於 2026-11-20 20:51:40（台灣時間）以 squash 合併為 `2166673b6091861f1f45fc07fc32ad3c3bd0f29f`（Quill 用 `git log` 讀到 commit 時間與 parent `ef7c1ce`；Quill 另確認 PR #28 最終 head `77b913b7d172311697e80b8e32fe6f1d5ea8d87a` 與 `2166673` 的檔案內容相同，`git diff` 為空）。Static site 第 64 次部署成功（約 21:00，來自 Ada 轉達，Quill 未獨立查證）。PR #28 的審查經過見 5.14，合併後線上複驗見 5.15（**待 Rigel 回報，未驗證**）。本文件於 PR #28 內已隨同合併，目前為 440 行；本次更新在 `2166673` 之上再補內容。
+- **後續狀態（2026-11-20 補記）**：上一行「未合併」是撰寫當時的狀態。PR #27 已於 2026-11-20 20:07:22（台灣時間）以 squash 合併為 `ef7c1ce358c48effeb576f76e9a8d12d87d71335`（Quill 用 `git log` 讀到 commit 時間與 parent `aa18f7d`；合併 commit 含本文件，370 行）。Static site 第 60 次部署成功、線上複驗見 5.10（部署次數與線上結果來自 Rigel 報告與 Ada 轉達，Quill 未獨立查證）。後續 PR #28（分支 `fix/design-c-followup`，從 `ef7c1ce` 開出）處理 Iris 的後續建議，經兩輪設計審查（第一輪退修 B1、B2）後，已於 2026-11-20 20:51:40（台灣時間）以 squash 合併為 `2166673b6091861f1f45fc07fc32ad3c3bd0f29f`（Quill 用 `git log` 讀到 commit 時間與 parent `ef7c1ce`；Quill 另確認 PR #28 最終 head `77b913b7d172311697e80b8e32fe6f1d5ea8d87a` 與 `2166673` 的檔案內容相同，`git diff` 為空）。Static site 第 64 次部署成功（約 21:00，來自 Ada 轉達，Quill 未獨立查證）。PR #28 的審查經過見 5.14，合併後線上複驗見 5.15（Rigel 自報，未由第二人重跑；Chromium 範圍）。本文件於 PR #28 內已隨同合併，目前為 440 行；本次更新在 `2166673` 之上再補內容。
 - 審查狀態：驗證（Rigel）、安全審查（Vega）、設計審查（Iris）各兩輪。第一輪 head `f1dd64ccc3728b82c41d9e932e42f8ab4bcf4f40`，Iris 阻擋 2 項（B1、B2）；Lin 修成 `e741e0e`；第二輪三關皆無阻擋項。這不是「全部通過」，仍有已知限制與未驗證項目（第 8 章）。
 - 資料來源（只寫檔名，不寫路徑）：
   - Rigel：`rigel-verification-pr27.md`（第一輪，針對 `f1dd64c`）、`rigel-verification-pr27-r2.md`（第二輪，針對 `e741e0e`）。
@@ -384,7 +384,52 @@ Rigel 報告中的截圖（16 張）與腳本只存在他的資料夾，不在�
 
 ### 5.15 合併後線上複驗（PR #28，`2166673`）
 
-**待 Rigel 線上複驗回報，未驗證。** 此處不填任何數字。Ada 表示結果之後會交給 Quill 補記，屆時以新增一節或另行處理為準。
+**Rigel 自報，未由第二人重跑。** 對象：約 21:00 部署的線上站（Static site 第 64 次部署，部署次數為 Ada 轉達，Quill 未查證）。以下數字來自 Rigel 的線上複驗，經 Ada 轉達；Quill 沒有開線上站、沒有讀 Rigel 報告原檔，只有第 4 項的本機側有自己核對（見該項）。量測環境：Chromium（Rigel 說明用 mobile emulation 的量測見 D15）。
+
+**1. `cve.html`（VMware 那則）版面量測**（單位 px；「欄距」水平者為雙欄間距，垂直者為規格欄距標題；溢位為橫向溢位）
+
+| # | 視窗寬度 | 內容欄寬 | 規格欄寬 | 規格欄距標題 | 標題左緣 | 清單左緣 | 溢位 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 1440 | 584 | 208 | 水平欄距 20 | 556.5 | 556.5 | 0 |
+| 2 | 1360 | 521 | 208 | 水平欄距 20 | 548 | 548 | 0 |
+| 3 | 1359 | 748 | 672 | 垂直 12 | 320 | 320 | 0 |
+| 4 | 1280 | 669 | 669 | 垂直 12 | 320 | 320 | 0 |
+| 5 | 1024 | 410.28 | 410.28 | 垂直 12 | 318.72 | 318.72 | 0 |
+| 6 | 720 | 370.41 | 370.41 | 垂直 12 | 309.59 | 309.59 | 0 |
+| 7 | 390 | 326 | 326 | 垂直 12 | 32 | 32 | 0 |
+
+淺色與深色各量一次，數值相同；7 個寬度的規格欄皆在內文之前。720、390 的內容欄寬與 Lin、Iris 的量測不同，見 D15。
+
+**2. `ai.html` 行內 code 與浮水印**
+
+| # | 項目 | Rigel 自報結果 |
+| --- | --- | --- |
+| 1 | 淺色行內 code | 文字 `#ffffff` 於 `#27303b`，13.36:1（Quill 以 token 值自算相符，見 5.13） |
+| 2 | 深色行內 code | 文字 `#15181b` 於 `#d5dbe0`，12.76:1（Quill 自算相符） |
+| 3 | `.v4-keyword` 的 `display` | `none` |
+
+**3. 溢位抽驗**（`innerWidth`／`clientWidth`／`scrollWidth`；溢位 0）
+
+| # | 頁面 | 1440 寬 | 390 寬 |
+| --- | --- | --- | --- |
+| 1 | 首頁 | 1440／1425／1425 | 390／390／390 |
+| 2 | 日報摘要 | 1440／1425／1425 | 390／390／390 |
+| 3 | 產品總覽 | 1440／1425／1425 | 390／390／390 |
+| 4 | OpenShift 產品頁 | 1440／1425／1425 | 390／390／390 |
+
+**4. 線上與 `main` `2166673` 本機建置的位元組比對**
+
+| # | 檔案 | 大小 | SHA-256 前 8 碼 | Rigel 自報比對結果 | Quill 本機建置側核對 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `cve.html` | 19,798 B | `c2de35c7` | 相符 | Quill 在 `2166673` 本機建置的 `daily/2026-11-20/cve.html`：19,798 B、`c2de35c7`，與 Rigel 回報相同 |
+| 2 | `ai.html` | 14,090 B | `fad3beb1` | 相符 | Quill 本機建置：14,090 B、`fad3beb1`，相同 |
+| 3 | `design-c.css` | 12,643 B | `7bc4409b` | 相符 | Quill 本機建置：12,643 B、`7bc4409b`，相同 |
+
+Quill 只核對了「本機建置的大小與雜湊與 Rigel 回報一致」；**線上檔案本身 Quill 沒有下載比對**，所以「線上與本機相符」仍是 Rigel 自報。
+
+**5. 截圖**：Rigel 回報 6 張（`cve.html` 在 1440、1359、390 各淺色、深色一張）；截圖只存在 Rigel 的工作資料夾，不在本 repo，Quill 沒有看過，本文件不放檔案路徑。
+
+**範圍**：只涵蓋上列 Chromium 量測。Firefox、Safari、實體手機、螢幕閱讀器仍未驗證（U7–U10）。
 
 ## 6 如何套用到別的專案
 
@@ -451,7 +496,7 @@ Rigel 報告中的截圖（16 張）與腳本只存在他的資料夾，不在�
 | U24 | 線上站實測（5.10） | Rigel | 全部為 Rigel 自報、未由第二人重跑；Quill 沒有開線上站。U11 的「GitHub Pages 部署與線上頁面」因此變成「有 Rigel 單人自報，未獨立驗證」，不是「已驗證」 |
 | U25 | 附錄 A 的 D11（`:has()` 高度） | Rigel | Rigel 說第二輪 4806px 是誤記、兩個 head 重跑都是 5549px；Quill 本機有 Chrome，但未重跑此量測，**未驗證** |
 | U26 | PR #28 的畫面結果 | Iris、Rigel、Vega（Ada 轉達） | CVE 規格欄 grid、行內 code 對比、浮水印隱藏：已合併；畫面數值為 Iris、Rigel 回報，Quill 只讀 diff、自算 token 對比值並重跑 `main` 的測試，**沒有看畫面**（5.13、5.14）。Firefox、Safari、實體手機、螢幕閱讀器仍未驗證 |
-| U28 | PR #28 合併後線上複驗（5.15） | Rigel | **待 Rigel 回報，未驗證**；第 64 次部署成功為 Ada 轉達，Quill 未查證 |
+| U28 | PR #28 合併後線上複驗（5.15） | Rigel | Rigel 自報，未由第二人重跑；Quill 沒有開線上站、沒有下載線上檔案比對，只核對本機建置的大小與雜湊與 Rigel 回報相同；第 64 次部署成功為 Ada 轉達，Quill 未查證；僅限 Chromium，6 張截圖 Quill 未看 |
 | U29 | Rigel、Iris、Vega 對 PR #28 的報告原檔 | Quill | 5.14 的數字與結論都是 Ada 轉達，Quill 沒有讀報告原檔 |
 | U27 | 抽驗以外 42 頁的線上內容與本機建置是否一致 | Rigel | 只抽 5 頁 |
 
@@ -474,7 +519,7 @@ Rigel 報告中的截圖（16 張）與腳本只存在他的資料夾，不在�
 | K13 | S10：「← 26 項產品現況」連結僅 21px 高，低於 44px 觸控區 | Iris | 建議；第二輪仍是文字連結 |
 | K14 | NGINX2Root（CVE-2026-123007）在首頁與日報的 CVE 清單顯示「CVSS 未提供」與「攻擊現況未寫明」，但同頁頭條事實欄寫 CVSS 3.1 8.1 與「PoC 已公開」。原因是來源資料：`daily/2026-11-20/meta.yaml` 的 `display.cve` 該項為 `cvss: []`、`exploited: unknown`，頭條事實來自另一個區塊 `attention.facts`（兩處各自獨立填寫）。這不是顯示程式的問題；內容檔沒有改 | Lin 與 Rigel 各自查到相同結論（Ada 轉達）；Rigel 報告附行號；Quill 讀 `meta.yaml` 確認該項 `cvss: []`、`exploited: unknown`，Quill 沒有重做顯示程式邏輯的追查 | 待 George 決定要不要補來源資料 |
 | K15 | 同檔 `display.cve` 的另一項「Java4Shell 後續」（CVE-2026-114938）也是 `cvss: []`、`exploited: unknown`（另有 `exploited_detail`）。Quill 讀 `meta.yaml` 時看到，沒有人報告過 | Quill 觀察；顯示效果未在畫面上確認 | 與 K14 同一類來源資料問題，併入 George 的決定 |
-| K16 | PR #28 處理三項，已於 `2166673` 合併（原先標「審查中」，現更新為實際結果）：(1) CVE 規格欄由 float 改 grid（對應 K1）：≥1360px 為雙欄，以下單欄、順序為標題、規格欄、內文；經 B1、B2 退修後，最終數值見 5.14。(2) AI 頁「影響」區塊行內 code（對應 K4）：淺色 13.36:1、深色 12.76:1（Iris、Rigel 各自量；Quill 以 token 值自算相符），原 `main` 為 1.07:1、1.02:1。(3) 關鍵字浮水印（對應 K7）：定案為隱藏（`.v4-page .v4-keyword { display:none; }`），Iris 理由為 `aria-hidden` 純裝飾、識別資訊已在規格欄與日期標籤。Iris 的 S12、S13 也已處理 | Iris、Rigel、Vega 回報（Ada 轉達）；Quill 讀 `2166673` 的 CSS 與 diff、重跑測試 | 已合併；**實機、Firefox、Safari、螢幕閱讀器、線上頁面仍未驗證**（U26、U28）；K1、K4、K7 的原文是合併前狀態，以本列為準 |
+| K16 | PR #28 處理三項，已於 `2166673` 合併（原先標「審查中」，現更新為實際結果）：(1) CVE 規格欄由 float 改 grid（對應 K1）：≥1360px 為雙欄，以下單欄、順序為標題、規格欄、內文；經 B1、B2 退修後，最終數值見 5.14。(2) AI 頁「影響」區塊行內 code（對應 K4）：淺色 13.36:1、深色 12.76:1（Iris、Rigel 各自量；Quill 以 token 值自算相符），原 `main` 為 1.07:1、1.02:1。(3) 關鍵字浮水印（對應 K7）：定案為隱藏（`.v4-page .v4-keyword { display:none; }`），Iris 理由為 `aria-hidden` 純裝飾、識別資訊已在規格欄與日期標籤。Iris 的 S12、S13 也已處理 | Iris、Rigel、Vega 回報（Ada 轉達）；Quill 讀 `2166673` 的 CSS 與 diff、重跑測試 | 已合併；**Chromium 線上已由 Rigel 自報驗證（5.15，未由第二人重跑）；Firefox、Safari、實機、螢幕閱讀器仍未驗證**（U7–U10、U26、U28）；K1、K4、K7 的原文是合併前狀態，以本列為準 |
 | K17 | 日報摘要頁仍是 26 格同尺寸方塊（K2）；PR #28 沒有處理 | Quill 讀 `2166673` 對 `ef7c1ce` 的檔案清單（只動 `design-c.css`、`contrast.mjs`、`display-v4.mjs` 與本文件） | 未處理 |
 | K18 | S14：長 CVE 編號在窄欄於連字號處折行 | Iris（Ada 轉達） | 已知限制，本輪不做 |
 | K19 | S15：1200–1359px 為單欄，規格欄寬 672px，比內文欄 748px 窄 | Iris（Ada 轉達） | 已知限制，本輪不做 |
@@ -492,6 +537,7 @@ Rigel 報告中的截圖（16 張）與腳本只存在他的資料夾，不在�
 | 2026-11-20 | Quill | 新增本文件：PR #27（方案 C Phase 2）實作紀錄；兩輪三關審查、B1／B2 與 Lin 的修正、已知限制、未驗證項目、資料不一致列表 | Ada 轉達 George「採用方案 C」；數字與結論來源見各章 |
 | 2026-11-20 | Quill | 補記：PR #27 於 20:07:22 以 squash 合併為 `ef7c1ce`，Static site 第 60 次部署成功（部署次數為 Rigel 報告與 Ada 轉達，Quill 未獨立查證）；PR #27 說明寫 24 組配色，head 實際 26 組，說明未更新。新增 4.2（token）、5.10（線上複驗，Rigel 自報）、5.11（PR #28 head 重跑）、5.12（Quill 自查）、K14–K17、U24–U27、附錄 A 的 D11–D13。PR #28 審查中 | Ada 轉達；`git log`；Rigel 的 `rigel-live-verification.md` |
 | 2026-11-20 | Quill | PR #28 後續補記：PR #28 於 20:51:40 以 squash 合併為 `2166673`，第 64 次部署成功（Ada 轉達，Quill 未查證）；記 Iris 第一輪 B1、B2 退修、Lin 改為 ≥1360px 才雙欄、最終數值與 Vega 兩輪阻擋 0（皆回報、Ada 轉達，見 5.14）；新增 5.13（Quill 在 `2166673` 重跑 45/45、98 組、47 頁、0 警告）、5.15（線上複驗，待 Rigel 回報，未驗證）；更新 4.2（`shared/tokens.css` 不在本 repo，7 個 token 定義記於本文件）、K16（由審查中改為已合併）、K18–K21、U26、U28、U29、附錄 A 的 D14–D16；第 7 章第 6、7 列同步 | Ada 轉達；Quill 讀 `git log`、`git diff`、CSS 與重跑輸出 |
+| 2026-11-20 | Quill | PR #28 線上複驗補記（接續上一列，不改上一列）：5.15 由「待複驗」改為 Rigel 自報的線上複驗結果（cve.html 七個寬度版面量測、ai.html 行內 code 與浮水印、溢位抽驗、位元組比對，標「Rigel 自報，未由第二人重跑」）；D15 補 Rigel 的捲軸說明（標未獨立驗證）；K16、U28 與第 1 列後續狀態同步；上一列中「線上複驗（待 Rigel 回報，未驗證）」之處以本列為準。S14–S16、K21 與 `daily/` 未動 | Ada 轉達 Rigel；Quill 核對本機建置的大小與雜湊 |
 
 ---
 
@@ -513,5 +559,5 @@ Rigel 報告中的截圖（16 張）與腳本只存在他的資料夾，不在�
 | D12 | D6 的更新：站內連結 2,198 對 2,590 | Rigel：第一輪只計排除外連的內部連結（2,198），第二輪計全部 `href`（2,590，含 392 條外部/錨點） | Quill 在 PR #28 head 建置輸出自算：全部 `href` 2,590、`http(s):`／`mailto:` 392、排除外連 2,198（含純錨點 350 條） | **兩個總數 Quill 查證相符**，「統計範圍不同」成立；Rigel 對 392 的描述不精確（392 全是外部，錨點在 2,198 內）。查證對象是 PR #28 head 的建置，不是 `ef7c1ce` |
 | D13 | D3 的更新：「script 0」 | Rigel：他指的是「無行內 script、無外部 http script」，同源 `toc.js`、`search.js` 本來就在 | Quill 在 PR #28 head 建置輸出：48 個 script 標籤，皆為同源、帶 `defer` 的 `toc.js`（47）與 `search.js`（1），無行內、無外部 | **Quill 查證：Rigel 的說明與事實相符**；他第二輪報告原文寫「0」的措辭仍不精確，這是他自己承認的表述問題 |
 | D14 | D11 的再更新：`:has()` 失效時首頁（390 寬）高度 5549px 的原因 | Rigel 在 PR #27 第二輪（線上複驗說明）：4806px 是漏回傳 `scrollHeight`、誤填舊草稿數值。Rigel 在 PR #28 審查時：是推算 section top 偏移的中間數值誤植 | Rigel 在 PR #28 head 重跑，`:has()` 失效首頁 390 寬 `scrollHeight` 為 5549px（Ada 轉達）；原型 4802px 仍無人說明 | **原因不明，5549px 為實測值。** Rigel 前後兩種說法不同，兩種都沒有證據（Quill 沒有讀到腳本或原始輸出），也沒有重跑。以 5549px 為準，4806px 視為不可採信 |
-| D15 | 內容欄寬：720 與 390 寬 | Rigel：370px（720 寬）、326px（390 寬） | Lin 與 Iris：355px、310.7px（Ada 轉達） | **原因不明**，待 Rigel 說明；Quill 沒有重跑，不自行擇一。兩組數字都不影響 5.14 其他數值（1440、1360、1359、1280、1024 為 Iris 與 Rigel 各自量，Ada 轉達） |
+| D15 | 內容欄寬：720 與 390 寬 | Rigel 線上量（`div.design-cve-content`，`getBoundingClientRect` 與 `clientWidth`，border-box、無 padding）：720 為 370.41px、390 為 326px | Lin 與 Iris：355.1px、310.7px（Ada 轉達） | 兩者差在 720、390 皆為 15.3px。Rigel 說明：他用 Chromium mobile emulation（浮動捲軸不佔版面），Lin 與 Iris 用桌面視窗（15.3px 實體捲軸）。**Rigel 說明；差值與捲軸寬度吻合，但沒有人在同一環境切換捲軸驗證，仍標未獨立驗證**，不寫成已確認。Quill 沒有重跑，不自行擇一。其餘寬度（1440、1360、1359、1280、1024）的數字不受影響 |
 | D16 | `98c8fe3..77b913b` 的行數 | Rigel 曾寫：`design-c.css` +22、`display-v4.mjs` +2（Ada 轉達） | GitHub compare（Ada 轉達）：`design-c.css` +17／−5、`display-v4.mjs` +1／−1；Quill 用 `git diff --numstat 98c8fe3 77b913b` 讀到相同的 17／5 與 1／1 | **Quill 查證：GitHub 的數字正確，Rigel 的 +22／+2 不正確。** 原因未說明 |
