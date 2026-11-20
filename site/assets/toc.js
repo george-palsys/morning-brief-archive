@@ -47,23 +47,47 @@ if (typeof IntersectionObserver === 'function') {
  document.querySelectorAll('.v4-fill').forEach(fill => scores.observe(fill));
 }
 const wave = document.querySelector?.('.v4-wave');
-if (wave && typeof IntersectionObserver === 'function') {
+if (wave) {
  const articles = [...document.querySelectorAll('.v4-entry')];
+ const headings = articles.map(article => article.querySelector('h3') ?? article);
  const peaks = [...wave.children];
- const active = new Set();
+ const header = document.querySelector('.header-inner');
+ const miniWave = wave.cloneNode(true);
+ miniWave.classList.add('v4-wave-mini');
+ header.append(miniWave);
+ const miniPeaks = [...miniWave.children];
  let selected = -1;
- const readings = new IntersectionObserver(entries => {
-  for (const entry of entries) {
-   const index = articles.indexOf(entry.target);
-   if (entry.isIntersecting) active.add(index);
-   else active.delete(index);
+ let frame = 0;
+
+ function updateWave() {
+  frame = 0;
+  const viewportHeight = document.documentElement.clientHeight;
+  const headerBottom = header.getBoundingClientRect().bottom;
+  miniWave.classList.toggle('visible', wave.getBoundingClientRect().bottom <= headerBottom);
+  const atEnd = window.scrollY > 0 &&
+   Math.ceil(window.scrollY + viewportHeight) >= document.documentElement.scrollHeight - 1;
+  const readingLine = Math.max(headerBottom, viewportHeight * 0.30);
+  let next = atEnd ? articles.length - 1 : 0;
+  if (!atEnd) {
+   for (const [index, heading] of headings.entries()) {
+    if (heading.getBoundingClientRect().top > readingLine + 1) break;
+    next = index;
+   }
   }
-  if (!active.size) return;
-  const next = Math.min(...active);
   if (next === selected) return;
   peaks[selected]?.classList.remove('current');
+  miniPeaks[selected]?.classList.remove('current');
   peaks[next]?.classList.add('current');
+  miniPeaks[next]?.classList.add('current');
   selected = next;
- }, { rootMargin: '-20% 0px -50% 0px' });
- articles.forEach(article => readings.observe(article));
+ }
+
+ function scheduleWave() {
+  if (!frame) frame = requestAnimationFrame(updateWave);
+ }
+ window.addEventListener('scroll', scheduleWave, { passive: true });
+ window.addEventListener('resize', scheduleWave);
+ window.addEventListener('pageshow', scheduleWave);
+ window.addEventListener('hashchange', scheduleWave);
+ updateWave();
 }

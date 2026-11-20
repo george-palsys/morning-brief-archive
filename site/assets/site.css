@@ -370,3 +370,22 @@ th,td { padding:.75rem 1rem; }
  .v4-overview .v4-counts { margin-block:.25rem; }
  .v4-overview .v4-counts li { line-height:1.25; }
 }
+
+.v4-wave-mini {
+ position:absolute;
+ inset-inline:50% auto;
+ bottom:0;
+ transform:translateX(-50%);
+ height:0.65rem;
+ gap:0.125rem;
+ pointer-events:none;
+ visibility:hidden;
+ opacity:0;
+}
+.v4-wave-mini.visible { visibility:visible; opacity:1; transition:opacity 150ms ease; }
+.v4-wave-mini span { width:0.18rem; height:0.2rem; }
+.v4-wave-mini span:nth-child(even) { height:0.35rem; }
+.v4-wave-mini span.current { height:0.6rem; }
+@media (prefers-reduced-motion:reduce) {
+ .v4-wave-mini.visible { transition:none; }
+}
