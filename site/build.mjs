@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { readDisplay, renderOverview, renderEntry, renderDrill, renderWave } from './display-v4.mjs';
 import path from 'node:path';
 import MarkdownIt from 'markdown-it';
 import { parse } from 'yaml';
@@ -17,7 +18,7 @@ export function url(s) {
   if (/^https?:\/\//i.test(s)) return s;
   return s.replace(/(^|\/)README\.md(?=$|[?#])/g, '$1index.html').replace(/\.md(?=$|[?#])/g, '.html');
 }
-export function markdown(source, { section = '', summary = false } = {}) {
+export function markdown(source, { section = '', summary = false, display } = {}) {
   const md = new MarkdownIt({ html: false, linkify: true, typographer: false });
   const links = md.renderer.rules.link_open || ((t, i, o, e, r) => r.renderToken(t, i, o));
   md.renderer.rules.link_open = (t, i, o, e, r) => {
@@ -83,6 +84,40 @@ export function markdown(source, { section = '', summary = false } = {}) {
     return `${wrapper}<table role="table"><caption class="sr-only">${esc(caption)}</caption>\n`;
   };
   md.renderer.rules.table_close = () => '</table></div>\n';
+  if (display) {
+    const render = part => md.renderer.render(part, md.options, {});
+    const starts = tokens.flatMap((token, i) =>
+      token.type === 'heading_open' && token.attrGet('class') === 'item-title' ? [i] : []);
+    const html = starts.map((start, index) => {
+      const part = tokens.slice(start + 3, starts[index + 1]);
+      const body = [], impact = [], sources = [];
+      for (let i = 0; i < part.length; i++) {
+        const token = part[i];
+        if (token.type !== 'list_item_open' || token.level !== 1) { body.push(token); continue; }
+        const lead = part[i + 2]?.children?.[0]?.content ?? '';
+        const hasLabel = label => lead.startsWith(label + '：') || lead.startsWith(label + ':');
+        const target = hasLabel('來源') ? sources : hasLabel('影響') || hasLabel('對我們的影響') ? impact : null;
+        if (!target) { body.push(token); continue; }
+        const end = part.findIndex((item, j) => j > i && item.type === 'list_item_close' && item.level === token.level);
+        if (end < 0) throw Error('Markdown list item is not closed');
+        target.push(...part.slice(i, end + 1)); i = end;
+      }
+      const main = render(body).replaceAll('<ul>\n</ul>\n', '');
+      for (const token of sources) {
+        const children = token.children ?? [];
+        const i = children.findIndex(child => child.type === 'link_open');
+        if (i !== 1 || children.length !== 4 || children[0].type !== 'text' ||
+          children[3].type !== 'link_close' || children[2].content !== children[i].attrGet('href')) continue;
+        let label = children[0].content.trim();
+        if (label.startsWith('來源：')) label = label.slice(3).trim();
+        if (label.endsWith('：') || label.endsWith(':')) label = label.slice(0, -1).trim();
+        if (label) { children[2].content = label; children.shift(); }
+      }
+      return renderEntry(render(tokens.slice(start, start + 3)), main, display[index], section,
+        impact.length ? render(impact) : '', sources.length ? render(sources) : '');
+    }).join('');
+    return { html, toc };
+  }
   let html = md.renderer.render(tokens, md.options, {});
   // Explicit visual emphasis while preserving original wording.
   html = html.replace(/<li>(對我們的影響[：:][\s\S]*?)<\/li>/g, '<li class="impact">$1</li>');
@@ -91,7 +126,7 @@ export function markdown(source, { section = '', summary = false } = {}) {
   html = html.replace(/(<li>[^<\n]*[：:])(有更新|無更新|無法確認)/g, (_, start, state) => start + badge(state));
   if (section === 'knowledge') html = html.replace(/<ul>\n((?:<li>(?:這是什麼|原理|用在哪裡|原文)[：:][\s\S]*?<\/li>\n){4})<\/ul>/g, (_, body) => '<dl class="knowledge">' + body.replace(/<li>([^：:]+)[：:]([\s\S]*?)<\/li>/g, '<dt>$1</dt><dd>$2</dd>') + '</dl>');
   if (section) html = html.replace(/(<h2[^>]*>[\s\S]*?)(?=<h2|$)/g, '<article class="news-card">$1</article>');
-  if (section === 'cve') html = html.replace(/<h2\b[^>]*data-product-related="true"[^>]*>[\s\S]*?<\/h2>/g, heading => heading + '<span class="type-tag">與我們的產品線相關</span>');
+  if (section === 'cve' && !display) html = html.replace(/<h2\b[^>]*data-product-related="true"[^>]*>[\s\S]*?<\/h2>/g, heading => heading + '<span class="type-tag">與我們的產品線相關</span>');
   if (section === 'maintenance' && !html.trim()) html = '<p>今天沒有清單維護項目</p>\n';
   html = html.replace(/(<li(?: class="[^"]*")?>)(發生什麼事|受影響產品與版本|嚴重度|是否已有修補|攻擊現況|影響|來源|對我們的影響)([：:])/g, '$1<span class="field">$2$3</span>');
   if (section === 'maintenance' && html.trim() !== '<p>今天沒有清單維護項目</p>') {
@@ -172,7 +207,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     const toc = body.match(/<details class="page-toc">[\s\S]*?<\/details>/)?.[0];
     const sideToc = toc ? `<aside class="toc-side"><h2>本頁目錄</h2>${toc.match(/<nav[\s\S]*?<\/nav>/)[0].replace('aria-label="本頁目錄"','aria-label="本頁目錄側欄"')}</aside>` : '<aside class="toc-side"></aside>';
     const sourceLink = source ? `https://github.com/george-palsys/morning-brief-archive/blob/main/${source}` : 'https://github.com/george-palsys/morning-brief-archive';
-    pages.set(file, `<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}">${area === 'search' ? `<script src="${relative(file, 'assets/search.js')}" defer></script>` : ''}<script src="${esc(sitePath(file, 'assets/toc.js'))}" defer></script></head><body><a class="skip-link" href="#main">跳到主要內容</a><header class="site-header"><div class="header-inner"><details class="site-menu"><summary>選單</summary><div class="menu-panel"><nav aria-label="選單主導覽">${nav}${link(file,'search/index.html','搜尋',area === 'search')}</nav><nav class="site-tree" aria-label="選單日期與分頁">${tree}</nav></div></details><span class="brand">${link(file, 'index.html', '晨報歸檔')}</span><nav class="top-nav" aria-label="主要導覽">${nav}</nav><span class="search-link">${link(file,'search/index.html','搜尋',area === 'search')}</span></div></header><div class="layout"><nav class="side-nav site-tree" aria-label="日期與分頁">${tree}</nav><main class="content" id="main" tabindex="-1">${allowRehearsal ? '<p role="note" class="notice">演練資料，非正式晨報</p>' : ''}${body}</main>${sideToc}</div><footer><p>內容為彙整，以原廠頁面為準。來源連結會離開本站。</p><a href="${esc(sourceLink)}" rel="noopener noreferrer">GitHub 原始檔</a> · <a href="#main">回到頁首</a></footer></body></html>\n`);
+    pages.set(file, `<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}">${area === 'search' ? `<script src="${relative(file, 'assets/search.js')}" defer></script>` : ''}<script src="${esc(sitePath(file, 'assets/toc.js'))}" defer></script></head><body${body.startsWith('<div class="v4-page') ? ' class="spec-v4"' : ''}><a class="skip-link" href="#main">跳到主要內容</a><header class="site-header"><div class="header-inner"><details class="site-menu"><summary>選單</summary><div class="menu-panel"><nav aria-label="選單主導覽">${nav}${link(file,'search/index.html','搜尋',area === 'search')}</nav><nav class="site-tree" aria-label="選單日期與分頁">${tree}</nav></div></details><span class="brand">${link(file, 'index.html', '晨報歸檔')}</span><nav class="top-nav" aria-label="主要導覽">${nav}</nav><span class="search-link">${link(file,'search/index.html','搜尋',area === 'search')}</span></div></header><div class="layout"><nav class="side-nav site-tree" aria-label="日期與分頁">${tree}</nav><main class="content" id="main" tabindex="-1">${allowRehearsal ? '<p role="note" class="notice">演練資料，非正式晨報</p>' : ''}${body}</main>${sideToc}</div><footer><p>內容為彙整，以原廠頁面為準。來源連結會離開本站。</p><a href="${esc(sourceLink)}" rel="noopener noreferrer">GitHub 原始檔</a> · <a href="#main">回到頁首</a></footer></body></html>\n`);
   }
   function tocBody(rendered) {
     if (!rendered.toc.length) return `<div class="prose">${rendered.html}</div>`;
@@ -190,13 +225,30 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     return other ? `<p>${link(file, other.href, `同日${other.legacy ? '舊版單檔' : other.publishedRehearsal ? '演練分檔' : '新版摘要'}${collectionTime(other) ? `（${collectionTime(other)} 蒐集）` : ''}`)}</p>` : '';
   }
   for (const d of days) {
+    if (d.meta.spec_version === 4 && d.meta.display !== undefined) {
+      d.display = readDisplay(d.meta, read(`${d.base}/README.md`),
+        key => read(`${d.base}/${key}.md`), sections.slice(1, 6));
+    }
     const parts = d.legacy ? [['index', '舊版格式']] : sections;
     for (const [part, label] of parts) {
       const source = d.legacy ? d.base : `${d.base}/${part === 'index' ? 'README' : part}.md`;
       const file = d.legacy ? d.href : `${d.base}/${part}.html`;
       const title = `${d.date} ${label}`;
       const tabs = d.legacy ? '<p role="note" class="notice">這一天是舊版單檔格式：只有 CVE、台灣 IT、AI 三段，沒有產品動態與新知識。</p>' : `<div class="tabs-scroll" role="region" aria-label="段落導覽" tabindex="-1"><nav class="section-tabs" aria-label="本日段落">${sections.map(([key, name]) => link(file, `${d.base}/${key}.html`, name, part === key)).join('')}${link(file, 'products/index.html', '26 項產品現況')}</nav></div>`;
-      const rendered = markdown(read(source), { section: !d.legacy && part !== 'index' ? part : '', summary: !d.legacy && part === 'index' });
+      const rendered = markdown(read(source), { section: !d.legacy && part !== 'index' ? part : '',
+        summary: !d.legacy && part === 'index', display: d.display?.groups[part]?.entries });
+      if (d.display && part === 'index') {
+        page(file, `${d.meta.date} 摘要`, renderOverview(d, rows, file, link, collectionTime(d), days.find(day => !day.legacy && Date.parse(d.date) - Date.parse(day.date) === 86400000)), 'daily', source);
+        continue;
+      }
+      if (d.display?.groups[part]) {
+        const group = d.display.groups[part];
+        const yesterday = new Date(Date.parse(d.date + 'T00:00:00Z') - 86400000).toISOString().slice(0,10);
+        const previous = days.find(day => day.date === yesterday && !day.legacy);
+        page(file, `${group.name}－${d.date} 晨報`,
+          `<div class="v4-page">${renderDrill(d, collectionTime(d))}<div class="v4-hero${group.entries.length ? ' wave' : ''}"><h1>${esc(group.heading)}</h1><p>${esc(group.countText)}</p>${renderWave(group.entries.length)}${part === 'ai' && d.display.aiSummary ? `<p>${esc(d.display.aiSummary)}</p>` : ''}</div>${group.entries.length ? tocBody(rendered) : '<p>今天沒有</p>'}<nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, `${previous.base}/${part}.html`, `← ${previous.date}`) : ''}${link(file, d.href, '回到今日摘要')}</nav></div>`, 'daily', source);
+        continue;
+      }
       page(file, title, `${crumbs(file, 'daily', d.date)}<h1>${d.legacy && d.meta.title ? esc(d.meta.title) : `晨報 ${esc(d.date)}（${esc(d.meta.weekday || '')}）｜${label}`}</h1>${archiveNotice(d, file)}${d.publishedRehearsal ? '' : alternateEdition(d, file)}${tabs}${tocBody(rendered)}${timeline(d, part, file)}${!d.legacy && part !== 'index' ? link(file, d.href, '回到今日摘要') : ''}`, 'daily', source);
     }
   }
@@ -221,7 +273,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   let attention = ''; let summaryCards = '';
   if (latest) {
     const text = read(latest.legacy ? latest.base : `${latest.base}/README.md`);
-    const important = text.match(/\*\*今天最需要注意的一件事\*\*[：:][^\n]*(?:\n(?!\n)[^\n]+)*/)?.[0];
+    const important = latest.display ? null : text.match(/\*\*今天最需要注意的一件事\*\*[：:][^\n]*(?:\n(?!\n)[^\n]+)*/)?.[0];
     if (important && !latest.legacy) {
       const source = important.replace(/^\*\*今天最需要注意的一件事\*\*[：:]\s*/, '');
       const rendered = markdown(source).html;
@@ -239,7 +291,8 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       const body = rendered.replace(/href="(?!https?:|#)([^"]+)"/g, (_, href) => `href="${latest.base}/${href}"`);
       attention = `<aside class="attention"><details open><summary>今天最需要注意的一件事<span class="attention-preview">：${safePreview}</span></summary>${body}</details></aside>`;
     }
-    if (latest.legacy) summaryCards = `<p>最新一天是舊版格式，只有 CVE、台灣 IT、AI 三段。</p>${link('index.html', latest.href, '閱讀最新一天晨報')}`;
+    if (latest.display) summaryCards = link('index.html', latest.href, latest.meta.title);
+    else if (latest.legacy) summaryCards = `<p>最新一天是舊版格式，只有 CVE、台灣 IT、AI 三段。</p>${link('index.html', latest.href, '閱讀最新一天晨報')}`;
     else summaryCards = `<div class="summary-grid">${sections.slice(1).map(([part, label]) => {
       const rendered = markdown(read(`${latest.base}/${part}.md`), { section: part });
       const block = text.split(/^## /m).find(b => b.startsWith(label));

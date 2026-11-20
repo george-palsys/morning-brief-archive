@@ -397,3 +397,135 @@ test('daily metadata accepts numeric v3 and v4, rejects unsupported versions', (
   assert.throws(() => run(dir), /meta.yaml 日期、版本或檢查數無效/);
  }
 });
+
+test('v4 fixture builds structured panels, source-specific scores and optional fallbacks', () => {
+ const dir = fixture();
+ const daily = path.join(dir, 'daily/2026-11-19');
+ fs.cpSync('daily/2026-11-19', daily, { recursive: true });
+ const source = path.join(daily, 'meta.yaml');
+ const base = parse(fs.readFileSync(source, 'utf8'));
+ const example = parse(fs.readFileSync('site/fixtures/meta.example.yaml', 'utf8'));
+ fs.writeFileSync(source, stringify({ ...base, ...example }));
+ const result = build({ input: dir, output: newDir('production-v4-') });
+ const overview = result.pages.get('daily/2026-11-19/index.html');
+ const cve = result.pages.get('daily/2026-11-19/cve.html');
+ const ai = result.pages.get('daily/2026-11-19/ai.html');
+ assert.ok(overview.includes(example.attention.title));
+ assert.ok(overview.includes(example.attention.summary));
+ assert.ok(overview.includes(example.display.knowledge[0].digest));
+ assert.ok(overview.includes(example.display.ai_summary));
+ assert.equal((overview.match(/class="v4-tile/g) || []).length, 26);
+ assert.match(cve, /w-100[^]*?CVSS 3\.1（The Hacker News）[^]*?w-95[^]*?CVSS 4\.0（The Hacker News）/);
+ assert.ok(cve.includes(example.display.cve[0].exploited_detail));
+ assert.ok(cve.includes(example.display.cve[2].patch_detail));
+ assert.ok(ai.includes(example.display.ai[2].caveat));
+ assert.match(overview, /class="v4-drill"/);
+ validatePages(result);
+ console.log('V4 FIXTURE OUTPUT: ' + result.output);
+ example.drill = false;
+ delete example.attention.facts;
+ delete example.display.ai_summary;
+ fs.writeFileSync(source, stringify({ ...base, ...example }));
+ const fallback = build({ input: dir, output: newDir('fallback-v4-') }).pages.get('daily/2026-11-19/index.html');
+ assert.ok(!fallback.includes('class="v4-drill"'));
+ assert.ok(!fallback.includes('with-facts'));
+ assert.ok(fallback.includes('4 則'));
+ example.display.cve.pop();
+ fs.writeFileSync(source, stringify({ ...base, ...example }));
+ assert.throws(() => build({ input: dir, output: newDir('invalid-v4-') }), /2026-11-19 cve：摘要則數/);
+});
+
+function v4CaseFixture() {
+ const dir = fixture();
+ const daily = path.join(dir, 'daily/2026-11-19');
+ fs.cpSync('daily/2026-11-19', daily, { recursive: true });
+ const metaFile = path.join(daily, 'meta.yaml');
+ const meta = { ...parse(fs.readFileSync(metaFile, 'utf8')),
+   ...parse(fs.readFileSync('site/fixtures/meta.example.yaml', 'utf8')) };
+ const edit = (name, change) => {
+  const file = path.join(daily, name);
+  fs.writeFileSync(file, change(fs.readFileSync(file, 'utf8')));
+ };
+ return { dir, meta, edit, run: () => {
+  fs.writeFileSync(metaFile, stringify(meta));
+  const result = build({ input:dir, output:newDir('v4-edge-') });
+  validatePages(result);
+  return name => result.pages.get('daily/2026-11-19/' + name + '.html');
+ } };
+}
+
+test('v4 E1: empty AI section has zero count and no wave', () => {
+ const f = v4CaseFixture();
+ f.meta.display.ai = [];
+ delete f.meta.display.ai_summary;
+ f.edit('ai.md', source => source.split('\n')[0] + '\n');
+ f.edit('README.md', source => source.replace('4 則。→ [完整內容](ai.md)', '0 則。→ [完整內容](ai.md)'));
+ const page = f.run();
+ assert.match(page('index'), /0 則/);
+ assert.match(page('ai'), /今天沒有/);
+ assert.doesNotMatch(page('ai'), /class="v4-wave"|class="news-card v4-entry"/);
+});
+test('v4 E2: twelve CVEs have twelve articles and four overview entries', () => {
+ const f = v4CaseFixture();
+ for (let i = 6; i <= 12; i++) {
+  f.meta.display.cve.push({short:'測試 ' + i,keyword:'TEST',cve_ids:[],cvss:[],exploited:'unknown',patch:'unknown',related:false});
+  f.edit('cve.md', source => source + '\n\n### 測試 ' + i + '\n\n- 發生什麼事：測試內容。\n');
+ }
+ f.edit('README.md', source => source.replace('5 則。→ [完整內容](cve.md)', '12 則。→ [完整內容](cve.md)'));
+ const page = f.run();
+ assert.equal((page('cve').match(/class="news-card v4-entry"/g) || []).length, 12);
+ assert.match(page('cve'), /href="#item-12"/);
+ const panel = page('index').split('class="v4-panel v4-panel-cve"')[1].split('</section>')[0];
+ assert.equal((panel.match(/<h3>/g) || []).length, 4);
+ assert.match(panel, /12 則/);
+});
+for (const [id,state] of [['E3','有更新'],['E4','無更新']]) {
+ test('v4 ' + id + ': all 26 products are ' + state, () => {
+  const f = v4CaseFixture();
+  const file = path.join(f.dir,'products/README.md');
+  const names=[];
+  const lines=fs.readFileSync(file,'utf8').split('\n').map(line => {
+   if (!/^\|\s*\d+\s*\|/.test(line)) return line;
+   const cols=line.split('|');
+   names.push(cols[2].trim().split('](')[0].slice(1));
+   cols[4]=' ' + state + ' ';
+   return cols.join('|');
+  });
+  fs.writeFileSync(file,lines.join('\n'));
+  f.meta.products_updated = state === '有更新' ? names : [];
+  f.meta.products_unconfirmed = [];
+  const page=f.run()('index');
+  assert.equal((page.match(/class="v4-tile(?: updated)?"/g)||[]).length,26);
+  assert.equal((page.match(/class="v4-tile updated"/g)||[]).length,state==='有更新'?26:0);
+ });
+}
+test('v4 E5: 80-character article title is preserved', () => {
+ const f=v4CaseFixture();
+ const title='長'.repeat(80);
+ f.edit('knowledge.md', source => source.replace(/^### .+$/m,'### '+title));
+ const page=f.run();
+ assert.ok(page('knowledge').includes(title));
+ assert.ok(page('index').includes(title) === !f.meta.display.knowledge[0].digest);
+});
+test('v4 E6: three CVSS scores retain all three labels and widths', () => {
+ const f=v4CaseFixture();
+ f.meta.display.cve[0].cvss=[
+  {score:9.2,version:'4.0',source:'Fixture A'},
+  {score:7.5,version:'3.1',source:'Fixture B'},
+  {score:3.1,version:null,source:'Fixture C'},
+ ];
+ const cve=f.run()('cve');
+ assert.match(cve,/w-90[^]*?CVSS 4\.0（Fixture A）[^]*?w-75[^]*?CVSS 3\.1（Fixture B）[^]*?w-30[^]*?CVSS（Fixture C）/);
+});
+test('v4 E7: omitted attention facts leave no empty column', () => {
+ const f=v4CaseFixture();
+ delete f.meta.attention.facts;
+ assert.doesNotMatch(f.run()('index'), /v4-attention with-facts/);
+});
+test('v4 E8: v3 without display retains the legacy text view', () => {
+ const f=v4CaseFixture();
+ f.meta.spec_version=3;
+ delete f.meta.display;
+ delete f.meta.attention;
+ assert.doesNotMatch(f.run()('index'), /v4-overview|v4-score/);
+});
