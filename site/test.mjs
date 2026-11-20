@@ -9,9 +9,15 @@ import { parse, stringify } from 'yaml';
 const root = path.resolve('.');
 const work = path.join(root, '.site-test'); fs.mkdirSync(work, { recursive:true });
 const newDir = prefix => fs.mkdtempSync(path.join(work, prefix));
+function copyFixtureSearchIndex(dir) {
+ const source = fs.readFileSync('items.jsonl', 'utf8');
+ const selected = source.split(/\r?\n/).filter(line => line && JSON.parse(line).date === '2026-11-19');
+ fs.writeFileSync(path.join(dir, 'items.jsonl'), selected.join('\n') + '\n');
+}
 function legacyFixture() {
  const dir=newDir('legacy-');
- for (const name of ['products.yaml','README.md','items.jsonl']) fs.copyFileSync(name,path.join(dir,name));
+ for (const name of ['products.yaml','README.md']) fs.copyFileSync(name,path.join(dir,name));
+ copyFixtureSearchIndex(dir);
  fs.mkdirSync(path.join(dir,'daily'),{recursive:true});
  fs.copyFileSync('daily/2026-11-19.md',path.join(dir,'daily/2026-11-19.md'));
  return dir;
@@ -21,7 +27,8 @@ function importedFixture() {
 }
 function fixture() {
  const dir = newDir('input-');
- for (const name of ['products.yaml','README.md','items.jsonl']) fs.copyFileSync(name,path.join(dir,name));
+ for (const name of ['products.yaml','README.md']) fs.copyFileSync(name,path.join(dir,name));
+ copyFixtureSearchIndex(dir);
  // Preview snapshot deliberately pinned. Never copied to production content paths.
  const snapshot = JSON.parse(fs.readFileSync(new URL('./fixtures/preview.json',import.meta.url),'utf8'));
  assert.equal(Object.keys(snapshot.files).length,35,'preview snapshot has 8 daily files + 27 product files');
@@ -473,6 +480,19 @@ function v4CaseFixture() {
   return name => result.pages.get('daily/2026-11-19/' + name + '.html');
  } };
 }
+
+test('v4 accepts the product inventory summary and preserves Friday supplements', () => {
+ const f = v4CaseFixture();
+ f.edit('README.md', source => source.replace('6 則，3 項產品。', '26 項：'));
+ f.edit('knowledge.md', source => source + '\n\n## 本週回顧\n\n回顧內容。\n\n## 本週動手題\n\n驗證內容。\n');
+ const page = f.run();
+ const knowledge = page('knowledge');
+ assert.equal((knowledge.match(/class="news-card v4-entry"/g) || []).length, f.meta.display.knowledge.length);
+ assert.match(knowledge, /<\/article>\s*<h2[^>]*>本週回顧<\/h2>[^]*?<h2[^>]*>本週動手題<\/h2>/);
+ assert.match(page('index'), /產品動態<\/a> <strong>6 則<\/strong>/);
+ f.edit('README.md', source => source.replace(/^\| \[CI\/CD\/Argo CD\][^\n]*\n/m, ''));
+ assert.throws(() => f.run(), /products：摘要則數、段落標題與 display 則數不一致/);
+});
 
 test('v4 E1: empty AI section has zero count and no wave', () => {
  const f = v4CaseFixture();

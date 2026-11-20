@@ -44,10 +44,16 @@ export function readDisplay(meta, overview, read, sections) {
       token.tag === 'h2' && inlineText(summary[i + 1]).includes(label));
     const declaration = summary[headingIndex + 4]; // h2 open, inline, close, paragraph open, inline
     const count = /^(\d+)\s*則/u.exec(inlineText(declaration));
+    // SPEC §6 declares the product inventory separately from update rows.
+    const productInventory = key === 'products' && /^26\s*項[：:]/u.test(inlineText(declaration));
+    const nextSection = summary.findIndex((token, i) => i > headingIndex && token.type === 'heading_open' && token.tag === 'h2');
+    const productRows = productInventory ? summary.slice(headingIndex, nextSection < 0 ? undefined : nextSection)
+      .reduce((total, token, i, block) => total + (token.type === 'tr_open' && block[i + 1]?.type === 'td_open' ? 1 : 0), 0) : 0;
+    const declaredCount = productInventory ? productRows : count ? Number(count[1]) : null;
     const more = linkToken(declaration, `${key}.md`);
     const entries = meta.display[key];
-    if (!heading || headingIndex < 0 || !count || more < 0 || !Array.isArray(entries) ||
-      Number(count[1]) !== titles.length || entries.length !== titles.length) {
+    if (!heading || headingIndex < 0 || more < 0 || !Array.isArray(entries) ||
+      declaredCount !== titles.length || entries.length !== titles.length) {
       error(key, '摘要則數、段落標題與 display 則數不一致');
     }
     entries.forEach((entry, index) => {
@@ -70,7 +76,7 @@ export function readDisplay(meta, overview, read, sections) {
       }
     });
     groups[key] = {
-      name: inlineText(summary[headingIndex + 1]), heading, countText: count[0],
+      name: inlineText(summary[headingIndex + 1]), heading, countText: count?.[0] ?? copy.entryCount(declaredCount),
       more: inlineText({ children: declaration.children.slice(more + 1,
         declaration.children.findIndex((token, i) => i > more && token.type === 'link_close')) }),
       entries, titles: titles.map(title => title.replace(relatedLabel, '').trim())
