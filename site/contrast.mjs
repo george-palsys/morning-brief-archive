@@ -25,3 +25,23 @@ for (const [mode, source] of [['light',light],['dark',dark]]) {
  }
 }
 console.log(`CONTRAST OK: ${count} CSS color pairs (light + dark)`);
+
+const designCss = fs.readFileSync(new URL('./assets/design-c.css', import.meta.url), 'utf8');
+const [designLight, designDark] = designCss.split('@media (prefers-color-scheme:dark)');
+let designCount = 0;
+for (const [mode, source] of [['light', designLight], ['dark', designDark]]) {
+ const colors = Object.fromEntries([...source.matchAll(/--design-([a-z-]+):\s*(#[a-f0-9]{6})/g)].map(match => [match[1], match[2]]));
+ const pairs = [
+  ['ink', 'bg', 4.5], ['muted', 'bg', 4.5], ['brand', 'bg', 4.5], ['muted', 'sub', 4.5],
+  ['brand', 'sub', 4.5], ['brand-ink', 'brand-soft', 4.5], ['on-brand', 'brand', 4.5],
+  ['on-confirmed', 'confirmed', 4.5], ['hero-ink', 'hero', 4.5],
+  ['hero-muted', 'hero', 4.5], ['hero-muted', 'hero-fact-bg', 4.5], ['hero-accent', 'hero', 4.5], ['strong', 'bg', 3],
+ ];
+ for (const [fg, bg, min] of pairs) {
+  assert.ok(colors[fg] && colors[bg], `${mode}: missing design ${fg}/${bg}`);
+  const a = luminance(colors[fg]), b = luminance(colors[bg]);
+  assert.ok((Math.max(a,b)+.05)/(Math.min(a,b)+.05) >= min, `${mode}: design ${fg}/${bg} < ${min}`);
+  designCount++;
+ }
+}
+console.log(`CONTRAST OK: ${designCount} Proposal C color pairs (light + dark)`);
