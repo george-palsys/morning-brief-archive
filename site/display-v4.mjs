@@ -126,7 +126,12 @@ export function renderEntry(heading, body, entry, section, impact, sources) {
   const cve = section === 'cve';
   const kev = entry.kev?.length ? `<ul>${entry.kev.map(row =>
     `<li>${esc(copy.kev(row))}</li>`).join('')}</ul>` : '';
-  return `<article class="news-card v4-entry"><span class="v4-keyword" aria-hidden="true">${esc(entry.keyword)}</span>${heading}${cve ? `<aside class="design-cve-rail">${badges(entry, section)}${scores(entry)}${status(entry, 'exploited')}${status(entry, 'patch')}${kev}</aside>` : `<div>${badges(entry, section)}</div>`}${body}${entry.figures?.length ? facts(entry.figures) : ''}${entry.caveat ? `<blockquote>${esc(entry.caveat)}</blockquote>` : ''}${impact ? `<ul class="v4-impact">${impact}</ul>` : ''}${sources ? `<ul class="v4-sources">${sources}</ul>` : ''}</article>`;
+  const details = `${body}${entry.figures?.length ? facts(entry.figures) : ''}${entry.caveat ? `<blockquote>${esc(entry.caveat)}</blockquote>` : ''}${impact ? `<ul class="v4-impact">${impact}</ul>` : ''}${sources ? `<ul class="v4-sources">${sources}</ul>` : ''}`;
+  const keyword = `<span class="v4-keyword" aria-hidden="true">${esc(entry.keyword)}</span>`;
+  const content = cve
+    ? `<div class="design-cve-content">${heading}${details}</div><aside class="design-cve-rail">${badges(entry, section)}${scores(entry)}${status(entry, 'exploited')}${status(entry, 'patch')}${kev}</aside>`
+    : `${heading}<div>${badges(entry, section)}</div>${details}`;
+  return `<article class="news-card v4-entry">${keyword}${content}</article>`;
 }
 
 export function renderWave(count) {

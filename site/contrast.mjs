@@ -35,7 +35,7 @@ for (const [mode, source] of [['light', designLight], ['dark', designDark]]) {
   ['ink', 'bg', 4.5], ['muted', 'bg', 4.5], ['brand', 'bg', 4.5], ['muted', 'sub', 4.5],
   ['brand', 'sub', 4.5], ['brand-ink', 'brand-soft', 4.5], ['on-brand', 'brand', 4.5],
   ['on-confirmed', 'confirmed', 4.5], ['hero-ink', 'hero', 4.5],
-  ['hero-muted', 'hero', 4.5], ['hero-muted', 'hero-fact-bg', 4.5], ['hero-accent', 'hero', 4.5], ['strong', 'bg', 3],
+  ['hero-muted', 'hero', 4.5], ['hero-muted', 'hero-fact-bg', 4.5], ['impact-code-fg', 'impact-code-bg', 4.5], ['hero-accent', 'hero', 4.5], ['strong', 'bg', 3],
  ];
  for (const [fg, bg, min] of pairs) {
   assert.ok(colors[fg] && colors[bg], `${mode}: missing design ${fg}/${bg}`);
