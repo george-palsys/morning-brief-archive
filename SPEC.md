@@ -1,8 +1,8 @@
-# 晨報產生規則 v3
+# 晨報產生規則 v4
 
 給 GeorgeAI 的產生規則。v1(2026-11-19 第一份)是三段新聞;v2 加入「產品動態」與「新知識」兩段,並把新知識當成主體;v3 內容規則不變,只改檔案怎麼分:每天一份摘要加各段落各一個檔,另外每個產品一頁累積歷史(見第六節)。
 
-狀態:已生效。v2 於 2026-11-19 合併到 `main`(PR #2),同一天做過一次演練並依結果修訂。v3 的分檔方式同一天由 George 決定(原因:單一檔 467 行太擠,每天會變與不會變的內容混在一起,查單一產品要逐天翻),還沒有照排程實際跑過(見第八節)。
+歷史紀錄：v2 於 2026-11-19 合併到 `main`(PR #2),同一天做過一次演練並依結果修訂。v3 的分檔方式同一天由 George 決定(原因:單一檔 467 行太擠,每天會變與不會變的內容混在一起,查單一產品要逐天翻),還沒有照排程實際跑過(見第八節)。
 
 ## 一、整份晨報的段落與順序
 
@@ -310,10 +310,10 @@ CI/CD(id 13)底下有多個工具,每個來源用 `tool` 欄位標明屬於哪�
 
 ### `daily/YYYY-MM-DD/meta.yaml`
 
-沿用 v1 的欄位(`title`、`date`、`weekday`、`type`、`collected_at`、`cve_ids`、`products`、`tags`)與 v2 新增的五個欄位,`spec_version` 改為 3。檔案是純 YAML,不加 `---` 分隔線:
+沿用 v1 的欄位(`title`、`date`、`weekday`、`type`、`collected_at`、`cve_ids`、`products`、`tags`)與 v2 新增的五個欄位,`spec_version` 改為 4。檔案是純 YAML,不加 `---` 分隔線:
 
 ```yaml
-spec_version: 3
+spec_version: 4
 products_checked: 26
 products_updated:
   - <當天有更新的產品名稱,與 products.yaml 的 name 一致>
@@ -322,6 +322,132 @@ products_unconfirmed:
 cicd_tools_updated:
   - <當天有更新的 CI/CD 工具名稱,與 products.yaml 的 tool 一致>
 ```
+
+#### `attention`：今天最需要注意的一件事
+
+```yaml
+attention:
+  section: cve                 # products / knowledge / cve / taiwan / ai 之一，必填
+  title: HTTP/2 記憶體毀損漏洞
+  summary: 這個問題從 2015 年的 1.9.5 就存在。
+  facts:                       # 選填，0 到 4 項，畫在警示區右側
+    - label: CVSS 4.0
+      value: "9.2"
+      source: The Hacker News  # 選填；同一件事有不同來源的值時必填
+    - label: 修補版
+      value: 1.31.9／1.30.7
+```
+
+- v4 必填 `attention` 與 `display`。
+- `attention.title`、`attention.summary` 均為必填字串，顯示寬度上限分別為 40 和 200，算法比照 `short`。須取自指定段落原文。缺值或超長時建置失敗。
+- `facts[].label`、`value` 必填字串；`source` 為選填字串，同一件事有不同來源的值時必填。
+- `section` 必須與摘要 README 裡「今天最需要注意的一件事」那行的連結段落一致。
+- `facts` 每一項的 `value` 必須能在該段落檔原文找到。查不到的不寫，不推測。
+
+#### `display`：每一則的顯示資料
+
+依段落列出，每段的項目**順序與段落檔的 `###` 標題順序完全一致**，則數也必須一致。沒有內容的段落寫空陣列 `[]`。
+
+```yaml
+display:
+  products: []
+  knowledge: []
+  cve: []
+  taiwan: []
+  ai: []
+```
+
+##### 所有段落共用的欄位
+
+| 欄位 | 必填 | 型別 | 說明 |
+|---|---|---|---|
+| `short` | 必填 | 字串，顯示寬度 24 以內（中文字算 2、半形字元算 1） | 短標題，用在摘要頁與段落頁頁首的訊號標籤 |
+| `keyword` | 必填 | 字串，8 個半形字元以內 | 段落頁色帶背景的大字，用英文或數字，例如 `IPO`、`NGINX` |
+| `date` | 選填 | `YYYY-MM-DD` | 原文寫明的事件日期（發布、揭露、公告）；原文沒寫就不填 |
+| `figures` | 選填 | 清單，0 到 3 項 | 關鍵數字，每項 `label`、`value`，`value` 必須在段落檔原文找得到 |
+
+##### `cve` 段落多出的欄位
+
+| 欄位 | 必填 | 型別 | 說明 |
+|---|---|---|---|
+| `cve_ids` | 必填 | 清單 | 這則涉及的 CVE 編號，原文沒有編號的寫 `[]` |
+| `cvss` | 必填 | 清單，可為 `[]` | 每個來源一項：`score`（數字）、`version`（`"3.1"`、`"4.0"`，不知道寫 `null`）、`source`（來源名稱）。原文寫了幾個來源的分數就列幾項，不可只挑一個 |
+| `exploited` | 必填 | 列舉 | `confirmed`（已遭利用，含列入 CISA KEV）、`poc`（PoC 已公開但未見攻擊）、`none_seen`（原廠或研究者表示未見攻擊）、`unknown`（原文沒寫） |
+| `patch` | 必填 | 列舉 | `released`（正式修補版已釋出）、`hotfix`（只有 hotfix 或臨時修補）、`pending`（原廠表示準備中）、`none`（原廠表示沒有修補）、`unknown`（原文沒寫） |
+| `related` | 必填 | 布林 | 與段落檔標題的【與我們的產品線相關】標記一致 |
+| `kev` | 選填 | 清單 | 列入 CISA KEV 的每一筆：`cve_id`、`product`、`due`（修補期限 `YYYY-MM-DD`） |
+
+##### `taiwan` 段落多出的欄位
+
+| 欄位 | 必填 | 型別 | 說明 |
+|---|---|---|---|
+| `kind` | 必填 | 列舉 | `個資`、`入侵`、`漏洞`、`勒索`、`新功能`、`政策`、`其他` 之一 |
+
+`exploited`、`patch` 用上表的英文小寫字串，`kind` 用上表的中文值。不用 `yes`／`no`：YAML 1.1 會把它們讀成布林值，換一套解析器就會出錯。
+
+#### v4 欄位與呈現補充
+
+| 欄位 | 必填 | 型別／上限 | 缺值顯示 |
+|---|---|---|---|
+| `display.cve[].exploited_detail` | 選填 | 字串，無上限 | 使用下表固定文案 |
+| `display.cve[].patch_detail` | 選填 | 字串，無上限 | 使用下表固定文案 |
+| `display.ai_summary` | 選填 | 字串，顯示寬度 ≤ 60 | AI 頁導言只顯示「今天 N 則。」 |
+| `display.<段落>[].caveat` | 選填 | 字串，無上限 | 所有段落共用，缺值隱藏注意區塊 |
+| `display.<段落>[].digest` | 選填 | 字串，長度上限建議值 ≤ 24（比照 short），待 George 確認 | 新知識、台灣 IT、AI 的摘要清單顯示段落檔完整 `###` 標題。段落頁一律顯示完整標題 |
+| `drill` | 選填 | 布林，長度不適用，預設 `false` | 不顯示演練免責聲明 |
+
+| 列舉 | 固定文案 |
+|---|---|
+| `exploited: confirmed` | 已遭利用 |
+| `exploited: poc` | PoC 已公開 |
+| `exploited: none_seen` | 未見攻擊 |
+| `exploited: unknown` | 攻擊現況未寫明 |
+| `patch: released` | 有修補 |
+| `patch: hotfix` | 只有 hotfix |
+| `patch: pending` | 修補準備中 |
+| `patch: none` | 無修補 |
+| `patch: unknown` | 修補狀況未寫明 |
+
+- KEV 逐筆顯示「產品（CVE 編號）YYYY-MM-DD 到期」，不產生跨筆到期摘要。清單缺少或為空則隱藏。
+- 既有頂層欄位名稱與算法沿用。摘要產品副標用 `products_updated` 的產品數，不用版本更新筆數。
+- 每天從 `collected_at` 顯示台灣時間（時:分）。只在 `drill: true` 顯示既有免責聲明：「歷史演練分檔：YYYY-MM-DD HH:MM 蒐集（台灣時間）。僅搬移原文，未重新蒐集或查證；產品來源快照本次未建立，不代表目前產品狀態。」
+- 段落頁 `<title>` 使用「{段落名}－{date} 晨報」。前一天資料夾不存在就隱藏「前一天」連結。
+- 「清單維護」連到當天的 `maintenance.html`，「搜尋」連到全站 `search/index.html`。
+- `影響：` 與 `對我們的影響：` 是同一條目標籤。只辨識已定義的結構化標籤，不用正規表示式從自由文字猜顯示欄位；CSP 不變。
+- 預設值由 GeorgeAI 訂，George 2026-11-20 指示併入，日後可改：選填 `digest` 缺值時用完整標題；產品數取 `products_updated`；所有段落可選填 `caveat`；`drill` 預設 false，沿用既有免責聲明。
+
+#### 缺值時的顯示
+
+網站必須照下表處理，不可報錯、不可留空白框。
+
+| 情況 | 摘要頁 | 段落頁 |
+|---|---|---|
+| `attention.facts` 沒有或為空 | 警示區只顯示文字，佔滿整列 | 不影響 |
+| `cvss` 為 `[]` | 分數條灰色，右側寫「未提供」 | 不影響 |
+| `cvss` 有多項 | 每個來源各畫一條，條後寫分數與來源 | 不影響 |
+| `exploited` 或 `patch` 為 `unknown` | 標籤顯示「攻擊現況未寫明」或「修補狀況未寫明」，灰色 | 不影響 |
+| `figures` 沒有 | 不影響 | 不顯示關鍵數字區 |
+| `date` 沒有 | 訊號標籤下方不顯示日期 | 不影響 |
+| 某段落為 `[]` | 則數顯示 0，該區塊顯示「今天沒有」 | 該段落頁顯示「今天沒有」，不畫波形 |
+| 整個 `display` 缺少（v3 以前的日期） | 退回只顯示文字標題，不畫分數條、標籤、方格以外的圖 | 頁首不畫波形，不顯示背景大字與關鍵數字 |
+
+#### 建置檢查（不一致就停）
+
+`site/build.mjs` 在下列情況要建置失敗，並指出日期、段落與第幾則：
+
+1. `display.<段落>` 的則數與該段落檔的 `###` 則數不同。
+2. `cve` 項目的 `related` 與段落檔標題有無【與我們的產品線相關】不一致。
+3. `exploited`、`patch`、`kind` 的值不在列舉範圍內。
+4. `short` 顯示寬度超過 24（中文字算 2、半形字元算 1），或 `keyword` 超過 8 個字元。
+5. `attention.section` 與摘要 README 的連結段落不一致。
+
+6. v4 必填欄位缺少，或已填的 `display.ai_summary` 超過 60 顯示寬度。
+
+#### 產生順序
+
+GeorgeAI 照現有順序寫完各段落檔與摘要 README 之後，**最後**才寫 `display` 與 `attention`。值一律從已寫好的段落檔摘出，不另外查資料。
+
+完整範例：`site/fixtures/meta.example.yaml`（2026-11-19 的真實內容）。
 
 ### 產品頁的檔名
 
@@ -459,7 +585,7 @@ cicd_tools_updated:
 
 - 半夜 2:00 的排程每晚先從 repo 的 `main` 分支讀 `SPEC.md` 與 `products.yaml`,照讀到的內容執行。規則不寫死在排程裡,這樣合併 PR 後當晚就生效。
 - 兩個檔案有任何一個讀不到:當晚改用 v1 的三段格式,整份寫在 `daily/YYYY-MM-DD/README.md` 一個檔,並在第一行寫明「今晚讀不到規則,以下是 v1 格式」;當晚不寫其他段落檔,也不動 `products/` 底下的檔案。
-- 本機歸檔資料夾是產出的正本,路徑照第六節的檔案配置,全部先寫在本機。寫入順序:各段落檔、`meta.yaml`、產品頁與總表、`items.jsonl`、`state/sources.json`,最後才寫當天摘要;摘要存在就代表當晚寫完了。
+- 本機歸檔資料夾是產出的正本,路徑照第六節的檔案配置,全部先寫在本機。寫入順序:先寫各段落檔、產品頁與總表、`items.jsonl`、`state/sources.json`，再寫當天摘要，最後寫入含顯示欄位的 `meta.yaml`。
 - 早上 7:30 的備份排程把本機的檔案上傳到 repo 的同一路徑(當天的 `daily/YYYY-MM-DD/` 整個資料夾、`products/` 全部、`items.jsonl`、`state/sources.json`)。備份排在發送之前,因為發送的摘要中有連到 repo 的連結。
 - 早上 8:00 的發送排程只貼當天摘要,摘要中的相對連結換成 repo 上的完整網址(`https://github.com/george-palsys/morning-brief-archive/blob/main/daily/YYYY-MM-DD/<檔名>` 與 `https://github.com/george-palsys/morning-brief-archive/blob/main/products/<檔名>`)。
 - 執行時間上限 90 分鐘。超過時把還沒檢查的產品列入「今日無法確認」,原因寫「超過執行時間」,不可當成「無更新」。時間不夠時的取捨順序:段落檔與摘要一定要寫完;產品頁來不及全部更新時,先更新當天有更新與無法確認的產品,其餘沒更新到的在 `maintenance.md` 逐一列出名稱。
