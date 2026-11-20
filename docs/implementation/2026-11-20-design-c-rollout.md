@@ -5,6 +5,7 @@
 - 對象：`george-palsys/morning-brief-archive` 的 PR #27「feat: 將方案 C 套用到晨報網站」，分支 `feat/design-c-phase2`，base 為 `main` 的 `aa18f7d`（PR #26 合併後）。
 - 紀錄狀態：PR #27 **未合併**（Quill 以匿名 GitHub API 讀取：state open、draft false、merged false、mergeable_state clean）。目前 head 為 `e741e0e682f0ba016011d25b047aa659525e1b58`。本文件寫的是合併前的狀態；合併後要補第 4、9 章。
 - **後續狀態（2026-11-20 補記）**：上一行「未合併」是撰寫當時的狀態。PR #27 已於 2026-11-20 20:07:22（台灣時間）以 squash 合併為 `ef7c1ce358c48effeb576f76e9a8d12d87d71335`（Quill 用 `git log` 讀到 commit 時間與 parent `aa18f7d`；合併 commit 含本文件，370 行）。Static site 第 60 次部署成功、線上複驗見 5.10（部署次數與線上結果來自 Rigel 報告與 Ada 轉達，Quill 未獨立查證）。後續 PR #28（分支 `fix/design-c-followup`，從 `ef7c1ce` 開出）處理 Iris 的後續建議，經兩輪設計審查（第一輪退修 B1、B2）後，已於 2026-11-20 20:51:40（台灣時間）以 squash 合併為 `2166673b6091861f1f45fc07fc32ad3c3bd0f29f`（Quill 用 `git log` 讀到 commit 時間與 parent `ef7c1ce`；Quill 另確認 PR #28 最終 head `77b913b7d172311697e80b8e32fe6f1d5ea8d87a` 與 `2166673` 的檔案內容相同，`git diff` 為空）。Static site 第 64 次部署成功（約 21:00，來自 Ada 轉達，Quill 未獨立查證）。PR #28 的審查經過見 5.14，合併後線上複驗見 5.15（Rigel 自報，未由第二人重跑；Chromium 範圍）。本文件於 PR #28 內已隨同合併，目前為 440 行；本次更新在 `2166673` 之上再補內容。
+- **後續狀態（PR #30 補記）**：`main` 目前為 `3955780`（含 PR #29 的本文件更新）。George 於 2026-11-20 21:18 裁示補值（原話「補起來，之後 build 吧」，Ada 轉達）；PR #30（head `e7fd94ab01c7065c9390bb3a39a2980282598b84`，base `3955780`，Lin 開）補 `daily/2026-11-20/meta.yaml` 的 NGINX2Root 與 Java4Shell 後續兩項的 `cvss` 與 `exploited`，並在 `SPEC.md` 加一條規則。**撰寫當時 PR #30 為 open、未合併，Rigel 驗證中**；建置後頁面與部署結果未驗證。內容見 5.16、K21。
 - 審查狀態：驗證（Rigel）、安全審查（Vega）、設計審查（Iris）各兩輪。第一輪 head `f1dd64ccc3728b82c41d9e932e42f8ab4bcf4f40`，Iris 阻擋 2 項（B1、B2）；Lin 修成 `e741e0e`；第二輪三關皆無阻擋項。這不是「全部通過」，仍有已知限制與未驗證項目（第 8 章）。
 - 資料來源（只寫檔名，不寫路徑）：
   - Rigel：`rigel-verification-pr27.md`（第一輪，針對 `f1dd64c`）、`rigel-verification-pr27-r2.md`（第二輪，針對 `e741e0e`）。
@@ -431,6 +432,49 @@ Quill 只核對了「本機建置的大小與雜湊與 Rigel 回報一致」；*
 
 **範圍**：只涵蓋上列 Chromium 量測。Firefox、Safari、實體手機、螢幕閱讀器仍未驗證（U7–U10）。
 
+### 5.16 PR #30：補 11/20 的 CVSS 與利用現況（open、未合併，Rigel 驗證中）
+
+- 範圍（Quill 用 `git diff 3955780 e7fd94a` 自行讀取）：2 個檔，+27／−4。`daily/2026-11-20/meta.yaml` +25／−4；`SPEC.md` +2。本文件不動這兩個檔。
+- 決定來源：George 於 2026-11-20 21:18 裁示「補起來，之後 build 吧」（Ada 轉達）。
+- 值的查證來源：Scout 開原廠、CVE.org、NVD 頁面查證（Scout 自報，Quill 沒有重新開這些頁面）。Quill 只核對 PR 內 `meta.yaml` 的值與下表相同。
+
+#### 5.16.1 NGINX2Root（CVE-2026-123007）補入的值
+
+| # | 欄位 | 補入值 | 來源（Scout 自報） | Quill 核對 PR 內檔案 |
+| --- | --- | --- | --- | --- |
+| 1 | `cvss` 第 1 項 | 8.1，version `3.1`，source Red Hat | Red Hat | 相符 |
+| 2 | `cvss` 第 2 項 | 8.1，version `3.1`，source F5 | F5 | 相符 |
+| 3 | `cvss` 第 3 項 | 9.2，version `4.0`，source F5 | F5 | 相符 |
+| 4 | `cvss` 第 4 項 | 8.1，version `3.1`，source SUSE | SUSE | 相符 |
+| 5 | `cvss` 第 5 項 | 9.2，version `4.0`，source SUSE | SUSE | 相符 |
+| 6 | `exploited` | `poc`（原為 `unknown`） | Scout 自報；頭條 `attention.facts` 原本即寫「PoC 已公開」 | 相符 |
+
+#### 5.16.2 Java4Shell 後續（CVE-2026-114938）補入的值
+
+| # | 欄位 | 補入值 | 來源（Scout 自報） | Quill 核對 PR 內檔案 |
+| --- | --- | --- | --- | --- |
+| 1 | `cvss` 第 1 項 | 9.8，version `null`，source Red Hat | Red Hat；來源向量為 CVSS 3.0，而 SPEC 只允許 `3.1`、`4.0`、`null`，所以 version 填 `null` | 相符 |
+| 2 | `cvss` 第 2 項 | 8.1，version `3.1`，source Oracle | 以 CVE.org 紀錄為準；Scout 沒有逐列讀 Oracle Risk Matrix | 相符 |
+| 3 | `exploited` | `poc`（原為 `unknown`） | Scout 自報 | 相符 |
+| 4 | `exploited_detail` | 保留原值「開始出現攻擊嘗試」，未改 | 「攻擊嘗試」只出自 SecurityWeek 報導；原廠與 CISA 未確認，所以 `exploited` 不填 `confirmed` | 相符（該行未出現在 diff 內） |
+
+#### 5.16.3 Scout 查證的限制（逐項，皆為 Scout 自報、Quill 未獨立查證）
+
+| # | 項目 | 狀況 |
+| --- | --- | --- |
+| 1 | CISA KEV（2026-11-18 版） | 兩個 CVE 都未列入 |
+| 2 | 日報寫的「Calif 自評 4.0 9.2」 | Scout 沒有開頁面核對，未列入 `cvss` |
+| 3 | 日報寫的「F5 表示沒有實際攻擊的報告」 | Scout 在 F5 頁面找不到此句，出處未確認 |
+| 4 | 日報 `products.md` 寫 F5 的 9.2「取自 Tenable」 | F5 自己的 K000163926 即有此分數，所以 `cvss` 的 source 寫 F5 |
+| 5 | Java4Shell 的 Oracle 8.1 | 以 CVE.org 紀錄為準，沒有逐列讀 Oracle Risk Matrix |
+| 6 | Java4Shell 的 `exploited` 為何不是 `confirmed` | 只有 SecurityWeek 一個來源，見 5.16.2 第 4 列 |
+
+#### 5.16.4 `SPEC.md` 新增規則
+
+- 位置：`display.cve` 欄位表之後（Quill 讀 diff：第 377 行附近）。
+- 內容摘要：同一 CVE 同時列入頭條與 CVE 清單時，已查證的 CVSS 與利用現況要同步填入清單的 `display.cve[].cvss`、`display.cve[].exploited`，以及頭條的 `attention.facts` 或 `attention.summary`；逐一保留分數來源；只有來源未提供對應資訊時，才使用 `[]` 或 `unknown`。
+- 限制：02:00 排程實際使用的 prompt 不在本 repo 內，Quill 沒有核對。**「排程是否照此規則產出」未驗證**。
+
 ## 6 如何套用到別的專案
 
 1. 先讓設計方有「可對照的原型」與「token 表」；實作的 token 一律用 `--design-*` 映射到既有 token，不直接覆蓋既有名稱（本 PR 的做法）。
@@ -456,6 +500,9 @@ Quill 只核對了「本機建置的大小與雜湊與 Rigel 回報一致」；*
 | 8 | 同源 JS | George 決定 | 若目標是完全無 JS，要另開工作處理 `toc.js` 與 `search.js`（Vega I1） |
 | 9 | 資料壞掉的處理 | 沿用既有決定 | meta.yaml 缺欄位或某天資料夾不完整時建置會失敗、整站停更、不發布壞資料（GeorgeAI 決定）；PR #27 沒有改這個行為（`build.mjs` 內相關檢查維持） |
 | 10 | 部署 | 合併後 | 合併到 main 會觸發既有的 Pages 工作流程；本 PR 沒改 workflow；合併後的線上結果要另行驗證 |
+| 11 | PR #30 驗證與合併 | Rigel 驗證；Leader 合併 | PR #30（head `e7fd94a`）撰寫當時 open、未合併，Rigel 驗證中；合併後要補本文件 5.16、K21、第 9 章，並驗證建置後 CVE 清單與日報頁的顯示與部署結果；現在都未驗證 |
+| 12 | 日報摘要頁 26 格產品磚（K17） | George 決定 | 本輪不動，George 尚未回覆；回覆前不排工作 |
+| 13 | 排程規則同步 | George 決定、排程維護者 | `SPEC.md` 新規則是否要同步到 02:00 排程的 prompt；prompt 不在本 repo，未核對 |
 
 ---
 
@@ -499,6 +546,9 @@ Quill 只核對了「本機建置的大小與雜湊與 Rigel 回報一致」；*
 | U28 | PR #28 合併後線上複驗（5.15） | Rigel | Rigel 自報，未由第二人重跑；Quill 沒有開線上站、沒有下載線上檔案比對，只核對本機建置的大小與雜湊與 Rigel 回報相同；第 64 次部署成功為 Ada 轉達，Quill 未查證；僅限 Chromium，6 張截圖 Quill 未看 |
 | U29 | Rigel、Iris、Vega 對 PR #28 的報告原檔 | Quill | 5.14 的數字與結論都是 Ada 轉達，Quill 沒有讀報告原檔 |
 | U27 | 抽驗以外 42 頁的線上內容與本機建置是否一致 | Rigel | 只抽 5 頁 |
+| U30 | PR #30 補入的 CVSS 與利用現況是否正確（5.16） | Scout（自報） | 值由 Scout 查證原廠、CVE.org、NVD；Quill 只核對 PR 內檔案與回報相同，沒有開這些來源頁面。Oracle 8.1 沒逐列讀 Risk Matrix；Java4Shell 的「攻擊嘗試」只有 SecurityWeek 一個來源；Calif 4.0 9.2 與 F5 的「沒有實際攻擊的報告」出處未確認 |
+| U31 | PR #30 建置後的頁面、驗證與部署 | Rigel、Quill | Rigel 驗證中；Quill 未在 `e7fd94a` 重跑建置，建置後的 CVE 清單顯示與部署都未驗證。PR 未合併 |
+| U32 | 02:00 排程是否照 `SPEC.md` 新規則產出 | Quill | 排程 prompt 不在 repo 內，未核對，未驗證 |
 
 ### 8.3 已知限制（建議項與既有問題，未修）
 
@@ -517,14 +567,14 @@ Quill 只核對了「本機建置的大小與雜湊與 Rigel 回報一致」；*
 | K11 | S8：產品頁來源表窄欄逐字折行（「版本」「類別」「工／具」） | Iris | 建議；第二輪仍看到 |
 | K12 | S9：搜尋頁標籤、下拉、按鈕貼近 | Iris | 建議；未重驗 |
 | K13 | S10：「← 26 項產品現況」連結僅 21px 高，低於 44px 觸控區 | Iris | 建議；第二輪仍是文字連結 |
-| K14 | NGINX2Root（CVE-2026-123007）在首頁與日報的 CVE 清單顯示「CVSS 未提供」與「攻擊現況未寫明」，但同頁頭條事實欄寫 CVSS 3.1 8.1 與「PoC 已公開」。原因是來源資料：`daily/2026-11-20/meta.yaml` 的 `display.cve` 該項為 `cvss: []`、`exploited: unknown`，頭條事實來自另一個區塊 `attention.facts`（兩處各自獨立填寫）。這不是顯示程式的問題；內容檔沒有改 | Lin 與 Rigel 各自查到相同結論（Ada 轉達）；Rigel 報告附行號；Quill 讀 `meta.yaml` 確認該項 `cvss: []`、`exploited: unknown`，Quill 沒有重做顯示程式邏輯的追查 | 待 George 決定要不要補來源資料 |
-| K15 | 同檔 `display.cve` 的另一項「Java4Shell 後續」（CVE-2026-114938）也是 `cvss: []`、`exploited: unknown`（另有 `exploited_detail`）。Quill 讀 `meta.yaml` 時看到，沒有人報告過 | Quill 觀察；顯示效果未在畫面上確認 | 與 K14 同一類來源資料問題，併入 George 的決定 |
+| K14 | NGINX2Root（CVE-2026-123007）在首頁與日報的 CVE 清單顯示「CVSS 未提供」與「攻擊現況未寫明」，但同頁頭條事實欄寫 CVSS 3.1 8.1 與「PoC 已公開」。原因是來源資料：`daily/2026-11-20/meta.yaml` 的 `display.cve` 該項為 `cvss: []`、`exploited: unknown`，頭條事實來自另一個區塊 `attention.facts`（兩處各自獨立填寫）。這不是顯示程式的問題；內容檔沒有改 | Lin 與 Rigel 各自查到相同結論（Ada 轉達）；Rigel 報告附行號；Quill 讀 `meta.yaml` 確認該項 `cvss: []`、`exploited: unknown`，Quill 沒有重做顯示程式邏輯的追查 | 原為「待 George 決定」；George 已裁示補值，PR #30 已開（open、未合併、Rigel 驗證中），見 K21、5.16 |
+| K15 | 同檔 `display.cve` 的另一項「Java4Shell 後續」（CVE-2026-114938）也是 `cvss: []`、`exploited: unknown`（另有 `exploited_detail`）。Quill 讀 `meta.yaml` 時看到，沒有人報告過 | Quill 觀察；顯示效果未在畫面上確認 | 與 K14 同一類來源資料問題；原為併入 George 的決定，現併入 PR #30（open、未合併），見 K21、5.16 |
 | K16 | PR #28 處理三項，已於 `2166673` 合併（原先標「審查中」，現更新為實際結果）：(1) CVE 規格欄由 float 改 grid（對應 K1）：≥1360px 為雙欄，以下單欄、順序為標題、規格欄、內文；經 B1、B2 退修後，最終數值見 5.14。(2) AI 頁「影響」區塊行內 code（對應 K4）：淺色 13.36:1、深色 12.76:1（Iris、Rigel 各自量；Quill 以 token 值自算相符），原 `main` 為 1.07:1、1.02:1。(3) 關鍵字浮水印（對應 K7）：定案為隱藏（`.v4-page .v4-keyword { display:none; }`），Iris 理由為 `aria-hidden` 純裝飾、識別資訊已在規格欄與日期標籤。Iris 的 S12、S13 也已處理 | Iris、Rigel、Vega 回報（Ada 轉達）；Quill 讀 `2166673` 的 CSS 與 diff、重跑測試 | 已合併；**Chromium 線上已由 Rigel 自報驗證（5.15，未由第二人重跑）；Firefox、Safari、實機、螢幕閱讀器仍未驗證**（U7–U10、U26、U28）；K1、K4、K7 的原文是合併前狀態，以本列為準 |
-| K17 | 日報摘要頁仍是 26 格同尺寸方塊（K2）；PR #28 沒有處理 | Quill 讀 `2166673` 對 `ef7c1ce` 的檔案清單（只動 `design-c.css`、`contrast.mjs`、`display-v4.mjs` 與本文件） | 未處理 |
+| K17 | 日報摘要頁仍是 26 格同尺寸方塊（K2）；PR #28 沒有處理 | Quill 讀 `2166673` 對 `ef7c1ce` 的檔案清單（只動 `design-c.css`、`contrast.mjs`、`display-v4.mjs` 與本文件） | 未處理；PR #30 這一輪同樣不動，列為待決（George 尚未回覆，Ada 轉達） |
 | K18 | S14：長 CVE 編號在窄欄於連字號處折行 | Iris（Ada 轉達） | 已知限制，本輪不做 |
 | K19 | S15：1200–1359px 為單欄，規格欄寬 672px，比內文欄 748px 窄 | Iris（Ada 轉達） | 已知限制，本輪不做 |
 | K20 | S16：1360–1439px 雙欄時內容欄 521px 偏緊，門檻可改為 1440 | Iris（Ada 轉達）；521px 為 1360 寬實測 | 已知限制，本輪不做 |
-| K21 | NGINX2Root 與 Java4Shell 後續的 `meta.yaml` 內容（K14、K15） | Quill、Lin、Rigel | 待 George 決定；本次更新**沒有動** `daily/` 內任何檔案 |
+| K21 | NGINX2Root 與 Java4Shell 後續的 `meta.yaml` 內容（K14、K15） | Quill、Lin、Rigel（原列）；George 裁示（Ada 轉達） | 原為「待 George 決定」，現更新：George 已於 2026-11-20 21:18 裁示補值，PR #30（head `e7fd94a`）已開。**撰寫當時 PR #30 為 open、未合併，Rigel 驗證中；建置後頁面與部署均未驗證**。補入的值與查證限制見 5.16。本文件仍不動 `daily/`、`SPEC.md`、`site/`（變更在 PR #30 內） |
 
 ---
 
@@ -538,6 +588,7 @@ Quill 只核對了「本機建置的大小與雜湊與 Rigel 回報一致」；*
 | 2026-11-20 | Quill | 補記：PR #27 於 20:07:22 以 squash 合併為 `ef7c1ce`，Static site 第 60 次部署成功（部署次數為 Rigel 報告與 Ada 轉達，Quill 未獨立查證）；PR #27 說明寫 24 組配色，head 實際 26 組，說明未更新。新增 4.2（token）、5.10（線上複驗，Rigel 自報）、5.11（PR #28 head 重跑）、5.12（Quill 自查）、K14–K17、U24–U27、附錄 A 的 D11–D13。PR #28 審查中 | Ada 轉達；`git log`；Rigel 的 `rigel-live-verification.md` |
 | 2026-11-20 | Quill | PR #28 後續補記：PR #28 於 20:51:40 以 squash 合併為 `2166673`，第 64 次部署成功（Ada 轉達，Quill 未查證）；記 Iris 第一輪 B1、B2 退修、Lin 改為 ≥1360px 才雙欄、最終數值與 Vega 兩輪阻擋 0（皆回報、Ada 轉達，見 5.14）；新增 5.13（Quill 在 `2166673` 重跑 45/45、98 組、47 頁、0 警告）、5.15（線上複驗，待 Rigel 回報，未驗證）；更新 4.2（`shared/tokens.css` 不在本 repo，7 個 token 定義記於本文件）、K16（由審查中改為已合併）、K18–K21、U26、U28、U29、附錄 A 的 D14–D16；第 7 章第 6、7 列同步 | Ada 轉達；Quill 讀 `git log`、`git diff`、CSS 與重跑輸出 |
 | 2026-11-20 | Quill | PR #28 線上複驗補記（接續上一列，不改上一列）：5.15 由「待複驗」改為 Rigel 自報的線上複驗結果（cve.html 七個寬度版面量測、ai.html 行內 code 與浮水印、溢位抽驗、位元組比對，標「Rigel 自報，未由第二人重跑」）；D15 補 Rigel 的捲軸說明（標未獨立驗證）；K16、U28 與第 1 列後續狀態同步；上一列中「線上複驗（待 Rigel 回報，未驗證）」之處以本列為準。S14–S16、K21 與 `daily/` 未動 | Ada 轉達 Rigel；Quill 核對本機建置的大小與雜湊 |
+| 2026-11-20 | Quill | PR #30 補記：George 於 21:18 裁示補值（「補起來，之後 build 吧」，Ada 轉達）；PR #30（head `e7fd94a`，base `3955780`，Lin 開）補 `daily/2026-11-20/meta.yaml` 的 NGINX2Root（CVE-2026-123007）與 Java4Shell 後續（CVE-2026-114938）的 `cvss`、`exploited`，並在 `SPEC.md` 加一條規則。新增 5.16、第 7 章第 11–13 列、U30–U32；K14、K15、K21 由「待決」改為實際結果，K17 標待決；PR #30 撰寫當時 open、未合併、Rigel 驗證中，建置後頁面與部署未驗證。S14–S16、`daily/`、`SPEC.md`、`site/` 在本文件的提交中未動 | Ada 轉達；Scout 自報（值的查證）；Quill 讀 `git diff 3955780 e7fd94a` |
 
 ---
 
