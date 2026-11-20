@@ -14,5 +14,6 @@ export const copy = {
   unconfirmed: '無法確認',
   backToOverview: '回到今日摘要',
   moreCve: count => `再顯示 ${count} 則`,
+  entryCount: count => `${count} 則`,
   productCount: count => `${count} 項產品`,
 };

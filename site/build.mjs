@@ -49,7 +49,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
         for (const child of inline.children || []) if (child.type === 'text') child.content = child.content.replaceAll('【與我們的產品線相關】', '');
         if (inline.meta.productRelated) t.attrSet('data-product-related', 'true');
       }
-      if (section && level === 2) t.attrSet('class', 'item-title');
+      if (section && level === 2 && (!display || t.tag === 'h3')) t.attrSet('class', 'item-title');
       t.tag = `h${level}`; tokens[i + 2].tag = t.tag;
       if (level === 2) {
         const title = plain(tokens[i + 1].content);
@@ -87,10 +87,12 @@ export function markdown(source, { section = '', summary = false, display } = {}
   md.renderer.rules.table_close = () => '</table></div>\n';
   if (display) {
     const render = part => md.renderer.render(part, md.options, {});
-    const starts = tokens.flatMap((token, i) =>
-      token.type === 'heading_open' && token.attrGet('class') === 'item-title' ? [i] : []);
+    const starts = tokens.flatMap((token, i) => token.type === 'heading_open' && token.tag === 'h2' ? [i] : []);
+    let entryIndex = 0;
     const html = starts.map((start, index) => {
-      const part = tokens.slice(start + 3, starts[index + 1]);
+      const end = starts[index + 1];
+      if (tokens[start].attrGet('class') !== 'item-title') return render(tokens.slice(start, end));
+      const part = tokens.slice(start + 3, end);
       const body = [], impact = [], sources = [];
       for (let i = 0; i < part.length; i++) {
         const token = part[i];
@@ -144,7 +146,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
           }
         }
       }
-      return renderEntry(render(tokens.slice(start, start + 3)), main, display[index], section,
+      return renderEntry(render(tokens.slice(start, start + 3)), main, display[entryIndex++], section,
         impact.length ? render(impact) : '', sources.length ? render(sources) : '');
     }).join('');
     return { html, toc };
