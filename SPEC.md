@@ -377,6 +377,8 @@ display:
 | `related` | 必填 | 布林 | 與段落檔標題的【與我們的產品線相關】標記一致 |
 | `kev` | 選填 | 清單 | 列入 CISA KEV 的每一筆：`cve_id`、`product`、`due`（修補期限 `YYYY-MM-DD`） |
 
+同一 CVE 若同時列入頭條與 CVE 清單，已查證的 CVSS 與利用現況須同步填入清單的 `display.cve[].cvss`、`display.cve[].exploited`，以及頭條的 `attention.facts` 或 `attention.summary`。逐一保留分數來源。只有來源未提供對應資訊時，才使用 `[]` 或 `unknown`。
+
 ##### `taiwan` 段落多出的欄位
 
 | 欄位 | 必填 | 型別 | 說明 |

@@ -185,8 +185,14 @@ display:
     keyword: JAVA
     cve_ids:
     - CVE-2026-114938
-    cvss: []
-    exploited: unknown
+    cvss:
+    - score: 9.8
+      version: null
+      source: Red Hat
+    - score: 8.1
+      version: '3.1'
+      source: Oracle
+    exploited: poc
     exploited_detail: 開始出現攻擊嘗試
     patch: released
     patch_detail: Red Hat 釋出第一張 errata
@@ -195,8 +201,23 @@ display:
     keyword: NGINX
     cve_ids:
     - CVE-2026-123007
-    cvss: []
-    exploited: unknown
+    cvss:
+    - score: 8.1
+      version: '3.1'
+      source: Red Hat
+    - score: 8.1
+      version: '3.1'
+      source: F5
+    - score: 9.2
+      version: '4.0'
+      source: F5
+    - score: 8.1
+      version: '3.1'
+      source: SUSE
+    - score: 9.2
+      version: '4.0'
+      source: SUSE
+    exploited: poc
     patch: released
     patch_detail: F5 緊急修補；Red Hat 的修補見產品動態
     related: true
