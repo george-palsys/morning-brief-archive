@@ -144,6 +144,7 @@ test('home and search reject unlisted story paths and keep legacy original links
  fs.writeFileSync(indexFile, [
   { ...original, id:'valid', category:'cve', title:'Verified legacy story', file:'2026-11-19.md' },
   { ...original, id:'invalid', category:'cve', title:'Unlisted story', file:'daily/../SPEC.md' },
+  { ...original, id:'oversize', category:'cve', title:'Oversize story', file:`daily/${'a'.repeat(400)}.md` },
  ].map(item=>JSON.stringify(item)).join('\n'));
  const result = run(dir);
  const home = result.pages.get('index.html');
@@ -151,6 +152,8 @@ test('home and search reject unlisted story paths and keep legacy original links
  assert.ok(home.includes('Verified legacy story'));
  assert.ok(!home.includes('Unlisted story'));
  assert.ok(result.warnings.some(warning=>warning.includes('invalid')));
+ const oversize = result.warnings.find(warning=>warning.includes('oversize'));
+ assert.equal(oversize?.split('指向不存在的頁面 ')[1]?.split('，')[0].length, 200);
  const index = JSON.parse(fs.readFileSync(path.join(result.output,'search/index-2026-11.json'),'utf8'));
  assert.deepEqual(index.map(item=>item.id), ['valid']);
 });
