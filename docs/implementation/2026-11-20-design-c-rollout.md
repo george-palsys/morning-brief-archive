@@ -4,6 +4,7 @@
 - 撰寫：Quill（文件撰寫）。本文件是整理，不是驗收；不是顧問服務紀錄。
 - 對象：`george-palsys/morning-brief-archive` 的 PR #27「feat: 將方案 C 套用到晨報網站」，分支 `feat/design-c-phase2`，base 為 `main` 的 `aa18f7d`（PR #26 合併後）。
 - 紀錄狀態：PR #27 **未合併**（Quill 以匿名 GitHub API 讀取：state open、draft false、merged false、mergeable_state clean）。目前 head 為 `e741e0e682f0ba016011d25b047aa659525e1b58`。本文件寫的是合併前的狀態；合併後要補第 4、9 章。
+- **後續狀態（2026-11-20 補記）**：上一行「未合併」是撰寫當時的狀態。PR #27 已於 2026-11-20 20:07:22（台灣時間）以 squash 合併為 `ef7c1ce358c48effeb576f76e9a8d12d87d71335`（Quill 用 `git log` 讀到 commit 時間與 parent `aa18f7d`；合併 commit 含本文件，370 行）。Static site 第 60 次部署成功、線上複驗見 5.10（部署次數與線上結果來自 Rigel 報告與 Ada 轉達，Quill 未獨立查證）。後續 PR #28（分支 `fix/design-c-followup`，head `f89ef0fbfcfae394325644621d2e64fe3df46b7c`，2026-11-20 20:13:29，從 `ef7c1ce` 開出）處理 Iris 的後續建議，**審查中，尚未合併，結果未經獨立審查**。
 - 審查狀態：驗證（Rigel）、安全審查（Vega）、設計審查（Iris）各兩輪。第一輪 head `f1dd64ccc3728b82c41d9e932e42f8ab4bcf4f40`，Iris 阻擋 2 項（B1、B2）；Lin 修成 `e741e0e`；第二輪三關皆無阻擋項。這不是「全部通過」，仍有已知限制與未驗證項目（第 8 章）。
 - 資料來源（只寫檔名，不寫路徑）：
   - Rigel：`rigel-verification-pr27.md`（第一輪，針對 `f1dd64c`）、`rigel-verification-pr27-r2.md`（第二輪，針對 `e741e0e`）。
@@ -146,6 +147,22 @@ npm run build -- --output ../design-c-preview
 
 ---
 
+### 4.2 新增 token（`site/assets/design-c.css`，Quill 讀 `ef7c1ce` 與 PR #28 head 原始碼）
+
+PR #27 新增 5 個 token，PR #28 另新增 2 個。值與用途都是 Quill 讀 CSS 原始碼的結果，沒有看畫面。這些 token 目前都沒有記入共用的 `shared/tokens.css`（Iris 的 S5 建議；Quill 沒有查證該檔本身）。
+
+| # | token | 淺色值 | 深色值 | 用途（CSS 位置） | 所屬 PR | 來源 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | `--design-confirmed` | `#b42318` | `#ff6b5e` | `.v4-confirmed` 的背景（「已確認」徽章） | #27 | Quill 讀 CSS |
+| 2 | `--design-on-confirmed` | `#ffffff` | `#14080a` | `.v4-confirmed` 的文字色；與 `confirmed` 配對在 `contrast.mjs` 以 4.5 為門檻檢查 | #27 | Quill 讀 CSS 與 `contrast.mjs` |
+| 3 | `--design-readable` | `42rem` | `42rem`（深色區塊沒有另設） | 日報段落頁 `.prose` 的 `max-width`，以及 1200px 以上閱讀欄 grid 的第一欄寬 | #27 | Quill 讀 CSS；Iris 回報它對應既有 `--w-read`，Quill 在 `site/assets` 搜尋 `w-read` 沒有找到，該對應未驗證 |
+| 4 | `--design-display` | `clamp(1.875rem,4vw,2.75rem)` | `clamp(1.875rem,4vw,2.75rem)`（深色區塊沒有另設） | `h1` 與 `.design-lead h2` 的字級；Iris 回報它對應既有 `--fs-display`，Quill 同樣沒有搜尋到，未驗證 | #27 | Quill 讀 CSS |
+| 5 | `--design-hero-fact-bg` | `#0f1724` | `#141a22` | 頭條事實欄 `.design-lead .v4-facts > div` 的背景；兩種模式的值都與 `--design-hero` 相同（Quill 逐值比對）；為修 B1 而於 `e741e0e` 新增 | #27（第二輪） | Quill 讀 CSS |
+| 6 | `--design-impact-code-fg` | `#ffffff` | `#15181b` | `.v4-impact code` 的文字色（處理 K4） | #28（審查中） | Quill 讀 PR #28 diff |
+| 7 | `--design-impact-code-bg` | `#27303b` | `#d5dbe0` | `.v4-impact code` 的背景（處理 K4） | #28（審查中） | Quill 讀 PR #28 diff |
+
+第 3、4 列「深色區塊沒有另設」的意思：深色模式的區塊沒有重新宣告這兩個名稱，所以沿用淺色區塊的宣告值（Quill 讀 CSS 的深色區塊，找不到這兩個名稱）。
+
 ## 5 驗證與審查結果
 
 ### 5.1 四關結論總表
@@ -261,6 +278,47 @@ npm run build -- --output ../design-c-preview
 
 ---
 
+### 5.10 合併後線上複驗（Rigel 自報、未由第二人重跑）
+
+來源：Rigel 的 `rigel-live-verification.md`。受測對象是 GitHub Pages 線上站，部署 commit `ef7c1ce`，Rigel 寫「第 60 次部署」。環境：Google Chrome 133.0.6943.142（headless、連公開網路）、Node.js v22.14.0。**以下全部是 Rigel 自己的報告，沒有第二人重跑，Quill 也沒有開線上站驗證；有 Quill 自行查證的項目在 5.12。**
+
+| # | 項目 | Rigel 自報結果 | 備註 |
+| --- | --- | --- | --- |
+| 1 | 橫向溢位 | 12 頁、5 種寬度（1440、768、390、360、320），共 60 項，溢位 0 項（`scrollWidth` 等於 `clientWidth`） | 12 頁：首頁、11/20 日報摘要、11/20 新知識、11/20 CVE、產品總覽、OpenShift、3scale、Vault、搜尋頁、關於頁、11/19 演練歸檔、404 |
+| 2 | 頭條事實欄對比（淺色） | 標籤 10.02:1、內容 17.97:1（背景 `rgb(15,23,36)`） | 與 5.3 兩位成員在 PR 分支量到的數字相同；此處是線上站 |
+| 3 | 頭條事實欄對比（深色） | 標籤 7.08:1、內容 14.86:1（背景 `rgb(20,26,34)`） | 同為線上站 |
+| 4 | 手機頁籤 390 寬 | 單格 89.00 x 44.00；四個頁籤切換各只顯示對應一個窗格 | 控制列寬 358px |
+| 5 | 手機頁籤 360 寬 | 單格 81.50 x 44.00；切換正確 | 控制列寬 328px |
+| 6 | 產品總覽篩選 | 「全部」可見 26 項；「有更新」可見 10 項 | |
+| 7 | CSP 違規（Console） | 0 處（只有 `favicon.ico` 404） | |
+| 8 | 外部非同源請求 | 0 個 | |
+| 9 | 站內連結 | 掃 47 頁，連結 2,590 條，失效 0 | 統計範圍見附錄 A 的 D12 |
+| 10 | 與本機建置比對 | 抽驗 5 頁（首頁、11/20 日報摘要、11/20 新知識、產品總覽、OpenShift）與 `main` 的 `ef7c1ce` 本機建置 byte-for-byte 相符 | 只抽 5 頁，其餘 42 頁未比對 |
+
+Rigel 報告中的截圖（16 張）與腳本只存在他的資料夾，不在本 repo。Rigel 自述未驗證：Firefox、Safari、實體手機、螢幕閱讀器（見第 8 章）。
+
+### 5.11 PR #28 head 重跑（Quill，PR #28 審查中）
+
+在 PR #28 head `f89ef0f` 上，Quill 實際執行：
+
+| # | 指令 | 實際輸出摘要 |
+| --- | --- | --- |
+| 1 | `npm ci --ignore-scripts` | `found 0 vulnerabilities` |
+| 2 | `npm test` | tests 45、pass 45、fail 0、skipped 0 |
+| 3 | `npm run check:contrast` | `CONTRAST OK: 70 CSS color pairs (light + dark)`；`CONTRAST OK: 28 Proposal C color pairs (light + dark)`（70＋28 共 98 組；Proposal C 由 26 組增為 28 組，因 PR #28 的 diff 新增 1 組 impact code 配對，乘淺深兩種模式） |
+| 4 | `npm run build -- --output <空資料夾>` | `BUILD OK: 47 HTML pages; 26/26 product pages; 3 daily editions; 45 search items; 0 warnings; mode=production` |
+
+這只證明測試、對比腳本與建置通過；PR #28 的畫面結果（CVE 規格欄 grid、行內 code 對比、浮水印）Quill 沒有看，**尚未經 Rigel、Vega、Iris 獨立審查**。
+
+### 5.12 Quill 自行查證的項目（在 PR #28 head 的建置輸出上）
+
+| # | 項目 | Quill 實際結果 | 說明 |
+| --- | --- | --- | --- |
+| 1 | `href` 總數 | 2,590 條（其中 `http:`、`https:`、`mailto:` 開頭 392 條；`#` 開頭純錨點 350 條；其餘相對路徑 1,848 條） | 建置輸出 47 頁，用 Python 正則 `href="..."` 計算。這是 PR #28 head 的建置，不是 `ef7c1ce`；PR #28 只改 CVE 頁的 HTML 結構，連結數預期不變，但未另外對 `ef7c1ce` 重算 |
+| 2 | 「排除外連」的連結數 | 2,590 減 392 等於 2,198 | 與 Rigel 第一輪 2,198 相同，支持 Rigel 的「兩輪統計範圍不同」說明；但 2,198 包含 350 條純錨點，Rigel 寫「392 條外部/錨點」不精確（392 全是外部協定，錨點在 2,198 之內） |
+| 3 | `<script>` 標籤 | 47 頁共 48 個，全部是同源 `toc.js`（47 個，每頁 1 個，含 404 頁以 `/morning-brief-archive/` 根相對路徑的 1 個）與 `search.js`（1 個，搜尋頁），全部帶 `defer`；沒有行內 script、沒有 `http(s)` 外部 script | 支持 Rigel 的「指的是無行內與外部 script」說明 |
+| 4 | NGINX2Root 來源資料 | `daily/2026-11-20/meta.yaml` 的 `display.cve` 該項 `cvss: []`、`exploited: unknown` | 見 K14 |
+
 ## 6 如何套用到別的專案
 
 1. 先讓設計方有「可對照的原型」與「token 表」；實作的 token 一律用 `--design-*` 映射到既有 token，不直接覆蓋既有名稱（本 PR 的做法）。
@@ -323,6 +381,10 @@ npm run build -- --output ../design-c-preview
 | U21 | 首頁 `#item-N` 錨點是否都對得到 id | Vega 交給 Rigel | Rigel 回報站內連結斷鏈 0，但報告沒有逐項說明 `#item-N` 錨點 |
 | U22 | 正式 v3 資料的建置 | 全體 | 驗證多以現有 11/20 資料與 11/19 演練資料進行 |
 | U23 | 200% 縮放以外的縮放 | Rigel | 只測 1280px 下 200% |
+| U24 | 線上站實測（5.10） | Rigel | 全部為 Rigel 自報、未由第二人重跑；Quill 沒有開線上站。U11 的「GitHub Pages 部署與線上頁面」因此變成「有 Rigel 單人自報，未獨立驗證」，不是「已驗證」 |
+| U25 | 附錄 A 的 D11（`:has()` 高度） | Rigel | Rigel 說第二輪 4806px 是誤記、兩個 head 重跑都是 5549px；Quill 本機有 Chrome，但未重跑此量測，**未驗證** |
+| U26 | PR #28 的畫面結果 | 無 | CVE 規格欄 grid、行內 code 對比、浮水印隱藏，只有 Quill 讀 diff 與跑測試，審查中 |
+| U27 | 抽驗以外 42 頁的線上內容與本機建置是否一致 | Rigel | 只抽 5 頁 |
 
 ### 8.3 已知限制（建議項與既有問題，未修）
 
@@ -341,6 +403,10 @@ npm run build -- --output ../design-c-preview
 | K11 | S8：產品頁來源表窄欄逐字折行（「版本」「類別」「工／具」） | Iris | 建議；第二輪仍看到 |
 | K12 | S9：搜尋頁標籤、下拉、按鈕貼近 | Iris | 建議；未重驗 |
 | K13 | S10：「← 26 項產品現況」連結僅 21px 高，低於 44px 觸控區 | Iris | 建議；第二輪仍是文字連結 |
+| K14 | NGINX2Root（CVE-2026-123007）在首頁與日報的 CVE 清單顯示「CVSS 未提供」與「攻擊現況未寫明」，但同頁頭條事實欄寫 CVSS 3.1 8.1 與「PoC 已公開」。原因是來源資料：`daily/2026-11-20/meta.yaml` 的 `display.cve` 該項為 `cvss: []`、`exploited: unknown`，頭條事實來自另一個區塊 `attention.facts`（兩處各自獨立填寫）。這不是顯示程式的問題；內容檔沒有改 | Lin 與 Rigel 各自查到相同結論（Ada 轉達）；Rigel 報告附行號；Quill 讀 `meta.yaml` 確認該項 `cvss: []`、`exploited: unknown`，Quill 沒有重做顯示程式邏輯的追查 | 待 George 決定要不要補來源資料 |
+| K15 | 同檔 `display.cve` 的另一項「Java4Shell 後續」（CVE-2026-114938）也是 `cvss: []`、`exploited: unknown`（另有 `exploited_detail`）。Quill 讀 `meta.yaml` 時看到，沒有人報告過 | Quill 觀察；顯示效果未在畫面上確認 | 與 K14 同一類來源資料問題，併入 George 的決定 |
+| K16 | PR #28 正在處理（審查中，結果未獨立審查）：CVE 規格欄由 float 改 grid（對應 K1）、11/20 AI 頁「影響」區塊行內 code 對比（對應 K4）、關鍵字浮水印（對應 K7；diff 以 `.v4-page .v4-keyword { display:none }` 隱藏，不是調整位置） | Quill 讀 PR #28 diff；沒有看畫面 | 審查中，不要寫成已解決 |
+| K17 | 日報摘要頁仍是 26 格同尺寸方塊（K2）；PR #28 沒有處理 | Quill 讀 PR #28 的檔案清單（只動 `design-c.css`、`contrast.mjs`、`display-v4.mjs`） | 未處理 |
 
 ---
 
@@ -351,6 +417,7 @@ npm run build -- --output ../design-c-preview
 | 日期 | 誰 | 變更 | 來源 |
 | --- | --- | --- | --- |
 | 2026-11-20 | Quill | 新增本文件：PR #27（方案 C Phase 2）實作紀錄；兩輪三關審查、B1／B2 與 Lin 的修正、已知限制、未驗證項目、資料不一致列表 | Ada 轉達 George「採用方案 C」；數字與結論來源見各章 |
+| 2026-11-20 | Quill | 補記：PR #27 於 20:07:22 以 squash 合併為 `ef7c1ce`，Static site 第 60 次部署成功（部署次數為 Rigel 報告與 Ada 轉達，Quill 未獨立查證）；PR #27 說明寫 24 組配色，head 實際 26 組，說明未更新。新增 4.2（token）、5.10（線上複驗，Rigel 自報）、5.11（PR #28 head 重跑）、5.12（Quill 自查）、K14–K17、U24–U27、附錄 A 的 D11–D13。PR #28 審查中 | Ada 轉達；`git log`；Rigel 的 `rigel-live-verification.md` |
 
 ---
 
@@ -368,3 +435,6 @@ npm run build -- --output ../design-c-preview
 | D8 | `build.mjs` 行數 | Vega 第一輪：+37／−11 | Quill 用 `git diff --numstat aa18f7d f1dd64c` 與 `aa18f7d e741e0e` 皆讀到 +38／−10；GitHub API 也是 +38／−10 | 以 Quill 與 API 為準；Vega 的數字差 1 行，原因未驗證 |
 | D9 | Rigel 驗證環境 | 第一輪：Node.js v25.8.2、Chrome 120+ | 第二輪：Node.js v22.14.0、Chrome 133.0.6943.142 | 如實並列；兩輪結果一致，但環境不同 |
 | D10 | 第一輪 Rigel 結論與 Iris 結論 | Rigel：通過、建議合併、退修 0 項 | Iris：阻擋 2 項、退回 | 不是矛盾而是範圍不同：Rigel 沒量事實欄與頁籤等分（5.5）。第二輪兩人數字一致 |
+| D11 | D1 的更新：`:has()` 失效時首頁高度 | Rigel（線上複驗報告）：第二輪的 4806px 是誤記，重跑 `f1dd64c` 與 `e741e0e` 的本機建置，兩者實測都是 5549px；原因是第二輪腳本漏傳 `scrollHeight`，表格誤填歷史草稿值 | Rigel 原報告檔仍並列 5549、4806；設計規格原型另寫 4802 | **Rigel 說明，未獨立驗證。** Quill 沒有重跑；若說法成立，4806 應作廢，但他的第二輪報告原檔沒有更正。4802（原型）仍是另一個獨立數字，沒有人說明 |
+| D12 | D6 的更新：站內連結 2,198 對 2,590 | Rigel：第一輪只計排除外連的內部連結（2,198），第二輪計全部 `href`（2,590，含 392 條外部/錨點） | Quill 在 PR #28 head 建置輸出自算：全部 `href` 2,590、`http(s):`／`mailto:` 392、排除外連 2,198（含純錨點 350 條） | **兩個總數 Quill 查證相符**，「統計範圍不同」成立；Rigel 對 392 的描述不精確（392 全是外部，錨點在 2,198 內）。查證對象是 PR #28 head 的建置，不是 `ef7c1ce` |
+| D13 | D3 的更新：「script 0」 | Rigel：他指的是「無行內 script、無外部 http script」，同源 `toc.js`、`search.js` 本來就在 | Quill 在 PR #28 head 建置輸出：48 個 script 標籤，皆為同源、帶 `defer` 的 `toc.js`（47）與 `search.js`（1），無行內、無外部 | **Quill 查證：Rigel 的說明與事實相符**；他第二輪報告原文寫「0」的措辭仍不精確，這是他自己承認的表述問題 |
