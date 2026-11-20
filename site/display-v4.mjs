@@ -133,19 +133,6 @@ export function renderEntry(heading, body, entry, section, impact, sources) {
   return `<article class="news-card v4-entry">${content}</article>`;
 }
 
-export function renderHomeLead(day, file, link) {
-  const { attention } = day.display;
-  return `<section class="design-lead"><p class="design-kicker">${esc(copy.attention)}</p><h2>${esc(attention.title)}</h2><p>${esc(attention.summary)}</p>${attention.facts?.length ? facts(attention.facts) : ''}<div class="design-lead-links">${link(file, `${day.base}/${attention.section}.html`, day.display.groups[attention.section].name)}${link(file, day.href, '閱讀最新一天晨報 →')}</div></section>`;
-}
-
-export function renderHomeCves(day, file, link) {
-  const group = day.display.groups.cve;
-  const target = `${day.base}/cve.html`;
-  const items = group.entries.slice(0, 4).map((entry, index) =>
-    `<li><div>${badges(entry, 'cve')}${scores(entry)}<div class="v4-panel-status">${status(entry, 'exploited', false)}${status(entry, 'patch', false)}</div></div><h3>${link(file, `${target}#item-${index + 1}`, group.titles[index])}</h3></li>`);
-  return `${items.length ? `<ul class="design-stream">${items.join('')}</ul>` : `<p>${esc(copy.empty)}</p>`}${link(file, target, group.more)}`;
-}
-
 export function renderOverview(day, rows, file, link, time, previous, next) {
   const { groups, attention, aiSummary } = day.display;
   const target = key => `${day.base}/${key}.html`;

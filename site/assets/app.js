@@ -13,7 +13,7 @@ if (typeof ResizeObserver === 'function') {
  document.querySelectorAll('.tabs-scroll').forEach(el => observer.observe(el));
 }
 
-const menu = document.querySelector?.('.site-menu');
+const menu = document.querySelector?.('.menu');
 if (menu) {
  const summary = menu.querySelector('summary');
  document.addEventListener('click', event => {
@@ -41,12 +41,11 @@ if (attention) {
 
 const bar = document.querySelector('#filterbar');
 if (bar) {
-  const items = [...document.querySelectorAll('li[data-status]')];
-  const vendors = [...document.querySelectorAll('.design-vendor')];
+  const items = [...document.querySelectorAll('.directory tbody tr[data-status]')];
   const chips = [...bar.querySelectorAll('[data-filter]')];
   const input = bar.querySelector('#product-search');
-  const count = bar.querySelector('#results-count');
-  const empty = bar.querySelector('#empty-state');
+  const count = document.querySelector('#results-count');
+  const empty = document.querySelector('#empty-state');
   let state = 'all';
   const apply = () => {
     const q = input.value.normalize('NFKC').trim().toLowerCase();
@@ -55,8 +54,7 @@ if (bar) {
       const ok = (state === 'all' || li.dataset.status === state) && (!q || li.textContent.normalize('NFKC').toLowerCase().includes(q));
       li.hidden = !ok; if (ok) shown++;
     }
-    for (const v of vendors) v.hidden = ![...v.querySelectorAll('li[data-status]')].some(li => !li.hidden);
-    count.textContent = `顯示 ${shown} / ${items.length} 項產品`;
+    count.textContent = shown === items.length ? `共 ${shown} 項` : `顯示 ${shown} / ${items.length} 項產品`;
     empty.hidden = shown !== 0;
   };
   chips.forEach(c => c.addEventListener('click', () => { state = c.dataset.filter; chips.forEach(x => x.setAttribute('aria-pressed', String(x === c))); apply(); }));

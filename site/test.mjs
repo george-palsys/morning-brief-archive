@@ -51,8 +51,9 @@ function validatePages(result) {
    if (/^https?:/.test(href)) continue;
    if (file === '404.html' && href.startsWith('/')) {
     assert.ok(href.startsWith(result.basePath),`${file}: base path ${href}`);
-    const target = href.slice(result.basePath.length);
+    const [target, anchor] = href.slice(result.basePath.length).split("#");
     assert.ok(result.pages.has(target) || fs.existsSync(path.join(result.output,target)),`${file}: missing ${target}`);
+    if (anchor) assert.ok(result.pages.get(target)?.includes(`id="${anchor}"`), `${file}: missing ${target}#${anchor}`);
     continue;
    }
    assert.ok(!href.startsWith('/'),`${file}: relative ${href}`);
@@ -69,7 +70,7 @@ test('production: legacy banner, no-data state, 26 product pages and valid relat
  const result = build({input:legacyFixture(),output:newDir('production-')});
  assert.equal(result.pages.size,33);
  assert.ok(result.pages.get('daily/2026-11-19.html').includes('舊版單檔格式'));
- assert.ok(result.pages.get('index.html').includes('第一份新版晨報'));
+ assert.ok(result.pages.get('products/index.html').includes('第一份新版晨報'));
  assert.equal(slugs.filter(s => result.pages.has(`products/${s}.html`)).length,26);
  assert.ok(!result.pages.get('daily/2026-11-19.html').includes('aria-label="相鄰日期"'),'R6: single date has no empty navigation');
  assert.ok(!/製作與審查角色|Security Code Review|本次變更已通過審查/.test(result.pages.get('about.html')),'about role block removed');
@@ -255,7 +256,7 @@ test('R7: empty maintenance shows fallback without empty TOC and keeps meaningfu
 test('R8: breadcrumbs and footer links have minimum touch height',()=>{
  const css=fs.readFileSync('site/assets/site.css','utf8');
  assert.match(css, /\.breadcrumbs a\{[^}]*min-height:28px/);
- assert.match(css, /body>footer a\{[^}]*min-height:28px/);
+ assert.match(css, /\.site-footer a[^\n]*padding-block:12px/);
 });
 test('published historical import: 26 stories, explicit collection time, same-date primary and legacy links',()=>{
  const dir=importedFixture();const result=build({input:dir,output:newDir('import-')});
@@ -304,14 +305,14 @@ test('reading layout: semantic shell, one archive notice, correct daily current 
  const result=build({input:importedFixture(),output:newDir('reading-')});
  for(const [file,html] of result.pages) {
   assert.equal((html.match(/<main\b[^>]*id="main"/g)||[]).length,1,file);
-  assert.equal((html.match(/<nav[^>]*aria-label="主要導覽"/g)||[]).length,1,file);
+  assert.equal((html.match(/<nav[^>]*aria-label="主選單"/g)||[]).length,1,file);
   assert.equal((html.match(/<h1(?:\s|>)/g)||[]).length,1,file);
   for(const [,attributes] of html.matchAll(/<a\b([^>]*target="_blank"[^>]*)>/g)) assert.match(attributes,/rel="[^"]*noopener[^"]*"/);
-  const nav = html.match(/<nav class="top-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
-  const current = [...nav.matchAll(/aria-current="page">([^<]+)/g)].map(match => match[1]);
-  if (file.startsWith('daily/')) assert.deepEqual(current, ['每日'], file);
-  if (file.startsWith('products/')) assert.deepEqual(current, ['產品'], file);
-  if (file === 'index.html') assert.deepEqual(current, [], file);
+  const nav = html.match(/<nav class="side-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  const current = [...nav.matchAll(/aria-current="(?:page|true)">[\s\S]*?<\/svg>([^<]+)/g)].map(match => match[1]);
+  if (file.startsWith('daily/')) assert.equal(current.length, 1, file);
+  if (file.startsWith('products/')) assert.deepEqual(current, ['產品追蹤'], file);
+  if (file === 'index.html') assert.deepEqual(current, ['今日晨報'], file);
  }
  const home = result.pages.get('index.html');
  assert.equal((home.match(/class="admonition archive /g)||[]).length, 1);
@@ -321,15 +322,16 @@ test('reading layout: semantic shell, one archive notice, correct daily current 
  assert.match(home, /<aside class="attention"><details open><summary>[^<]+<span class="attention-preview">：NGINX[\s\S]*?<\/span><\/summary>/);
 
  const cve=result.pages.get('daily/2026-11-19/cve.html');
- const side = cve.match(/<aside class="toc-side">[\s\S]*?<\/aside>/)[0];
- for (const [, title, label] of side.matchAll(/<a href="#[^"]+" title="([^"]+)"><span>([^<]+)<\/span>/g)) assert.equal(title, label);
- assert.equal((side.match(/ title="/g)||[]).length, 5);
+ const toc = cve.match(/<details class="page-toc">[\s\S]*?<\/details>/)[0];
+ for (const [, title, label] of toc.matchAll(/<a href="#[^"]+" title="([^"]+)"><span>([^<]+)<\/span>/g)) assert.equal(title, label);
+ assert.equal((toc.match(/ title="/g)||[]).length, 5);
  assert.equal((cve.match(/class="admonition archive /g)||[]).length,1);
  assert.ok(!cve.includes('&gt; 歷史演練分檔'));
  assert.ok(!/<h2[^>]*>[^<]*【與我們的產品線相關】/.test(cve));
- const desktopTree=cve.match(/<nav class="side-nav site-tree"[^>]*>([\s\S]*?)<\/nav>/)[1];
- assert.ok(desktopTree.includes('最近 7 天')); assert.ok(desktopTree.includes('各分頁'));
- assert.ok(!desktopTree.includes('>關於</a>')); assert.ok(!desktopTree.includes('>搜尋</a>'));
+ const desktopTree=cve.match(/<nav class="side-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
+ assert.equal((desktopTree.match(/<a /g)||[]).length, 8);
+ assert.ok(cve.includes("TODAY'S EDITION"));
+ assert.match(cve, /href="https:\/\/github\.com\/george-palsys\/morning-brief-archive\/blob\/main\/daily\/2026-11-19\/cve\.md"[^>]*>GitHub 原始檔/);
  validatePages(result);
 });
 
@@ -345,7 +347,7 @@ test('maintenance presentation retains source details without changing Markdown'
 test('reading CSS retains mobile typography, nested indent and desktop navigation', () => {
  const css = fs.readFileSync(new URL('./assets/site.css', import.meta.url), 'utf8');
  assert.match(css, /h2\{font-size:var\(--fs-24\)/);
- assert.match(css, /@media \(max-width:920px\)[\s\S]*?\.design-sidebar,\.top-nav,\.search-link\{display:none\}/);
+ assert.match(css, /@media \(max-width:920px\)[\s\S]*?\.sidebar\{display:none\}/);
  assert.match(css, /\.page-toc a\{display:block/);
  assert.match(css, /\.prose ul,\.prose ol\{padding-left:1\.3em/);
  assert.match(css, /\.tabs-scroll\{overflow-x:auto/);
