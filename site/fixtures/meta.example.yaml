@@ -1,0 +1,198 @@
+# v4 顯示欄位範例；其他既有欄位沿用日報 meta.yaml。
+# attention 與 display 必填；五個段落清單必填，空清單顯示「今天沒有」。
+# section 必填列舉；title／summary 必填字串，寬度上限 40／200，缺值建置失敗。
+# facts 選填 0–4 筆，缺值只顯示警示文字。label／value 必填；
+# source 選填，同一件事有不同來源的值時必填。
+# short／keyword 必填，寬度上限 24／8 半形字元，缺值無替代顯示。
+# date 選填 YYYY-MM-DD，缺值不顯示。
+# figures 選填 0–3 筆，label／value 必填；缺值隱藏數字區。
+# digest 選填，長度上限待定；缺值顯示 Markdown 完整標題。
+# caveat 各段共用，選填無上限；缺值不顯示注意區塊。
+# ai_summary 選填，寬度上限 60；缺值只顯示「今天 N 則。」。
+# cve_ids／cvss 必填清單，沒有就填 []；無分數顯示「未提供」。
+# cvss 每筆需 score、version、source；未知版本填 null。
+# exploited／patch／related／kind 在適用段落必填；unknown 顯示對應的未寫明文案。
+# exploited_detail／patch_detail 選填無上限；缺值用 SPEC 固定文案。
+# kev 選填，包含 cve_id、product、due（YYYY-MM-DD）；缺值不顯示。
+# drill 選填布林，長度不適用；沒填等同 false，不顯示免責聲明。
+spec_version: 4
+drill: true
+
+attention:
+  section: cve
+  title: HTTP/2 記憶體毀損漏洞
+  summary: 這個問題從 2015 年的 1.9.5 就存在。
+  facts:
+    - label: CVSS 4.0
+      value: "9.2"
+      source: The Hacker News
+    - label: 修補版
+      value: 1.31.9／1.30.7
+    - label: PoC
+      value: 已公開
+    - label: 實際攻擊
+      value: 尚未看到
+
+display:
+  ai_summary: 隔離必須由代理碰不到的那一層強制執行。
+  products:
+    - short: Argo CD 3.6.2
+      keyword: ARGO
+      date: 2026-11-18
+    - short: Argo CD 3.5.8
+      keyword: ARGO
+      date: 2026-11-18
+    - short: Argo CD 3.4.14
+      keyword: ARGO
+      date: 2026-11-18
+    - short: Concert 3.1.0.3
+      keyword: CONCERT
+      date: 2026-11-06
+    - short: Rancher v2.15.3
+      keyword: RANCHER
+    - short: RKE2 v1.37.0
+      keyword: RKE2
+      date: 2026-09-14
+
+  knowledge:
+    - short: APAS 1.0
+      digest: AI 自主滲透測試的結果要怎樣才能採信
+      keyword: APAS
+    - short: fTPM 狀態回放
+      keyword: fTPM
+    - short: .pth 供應鏈攻擊
+      keyword: PTH
+    - short: NuGet 分段發布
+      keyword: NUGET
+    - short: Codex sandbox
+      keyword: SANDBOX
+    - short: Bob model router
+      keyword: ROUTER
+
+  cve:
+    - short: nginx2root
+      keyword: NGINX
+      date: 2026-11-18
+      cve_ids:
+        - CVE-2026-123007
+        - CVE-2026-123634
+        - CVE-2026-123633
+      cvss:
+        - score: 9.2
+          version: "4.0"
+          source: The Hacker News
+      exploited: poc
+      exploited_detail: GitHub 上已有 PoC
+      patch: released
+      related: true
+    - short: F5 BIG-IP 六個 Critical
+      keyword: BIGIP
+      date: 2026-11-18
+      cve_ids:
+        - CVE-2026-123637
+        - CVE-2026-121805
+        - CVE-2026-120292
+        - CVE-2026-120285
+        - CVE-2026-116953
+        - CVE-2026-120722
+      cvss:
+        - score: 9.8
+          version: "3.1"
+          source: The Hacker News
+        - score: 9.3
+          version: "4.0"
+          source: The Hacker News
+      exploited: none_seen
+      patch: hotfix
+      related: false
+    - short: Java4Shell 後續
+      keyword: JAVA
+      cve_ids:
+        - CVE-2026-114938
+      cvss: []
+      exploited: none_seen
+      patch: pending
+      patch_detail: 報導發布時 Red Hat 仍在準備。
+      related: true
+    - short: CISA KEV 新增 4 筆
+      keyword: KEV
+      date: 2026-11-18
+      cve_ids:
+        - CVE-2026-40217
+        - CVE-2024-10441
+        - CVE-2026-90817
+        - CVE-2026-90436
+      cvss: []
+      exploited: confirmed
+      patch: unknown
+      related: false
+      kev:
+        - cve_id: CVE-2026-40217
+          product: BerriAI LiteLLM
+          due: 2026-12-02
+        - cve_id: CVE-2024-10441
+          product: Synology DiskStation Manager
+          due: 2026-11-21
+        - cve_id: CVE-2026-90817
+          product: REDCap
+          due: 2026-11-21
+        - cve_id: CVE-2026-90436
+          product: Apache Axis
+          due: 2026-11-21
+    - short: Roller 反序列化
+      keyword: ROLLER
+      date: 2026-11-17
+      cve_ids:
+        - CVE-2026-82384
+        - CVE-2026-129448
+      cvss:
+        - score: 9.8
+          version: null
+          source: iThome
+      exploited: confirmed
+      patch: released
+      related: false
+
+  taiwan:
+    - short: 機關平臺帳號漏洞
+      keyword: GOV
+      date: 2026-11-18
+      kind: 漏洞
+    - short: 永信藥品個資外洩
+      keyword: LEAK
+      date: 2026-11-18
+      kind: 個資
+    - short: 神達數位遭入侵
+      keyword: MITAC
+      date: 2026-11-18
+      kind: 入侵
+    - short: 大同 e同購個資外洩
+      keyword: TATUNG
+      date: 2026-11-18
+      kind: 個資
+    - short: LINE 支援 Passkey
+      keyword: PASSKEY
+      date: 2026-11-18
+      kind: 新功能
+
+  ai:
+    - short: Anthropic IPO
+      keyword: IPO
+      date: 2026-11-18
+      figures:
+        - label: 每股
+          value: US$83
+        - label: 募資
+          value: US$813 億
+        - label: 估值
+          value: 約 1.5 兆
+    - short: Gemini Tasks
+      keyword: TASKS
+      date: 2026-11-17
+    - short: Argon 代理越界
+      keyword: ARGON
+      caveat: 研究團隊強調這是刻意設計的情境，不能據此推論一般使用時的發生頻率。
+      date: 2026-11-13
+    - short: Palo Alto 併購
+      keyword: MA
+      date: 2026-11-19
