@@ -1,202 +1,160 @@
-# 實作紀錄：SPEC v4 產品動態摘要行與週五新知識小節的建置修正（PR #24）
+# 實作紀錄：SPEC v4 產品摘要與週五新知識小節（PR #24）
 
-- 對象：`george-palsys/morning-brief-archive` 的 PR #24（分支 `fix/spec-v4-products-friday`，尚未合併）。
-- 紀錄基準：分支 HEAD `5c05167fa547629fc7f0df54ccb07a4ef3c53973`（內含修正 commit `189e11dd94afde4d4a7881586c58b877d04e629f` 與換行修正 commit `5c05167`）。
-- 撰寫依據：先讀 `git diff origin/main...HEAD` 的實際內容，再對照 `SPEC.md`；「驗證輸出」一節分成「Ops 回報」與「撰寫者在乾淨 clone 重跑」兩種來源，兩者沒有對上的地方照實並列（見第 6 章）。
-- 紀錄狀態：審查結果（程式審查、安全審查、設計審查）尚未回報，列在第 8 章，標「待驗證」。
+- 對象：[PR #24](https://github.com/george-palsys/morning-brief-archive/pull/24)，分支 `fix/spec-v4-products-friday`，本次不合併。
+- 依據：main `f99d84c0ca0541fdaa8292ad74f019ea199d77ea` 的 `SPEC.md`、實際程式 diff、乾淨 checkout 測試與正式歸檔副本建置。
+- 本文件由原始實作紀錄 patch 套用後更新，包含後續程式與設計審查修正。日期：2026-11-20（台灣時間）。
 
----
+## 1 問題與決策
 
-## 1 問題
+`SPEC.md` 第六節產品摘要使用「26 項:有更新 <N>、無更新 <N>、無法確認 <N>、無公開來源 <N>。」；原程式一律要求「N 則」，把產品總數與更新條目數混為一談。
 
-晨報 SPEC v4 有兩處與建置程式不一致，會讓依 SPEC 寫出的合格晨報建置失敗，或讓版面出錯。
+`SPEC.md` 第三節要求週五在新知識最後增加「本週回顧」「本週動手題」。原程式把這兩個二級標題也對應到 display 條目，導致建置失敗。
 
-### 1.1 產品動態摘要行：「N 項」對「N 則」
+本次改程式，不改 SPEC 或日報文字。保留舊「N 則」格式相容性；產品摘要的總項數與更新條目數分開驗證。兩個週五小節在所有條目之後顯示，不占用 display 索引。
 
-- `SPEC.md` 第六節（歸檔格式）的摘要範本，產品動態那一行寫成 `26 項:有更新 <N>、無更新 <N>、無法確認 <N>、無公開來源 <N>。→ [完整內容](products.md)｜[26 項產品現況](../../products/README.md)`（`SPEC.md` 第 255 行）。
-- 其他三個段落（CVE 重大新聞、新知識、台灣 IT 重大事件）的摘要行寫成 `<N> 則。→ [完整內容](…)`（`SPEC.md` 第 267、273、279 行）。
-- 修正前的 `site/display-v4.mjs` 對所有段落都只用 `/^(\d+)\s*則/u` 解析摘要行，並要求該數字等於段落檔內的條目標題數。
-- 結果：產品動態摘要行照 SPEC 寫成「26 項：…」時，`display-v4.mjs` 認不出，會報「摘要則數、段落標題與 display 則數不一致」；若為了通過改成「N 則」，又違反 SPEC 範本。
+初版排除小節時留下狀態旗標，後面的三級標題可能被併入週回顧卡而沒有報錯（審查代號 K6）。本次對錯誤順序明確報錯，並在渲染結束後比對實際條目數與 display 項數。
 
-### 1.2 週五「本週回顧」「本週動手題」被當成新聞條目
+## 2 改動檔案
 
-- `SPEC.md` 第三節「每週五加碼」規定：週五的晨報在新知識段落最後多兩個小節，「本週回顧」與「本週動手題」（`SPEC.md` 第 197–202 行）。
-- 這兩個小節在 `knowledge.md` 裡是 `##` 層級標題，與每則新知識的標題同層。
-- 修正前的 `site/build.mjs` 把所有 `##` 標題都標成 `item-title`，再依序對應 `meta.display` 的條目；週五多出的兩個標題會被當成第 7、8 則條目，造成條目數與 `display` 對不上，或把一般內容套成新聞卡片。
+| 檔案 | 改動 |
+| --- | --- |
+| `site/display-v4.mjs` | 接受產品摘要的全形與半形冒號；驗證四種狀態加總；保留標題數與 display 數量檢查 |
+| `site/build.mjs` | 週五小節不占 display 索引；拒絕小節出現在條目前或小節後還有條目；檢查輸出條目數；小節使用 `news-card v4-entry` |
+| `site/test.mjs` | 產品格式、加總、條目數、週五小節順序及卡片結構回歸測試 |
+| `docs/implementation/2026-11-20-spec-v4-products-friday-fix.md` | 實作、驗證、審查修正與後續事項紀錄 |
 
----
+未提交正式歸檔的 `daily/2026-11-20/`、`products/`、`items.jsonl`、`state/`。未變更 SPEC、workflow、套件版本或 CSS，沒有新增外部資源。
 
-## 2 決策：改程式，不改 SPEC
+## 3 保留的檢查與新增防護
 
-| 項目 | 決策 | 理由 |
+| 編號 | 檢查 | 結果 |
 | --- | --- | --- |
-| 產品動態摘要行 | 程式接受 SPEC 範本的「N 項：有更新…」格式 | SPEC 的範本本身前後一致：產品動態是「26 項」總表（4 種狀態計數），其餘三段才是「則」。SPEC 範本沒有寫錯，是 `display-v4.mjs` 的解析規則比 SPEC 窄。 |
-| 週五兩個小節 | 程式把它們從「條目」排除，另渲染為一般卡片 | `SPEC.md` 第三節已明文要求這兩個小節，要求存在、不是新聞條目；改 SPEC 去掉週五加碼會刪掉原本要求的內容。 |
-| 條目計數 | 摘要宣告的「N 項」不再要求等於段落標題數 | 產品動態的「26 項」是產品總數，段落檔內的標題數是「今天有動態的產品條目數」，兩者本來就是不同的數字。 |
-| 範圍 | 只動 `site/` 底下 3 個檔案 | 不碰 `SPEC.md`、`daily/`、`products/`、`.github/` workflow、`package*.json`。 |
+| C1 | 非產品段落的摘要「N 則」必須等於三級標題數 | 保留 |
+| C2 | 各段落 display 項數必須等於三級標題數 | 保留，產品動態也適用 |
+| C3 | 摘要必須連結該段落完整內容 | 保留 |
+| C4 | 產品四種狀態加總必須等於摘要總項數 | 新增 |
+| C5 | 格式不符產品摘要規則也不符舊「N 則」格式時失敗 | 保留 |
+| C6 | 只有 knowledge 的二級標題「本週回顧」「本週動手題」視為附錄小節 | 保留 |
+| C7 | 渲染完成的條目數必須等於 display 項數；過少時明確 throw | K6 修正新增 |
+| C8 | 週五小節出現在第一個條目前時明確 throw | K6 修正新增 |
+| C9 | 週五小節後再出現三級或更深標題時明確 throw；中間其他二級標題也不會清除順序限制 | K6 修正新增 |
+| C10 | renderEntry 缺少對應 display 時仍 throw，防止輸出多於 display | 保留 |
 
----
+週五兩節輸出 `<article class="news-card v4-entry">`，標題維持 h2，不產生 `.v4-keyword` 或空白 span。套用既有內距、行長與交替底色；兩節是附錄卡片，仍不計為六則新知識。
 
-## 3 改動檔案
+## 4 測試案例
 
-以 `git diff origin/main...HEAD` 為準，3 個檔案，+48／−6。
+原有 36 項測試保留，本 PR 共新增 9 項，合計 45 項。
 
-### 3.1 `site/display-v4.mjs`（+7／−2）
+| 編號 | 測試 | 預期結果 |
+| --- | --- | --- |
+| T1 | 產品摘要使用半形冒號，總數 26、狀態 10、14、1、1；接著改成 10、13、1、1 | 前者成功，後者因加總不符失敗 |
+| T2 | 產品摘要使用全形冒號，總數 26、狀態 10、14、1、1；接著改成 10、13、1、1 | 前者成功，後者因加總不符失敗 |
+| T3 | 產品摘要合法，但移除一筆 display.products | 標題數與 display 不符，失敗 |
+| T4 | 星期五不含兩節附錄 | 成功，六張條目卡 |
+| T5 | 星期五在六則之後包含兩節附錄 | 成功，八張卡、六個 item-title、六個 keyword、兩個 weekly-title；兩節 h2 與內容保留 |
+| T6 | 週五小節放在所有條目前 | 明確失敗 |
+| T7 | 週回顧插在第三與第四則之間 | 明確失敗，不吞掉第四則 |
+| T8 | 直接渲染時，display 一筆但沒有輸出條目 | 明確失敗，錯誤為 display.knowledge 項目數與輸出條目數不一致 |
+| T9 | 週回顧後經過另一個二級標題，再出現第四則 | 明確失敗，順序限制不會被重設 |
 
-1. 產品動態（`key === 'products'`）改用新規則解析摘要行：`/^(\d+)\s*項\s*[：:]\s*有更新\s*(\d+)、\s*無更新\s*(\d+)、\s*無法確認\s*(\d+)、\s*無公開來源\s*(\d+)。/u`；冒號接受半形 `:` 與全形 `：`。
-2. 其他段落仍用原本的 `/^(\d+)\s*則/u`。
-3. 新增檢查：產品動態四種狀態計數加總必須等於「N 項」，否則丟出 `產品狀態項數加總與總項數不一致`。
-4. 原本的「摘要數字等於段落標題數」檢查，改成只對非產品動態段落生效（`!productCount && Number(count[1]) !== titles.length`）。
+## 5 實際驗證輸出
 
-### 3.2 `site/build.mjs`（+12／−4）
+環境：Node.js v25.8.2。測試在未混入正式歸檔的乾淨 checkout 執行。正式建置在另一個暫存 clone 執行，僅該 clone 加入歸檔副本。
 
-1. 在 `section === 'knowledge'` 且標題層級為 2 時，判斷標題文字是否為「本週回顧」或「本週動手題」；是的話，標題加上 `weekly-title` 的 class，而不是 `item-title`。
-2. 一般條目計數改用獨立的 `entryIndex`，只在渲染一般條目時遞增，所以週五小節不會佔用 `meta.display` 的索引。
-3. 渲染時，`weekly-title` 區塊直接輸出為一個 `<article class="news-card">`，內含該小節的標題與內文，不經 `renderEntry`。
+乾淨 checkout 的 `npm test`：
 
-### 3.3 `site/test.mjs`（+29／−0）
-
-新增 5 個測試案例，見第 5 章。
-
-### 3.4 另一個 commit：`5c05167 chore: preserve repository LF line endings`
-
-把 `build.mjs`、`display-v4.mjs`、`test.mjs` 的換行還原成 LF（`189e11d` 把它們寫成 CRLF，造成整檔 diff）。此 commit 內容只有換行，`site/test.mjs` 為 +1／−1。對照 `git diff HEAD~2 HEAD --stat`：整體三檔淨變更維持 +48／−6，確認沒有多餘內容變動。
-
----
-
-## 4 保留的檢查（沒有放寬）
-
-| 編號 | 檢查 | 位置 | 狀態 |
-| --- | --- | --- | --- |
-| K1 | CVE、新知識、台灣 IT、AI 等其他段落：摘要「N 則」必須等於段落標題數 | `site/display-v4.mjs` | 保留，行為不變 |
-| K2 | 所有段落：`meta.display` 的條目數必須等於段落標題數（`entries.length !== titles.length`） | `site/display-v4.mjs` | 保留，產品動態也適用 |
-| K3 | 所有段落：必須有「完整內容」連結（`more < 0` 即報錯） | `site/display-v4.mjs` | 保留 |
-| K4 | 產品動態：四種狀態計數加總必須等於「N 項」 | `site/display-v4.mjs` | 新增（比修正前更嚴） |
-| K5 | 週五小節只在 `knowledge` 段落、`##` 層級、標題文字完全等於「本週回顧」或「本週動手題」時才排除 | `site/build.mjs` | 新增（只認這兩個標題，其他標題仍視為條目） |
-| K6 | 產品動態摘要行格式不符新規則、也不符「N 則」時，仍報錯 | `site/display-v4.mjs` | 保留 |
-
----
-
-## 5 測試案例清單
-
-本次在 `site/test.mjs` 新增 5 個測試案例（兩組 `for` 迴圈各展開成 2 個案例，加 1 個單獨案例）。全部列出如下。
-
-| 編號 | 測試名稱（`npm test` 實際輸出） | 做什麼 | 預期結果 |
-| --- | --- | --- | --- |
-| T1 | `SPEC v4 product summary accepts : and independent article count` | 把 README 的產品動態摘要行改成半形冒號的 `26 項:有更新 10、無更新 14、無法確認 1、無公開來源 1。`；再把「無更新 14」改成「無更新 13」 | 前者建置成功且 `products` 頁含「26 項」；後者丟出 `產品狀態項數加總與總項數不一致` |
-| T2 | `SPEC v4 product summary accepts ： and independent article count` | 同 T1，但冒號為全形 `：` | 同 T1 |
-| T3 | `SPEC v4 product summary still rejects display/title mismatch` | 產品動態摘要行改為合格的「26 項:…」，但從 `meta.display.products` 移除最後一筆 | 丟出含 `products：摘要則數` 的錯誤（K2 仍有效） |
-| T4 | `SPEC v4 knowledge has six entries with weekly sections=false` | `weekday` 設為星期五，`knowledge.md` 不加週五小節 | `knowledge` 頁恰有 6 張 `class="news-card v4-entry"` |
-| T5 | `SPEC v4 knowledge has six entries with weekly sections=true` | `weekday` 設為星期五，`knowledge.md` 末尾加上 `## 本週回顧` 與 `## 本週動手題` | `knowledge` 頁仍恰有 6 張 `v4-entry` 卡片；含「本週回顧」「本週動手題」的 `<h2>` 與各自內文；`class="item-title"` 恰有 6 個（兩個小節未被計為條目） |
-
-其餘既有測試共 36 項（`npm test` 總數 41 減本次新增 5），沒有修改邏輯；既有測試的名稱與內容不在本次範圍，不逐項重列。
-
----
-
-## 6 驗證輸出
-
-### 6.1 Ops 回報（原樣引用，撰寫者未重跑這一組）
-
-```
-BUILD OK: 47 HTML pages; 26/26 product pages; 3 daily editions; 45 search items; 0 warnings; mode=production
-```
-
-```
-tests 41 / pass 41 / fail 0
-```
-
-說明：這組輸出使用的資料集（3 份日報、45 筆搜尋索引）與下方撰寫者重跑的不同；Ops 當時使用的資料來源與指令未附在回報，因此標「待驗證」。
-
-### 6.2 撰寫者在乾淨 clone 重跑（HEAD `5c05167`，Node.js v25.8.2，`npm ci --ignore-scripts` 為 0 vulnerabilities）
-
-`npm test`：
-
-```
-ℹ tests 41
+```text
+ℹ tests 45
 ℹ suites 0
-ℹ pass 41
+ℹ pass 45
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-`npm test` 輸出中，本次新增的 5 個測試皆為通過（✔）：
+`npm run check:contrast`：
 
-```
-✔ SPEC v4 product summary accepts : and independent article count
-✔ SPEC v4 product summary accepts ： and independent article count
-✔ SPEC v4 product summary still rejects display/title mismatch
-✔ SPEC v4 knowledge has six entries with weekly sections=false
-✔ SPEC v4 knowledge has six entries with weekly sections=true
+```text
+CONTRAST OK: 70 CSS color pairs (light + dark)
 ```
 
-`npm run build`（此分支 checkout 內的資料）：
+歸檔來源是本機晨報歸檔的 `daily/2026-11-20/`、`products/`、`items.jsonl`、`state/sources.json`，原樣複製，不變更文字。在暫存 clone 執行 `node site/build.mjs --output ../revision-site-final`：
 
+```text
+BUILD OK: 47 HTML pages; 26/26 product pages; 3 daily editions; 45 search items; 0 warnings; mode=production
 ```
-WARNING: 歷史演練分檔未附 26 項產品來源快照，產品總表未建立；不能視為目前產品現況。
-BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 1 warnings; mode=production
+
+複製前建立 SHA-256 清單，建置後逐檔比較來源與副本：
+
+```text
+SHA256 OK: 37 files; original and copied bytes unchanged
 ```
 
-### 6.3 兩組輸出對不上的地方（不自行選邊）
+正式 knowledge HTML 結構驗證：八個 `news-card v4-entry`、六個 `item-title`、六個 `v4-keyword`、兩個 `weekly-title` h2；兩個附錄卡沒有 keyword，頁首仍為「6 則」。所有產出 HTML 均未出現指定團隊成員名稱。
 
-| 項目 | Ops 回報 | 撰寫者重跑 |
-| --- | --- | --- |
-| 測試 | 41 pass、0 fail | 41 pass、0 fail（一致） |
-| HTML 頁數 | 47 | 40 |
-| 日報期數 | 3 | 2 |
-| 搜尋索引 | 45 | 9 |
-| warnings | 0 | 1（歷史演練資料缺 26 項產品來源快照） |
+### 輸入資料差異的說明
 
-可能原因是兩邊建置時 `daily/` 的內容不同（例如 Ops 使用含正式日報的資料）；這是推測，沒有證據，標「待驗證」。測試結果一致，建置數字差異來自輸入資料，與本次程式修改的關係未驗證。
+測試須在乾淨 checkout 跑；既有測試有固定資料筆數假設，混入正式歸檔後執行可能失敗。建置頁數取決於 `daily/` 內容，搜尋筆數取決於 `items.jsonl`。初次紀錄的乾淨 clone 得到 40 頁、2 期、9 筆、1 個警告；加入正式日報與產品快照的本次暫存 clone 得到 47 頁、3 期、45 筆、0 個警告。兩組輸入不同，不能把頁數差異當成測試失敗。
 
----
+## 6 重現與預期結果
 
-## 7 如何驗收（重現指令）
+1. 取得分支，確認所在分支與 commit。
 
-在乾淨 clone 的分支 `fix/spec-v4-products-friday`：
-
-```
+```sh
 git clone --branch fix/spec-v4-products-friday https://github.com/george-palsys/morning-brief-archive.git
-```
-
-```
 cd morning-brief-archive
+git branch --show-current
+git rev-parse HEAD
 ```
 
-```
+預期：分支為 `fix/spec-v4-products-friday`；HEAD 與 PR 當前 head 一致。
+
+2. 安裝鎖定套件並確認直接相依套件。
+
+```sh
 npm ci --ignore-scripts
+npm ls --depth=0
 ```
 
-```
+預期：安裝 exit 0，markdown-it 15.0.3、yaml 2.9.1。
+
+3. 在乾淨 checkout 跑測試與對比檢查。
+
+```sh
 npm test
+npm run check:contrast
 ```
 
+預期：45 pass、0 fail；70 組色彩對比通過。
+
+4. 在另一個暫存 clone 複製歸檔副本並記錄 SHA-256，執行建置。
+
+```sh
+node site/build.mjs --output ../verification-output
 ```
-npm run build
-```
 
-預期：`npm test` 為 41 pass、0 fail；`npm run build` 顯示 `BUILD OK`，且 `26/26 product pages`。建置頁數、日報期數、搜尋筆數取決於 `daily/` 的資料內容（見第 6.3 節）。
+預期：BUILD OK；輸出目錄須事先不存在或為空。只有輸入同於本次歸檔副本時才預期 47 頁、3 期、45 筆、0 警告。複製後與建置後的 SHA-256 均須與來源一致。
 
----
+## 7 審查狀態與待驗證
 
-## 8 未驗證項目
-
-| 編號 | 項目 | 狀態 |
-| --- | --- | --- |
-| U1 | 瀏覽器視覺呈現：產品動態頁與週五新知識頁的實際畫面，含「本週回顧」「本週動手題」卡片外觀 | 待驗證 |
-| U2 | 部署後公開頁面：合併並部署到 GitHub Pages 後，線上頁面是否正常 | 待驗證 |
-| U3 | 程式審查結果 | 待驗證（審查結果尚未回報） |
-| U4 | 安全審查結果 | 待驗證（審查結果尚未回報） |
-| U5 | 設計審查結果 | 待驗證（審查結果尚未回報） |
-| U6 | Ops 回報的建置數字（47 頁、3 期、45 筆、0 warnings）的資料來源 | 待驗證 |
-| U7 | 以真實的週五晨報資料（非測試 fixture）建置 | 待驗證；T4、T5 使用測試 fixture |
-| U8 | 產品動態摘要行含其他全形或半形標點變化（例如句號用半形 `.`）時的行為 | 待驗證；新規則的句尾只接受全形 `。` |
-
----
-
-## 9 變更紀錄
-
-| 日期 | 內容 |
+| 項目 | 狀態 |
 | --- | --- |
-| 2026-11-20 | 初版：依 PR #24 的實際 diff 撰寫；審查結果待回，補上後更新同一份文件 |
+| 程式審查 K6 | 已修正，新增順序限制與輸出條目數檢查；回歸測試通過 |
+| 設計審查附錄卡片樣式 | 已修正為 news-card v4-entry，無 keyword；正式 HTML 結構檢查通過 |
+| 安全審查 | 審查回報通過；本次未改 URL、HTML 安全設定或外部資源政策 |
+| 瀏覽器視覺呈現 | 待驗證 |
+| 部署後公開頁面 | 待驗證 |
+
+## 8 後續（本 PR 不處理）
+
+| 項目 | 後續決策 |
+| --- | --- |
+| N4：產品摘要總數尚未固定限制為 26 | 由專案負責人與使用者決定政策 |
+| N5：產品狀態加總尚未逐項核對 products/README.md 表格 | 由專案負責人與使用者決定政策 |
+| K1：星期五是否強制必有兩節附錄 | 由專案負責人與使用者決定政策 |
+| K2：非星期五是否禁止兩節附錄 | 由專案負責人與使用者決定政策 |
+| 手機 pre 指令區塊被截斷 | 既有樣式問題，另行處理 |
+
+上述政策問題與手機樣式不是本 PR 引入；本次未放寬或修改其政策。
