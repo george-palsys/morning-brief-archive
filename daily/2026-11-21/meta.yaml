@@ -1,0 +1,244 @@
+title: 晨報 2026-11-21
+date: '2026-11-21'
+weekday: 星期六
+type: morning-brief
+collected_at: '2026-11-21T02:17:00+08:00'
+cve_ids:
+- CVE-2026-132825
+- CVE-2026-45737
+- CVE-2026-90436
+- CVE-2026-40217
+- CVE-2026-90817
+- CVE-2024-10441
+- CVE-2026-123890
+- CVE-2026-129448
+- CVE-2026-76466
+- CVE-2026-114202
+- CVE-2026-114204
+- CVE-2026-114205
+- CVE-2026-126574
+- CVE-2026-112115
+- CVE-2026-112117
+- CVE-2026-119469
+- CVE-2026-123637
+- CVE-2026-116953
+- CVE-2026-120285
+- CVE-2026-120292
+- CVE-2026-120722
+- CVE-2026-121805
+- CVE-2026-120718
+- CVE-2026-126714
+- CVE-2026-115560
+- CVE-2026-129481
+- CVE-2026-109619
+- CVE-2026-129182
+- CVE-2026-129474
+- CVE-2026-129289
+- CVE-2026-129496
+- CVE-2026-123007
+- CVE-2026-123633
+- CVE-2026-121810
+- CVE-2026-123634
+- CVE-2026-113425
+products:
+- JBoss EAP
+- CI/CD
+- OpenShift
+tags:
+- Ruby2Shell
+- GitLab
+- OpenShift
+- JBoss EAP
+- CI/CD
+- Argo CD
+- CISA KEV
+- F5 BIG-IP
+- PQC
+spec_version: 4
+products_checked: 26
+products_updated:
+- JBoss EAP
+- CI/CD
+- OpenShift
+products_unconfirmed:
+- Software Risk Manager (SRM)
+cicd_tools_updated:
+- GitLab
+- Argo CD
+- Flux
+attention:
+  section: products
+  title: Ruby2Shell（CVE-2026-132825）
+  summary: Red Hat 發布 RHSB-2026-021，評為 Critical，OpenShift Container Platform 5 與 4 直接受影響；GitLab 發布 Critical Patch Release。已有 PoC，沒有查到實際攻擊的報導。
+  facts:
+  - label: CVSS 3.1
+    value: '9.8'
+    source: Red Hat
+  - label: CVSS
+    value: '7.4'
+    source: MITRE（GitLab 公告引用）
+  - label: GitLab 修補版
+    value: 19.6.1、19.5.8、19.4.10
+  - label: 攻擊現況
+    value: 沒有查到實際攻擊的報導
+display:
+  products:
+  - short: GitLab 19.6.1 等三版
+    keyword: GITLAB
+    date: 2026-11-20
+  - short: RHSB-2026-021 Ruby
+    keyword: RUBY
+    date: 2026-11-20
+    figures:
+    - label: CVSS 3.1
+      value: '9.8'
+  - short: RHBA-2026:100764
+    keyword: ERRATA
+    date: 2026-11-20
+  - short: EAP 映像 respin
+    keyword: EAP
+    date: 2026-11-20
+  - short: Argo CD Secret 遮罩
+    keyword: ARGO
+    date: 2026-11-20
+    figures:
+    - label: CVSS 3.1
+      value: '6.3'
+  - short: Flux v2.10.1
+    keyword: FLUX
+    date: 2026-11-20
+  knowledge:
+  - short: SP 800-52 改版
+    keyword: TLS
+    date: 2026-11-19
+  - short: nginx2root 機制
+    keyword: NGINX
+    date: 2026-11-20
+  - short: Argo CD sync window
+    keyword: ARGO
+    date: 2026-11-20
+  - short: Liberty quiesceTimeout
+    keyword: LIBERTY
+    date: 2026-11-03
+  - short: Kyverno 1.19.2
+    keyword: KYVERNO
+    date: 2026-11-18
+  - short: 後量子盲簽章
+    keyword: PQC
+    date: 2026-11-06
+  cve:
+  - short: Ruby2Shell
+    keyword: RUBY
+    cve_ids:
+    - CVE-2026-132825
+    cvss:
+    - score: 9.8
+      version: '3.1'
+      source: Red Hat
+    - score: 7.4
+      version: null
+      source: MITRE（GitLab 公告引用）
+    exploited: poc
+    exploited_detail: Ruby 官方表示已有 PoC；沒有查到實際攻擊的報導
+    patch: released
+    patch_detail: Ruby 與 GitLab 已釋出修補版；Red Hat 的 errata 清單今天沒有讀到
+    related: true
+  - short: CISA KEV 新增四個
+    keyword: KEV
+    date: 2026-11-18
+    cve_ids:
+    - CVE-2026-90436
+    - CVE-2026-40217
+    - CVE-2026-90817
+    - CVE-2024-10441
+    cvss: []
+    exploited: confirmed
+    patch: unknown
+    related: false
+    kev:
+    - cve_id: CVE-2026-90436
+      product: Apache Axis
+      due: 2026-11-21
+    - cve_id: CVE-2026-40217
+      product: BerriAI LiteLLM
+      due: 2026-12-02
+    - cve_id: CVE-2026-90817
+      product: REDCap
+      due: 2026-11-21
+    - cve_id: CVE-2024-10441
+      product: Synology DiskStation Manager（DSM）
+      due: 2026-11-21
+  - short: ASUS Control Center
+    keyword: ASUS
+    date: 2026-11-18
+    cve_ids:
+    - CVE-2026-114202
+    - CVE-2026-114204
+    - CVE-2026-114205
+    cvss:
+    - score: 10.0
+      version: '4.0'
+      source: ASUS
+    exploited: unknown
+    exploited_detail: 華碩公告與報導都沒有提到實際攻擊或 PoC
+    patch: released
+    related: false
+  - short: F5 BIG-IP 六個漏洞
+    keyword: BIGIP
+    date: 2026-11-18
+    cve_ids:
+    - CVE-2026-123637
+    - CVE-2026-116953
+    - CVE-2026-120285
+    - CVE-2026-120292
+    - CVE-2026-120722
+    - CVE-2026-121805
+    cvss:
+    - score: 9.8
+      version: '3.1'
+      source: SecurityOnline、資安人（報導沒有標示評分來源）
+    - score: 9.3
+      version: '4.0'
+      source: 資安人（報導沒有標示評分來源）
+    exploited: none_seen
+    patch: hotfix
+    related: false
+    caveat: F5 的原始公告頁這次打不開，內容來自資安人與 SecurityOnline 兩篇報導。
+  - short: PHP 七個漏洞後續
+    keyword: PHP
+    date: 2026-11-19
+    cve_ids:
+    - CVE-2026-126714
+    cvss:
+    - score: 9.2
+      version: '4.0'
+      source: PHP（GitHub 公告）
+    exploited: poc
+    patch: released
+    related: false
+  taiwan:
+  - short: 四家銀行網銀盜轉
+    keyword: BANK
+    kind: 入侵
+    figures:
+    - label: 金額
+      value: 約 56.6 萬元
+  - short: 數發部 AI 掃描漏洞
+    keyword: MODA
+    kind: 政策
+  - short: 台股重挫
+    keyword: TAIEX
+    kind: 其他
+    date: 2026-11-20
+    figures:
+    - label: 跌點
+      value: 2,393.6 點
+  ai:
+  - short: Anthropic IPO 交割
+    keyword: IPO
+    figures:
+    - label: 募資
+      value: 約 1,195 億美元
+  - short: Nvidia 遭加州傳票
+    keyword: NVIDIA
+    date: 2026-11-20
