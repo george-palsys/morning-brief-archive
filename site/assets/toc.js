@@ -37,7 +37,7 @@ if (attention) {
  desktop.addEventListener('change', setAttentionDefault);
 }
 
-if (typeof IntersectionObserver === 'function') {
+if (typeof IntersectionObserver === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
  const scores = new IntersectionObserver((entries, observer) => {
   for (const entry of entries) if (entry.isIntersecting) {
    entry.target.classList.add('in');

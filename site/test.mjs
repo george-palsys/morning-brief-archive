@@ -398,6 +398,20 @@ test('daily metadata accepts numeric v3 and v4, rejects unsupported versions', (
  }
 });
 
+test('score animation skips IntersectionObserver for reduced motion', () => {
+ const script = fs.readFileSync(new URL('./assets/toc.js', import.meta.url), 'utf8');
+ for (const reduceMotion of [true, false]) {
+  let observers = 0;
+  vm.runInNewContext(script, {
+   matchMedia: query => ({ matches: query === '(prefers-reduced-motion: reduce)' && reduceMotion, addEventListener() {} }),
+   document: { querySelectorAll: () => [], querySelector: () => null },
+   window: { addEventListener() {} },
+   IntersectionObserver: class { constructor() { observers++; } },
+  });
+  assert.equal(observers, reduceMotion ? 0 : 1);
+ }
+});
+
 test('v4 fixture builds structured panels, source-specific scores and optional fallbacks', () => {
  const dir = fixture();
  const daily = path.join(dir, 'daily/2026-11-19');
@@ -420,6 +434,12 @@ test('v4 fixture builds structured panels, source-specific scores and optional f
  assert.ok(cve.includes(example.display.cve[2].patch_detail));
  assert.ok(ai.includes(example.display.ai[2].caveat));
  assert.match(overview, /class="v4-drill"/);
+ assert.ok(overview.includes(`<p>${base.products_updated.length} 項產品</p>`));
+ assert.ok(ai.includes('>回到今日摘要</a>'));
+ assert.ok(ai.includes('<span class="field">影響：</span>'));
+ assert.ok(ai.includes('Google 官方部落格（2026-11-17）</a>（blog.google）'));
+ assert.match(cve, /<span aria-hidden="true">●<\/span> 已遭利用/);
+ assert.match(cve, /<span aria-hidden="true">✓<\/span> 有修補/);
  validatePages(result);
  console.log('V4 FIXTURE OUTPUT: ' + result.output);
  example.drill = false;
@@ -477,7 +497,8 @@ test('v4 E2: twelve CVEs have twelve articles and four overview entries', () => 
  assert.match(page('cve'), /href="#item-12"/);
  const panel = page('index').split('class="v4-panel v4-panel-cve"')[1].split('</section>')[0];
  assert.equal((panel.match(/<h3>/g) || []).length, 4);
- assert.match(panel, /12 則/);
+ assert.equal((panel.match(/12 則/g) || []).length, 1);
+ assert.ok(panel.includes('<summary>再顯示 2 則</summary>'));
 });
 for (const [id,state] of [['E3','有更新'],['E4','無更新']]) {
  test('v4 ' + id + ': all 26 products are ' + state, () => {

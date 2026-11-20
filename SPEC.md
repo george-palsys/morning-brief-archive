@@ -418,6 +418,9 @@ display:
 
 #### 固定文案補充
 
+- 段落頁返回摘要的連結使用「回到今日摘要」（預設值，待 George 確認）。
+- 產品動態摘要副標使用「N 項產品」，N 為 `products_updated` 的產品數（預設值，待 George 確認）。
+- CVE 摘要使用折疊區時，控制項使用「再顯示 N 則」，N 為折疊區內的項目數（預設值，待 George 確認）。
 - 重點警示標籤使用「今天最需要注意的一件事」（預設值，待 George 確認）。
 - 分數條標籤使用「CVSS {version}（{source}）」，版本為 null 時使用「CVSS（{source}）」（預設值，待 George 確認）。
 
