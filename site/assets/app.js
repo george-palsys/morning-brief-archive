@@ -1,3 +1,71 @@
+document.documentElement.classList.add('js');
+// Native details remains useful without JavaScript. Desktop expands the same DOM.
+const wide = matchMedia('(min-width:921px)');
+function adaptTabs() {
+ document.querySelectorAll('.tabs-scroll').forEach(el => { el.tabIndex = el.scrollWidth > el.clientWidth ? 0 : -1; });
+}
+function adapt() { document.querySelectorAll('.page-toc').forEach(el => { el.open = wide.matches; }); adaptTabs(); }
+adapt();
+wide.addEventListener('change', adapt);
+window.addEventListener('resize', adaptTabs);
+if (typeof ResizeObserver === 'function') {
+ const observer = new ResizeObserver(adaptTabs);
+ document.querySelectorAll('.tabs-scroll').forEach(el => observer.observe(el));
+}
+
+const menu = document.querySelector?.('.site-menu');
+if (menu) {
+ const summary = menu.querySelector('summary');
+ document.addEventListener('click', event => {
+  if (menu.open && !menu.contains(event.target)) {
+   if (menu.contains(document.activeElement)) summary.focus();
+   menu.open = false;
+  }
+ });
+ document.addEventListener('keydown', event => {
+  if (!menu.open || event.key !== 'Escape') return;
+  event.preventDefault();
+  menu.open = false;
+  summary.focus();
+ });
+}
+
+const attention = document.querySelector?.('.attention details');
+if (attention) {
+ const desktop = matchMedia('(min-width:640px)');
+ const setAttentionDefault = () => { attention.open = desktop.matches; };
+ setAttentionDefault();
+ desktop.addEventListener('change', setAttentionDefault);
+}
+
+
+const bar = document.querySelector('#filterbar');
+if (bar) {
+  const items = [...document.querySelectorAll('li[data-status]')];
+  const vendors = [...document.querySelectorAll('.design-vendor')];
+  const chips = [...bar.querySelectorAll('[data-filter]')];
+  const input = bar.querySelector('#product-search');
+  const count = bar.querySelector('#results-count');
+  const empty = bar.querySelector('#empty-state');
+  let state = 'all';
+  const apply = () => {
+    const q = input.value.normalize('NFKC').trim().toLowerCase();
+    let shown = 0;
+    for (const li of items) {
+      const ok = (state === 'all' || li.dataset.status === state) && (!q || li.textContent.normalize('NFKC').toLowerCase().includes(q));
+      li.hidden = !ok; if (ok) shown++;
+    }
+    for (const v of vendors) v.hidden = ![...v.querySelectorAll('li[data-status]')].some(li => !li.hidden);
+    count.textContent = `顯示 ${shown} / ${items.length} 項產品`;
+    empty.hidden = shown !== 0;
+  };
+  chips.forEach(c => c.addEventListener('click', () => { state = c.dataset.filter; chips.forEach(x => x.setAttribute('aria-pressed', String(x === c))); apply(); }));
+  input.addEventListener('input', apply);
+  apply();
+}
+
+
+if (document.querySelector('#search-ui')) {
 const ui = document.querySelector('#search-ui');
 const query = document.querySelector('#query');
 const status = document.querySelector('#search-status');
@@ -56,3 +124,5 @@ query.addEventListener('focus', () => update(), { once:true });
 query.addEventListener('input', () => update());
 ui.querySelectorAll('input[type=checkbox],select').forEach(el => el.addEventListener('change', () => update()));
 document.querySelector('#all').addEventListener('click', () => update(true));
+
+}

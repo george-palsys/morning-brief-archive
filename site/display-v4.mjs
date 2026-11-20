@@ -100,7 +100,7 @@ function scores(entry) {
 function badges(entry, section) {
   const values = [entry.date, entry.kind];
   if (section === 'cve') values.push(...entry.cve_ids, entry.related ? relatedLabel : '');
-  return values.filter(Boolean).map(value => `<span class="v4-tag">${esc(value)}</span>`).join('');
+  return values.filter(Boolean).map(value => `<span class="tag">${esc(value)}</span>`).join('');
 }
 
 const statusSymbols = {
@@ -110,7 +110,7 @@ const statusSymbols = {
 function status(entry, field, showDetail = true) {
   const value = entry[field];
   const detail = showDetail && entry[`${field}_detail`];
-  return `<div><span class="v4-tag v4-${value}"><span aria-hidden="true">${statusSymbols[field][value]}</span> ${esc(copy[field][value])}</span>${detail ? ` <span>${esc(detail)}</span>` : ''}</div>`;
+  return `<div><span class="tag ${value === 'released' ? 'tag--mint' : `tag--${value}`}"><span aria-hidden="true">${statusSymbols[field][value]}</span> ${esc(copy[field][value])}</span>${detail ? ` <span>${esc(detail)}</span>` : ''}</div>`;
 }
 
 const facts = values => `<dl class="v4-facts">${values.map(value =>
@@ -127,16 +127,10 @@ export function renderEntry(heading, body, entry, section, impact, sources) {
   const kev = entry.kev?.length ? `<ul>${entry.kev.map(row =>
     `<li>${esc(copy.kev(row))}</li>`).join('')}</ul>` : '';
   const details = `${body}${entry.figures?.length ? facts(entry.figures) : ''}${entry.caveat ? `<blockquote>${esc(entry.caveat)}</blockquote>` : ''}${impact ? `<ul class="v4-impact">${impact}</ul>` : ''}${sources ? `<ul class="v4-sources">${sources}</ul>` : ''}`;
-  const keyword = `<span class="v4-keyword" aria-hidden="true">${esc(entry.keyword)}</span>`;
   const content = cve
     ? `${heading}<aside class="design-cve-rail">${badges(entry, section)}${scores(entry)}${status(entry, 'exploited')}${status(entry, 'patch')}${kev}</aside><div class="design-cve-content">${details}</div>`
     : `${heading}<div>${badges(entry, section)}</div>${details}`;
-  return `<article class="news-card v4-entry">${keyword}${content}</article>`;
-}
-
-export function renderWave(count) {
-  if (!count) return '';
-  return `<div class="v4-wave" aria-hidden="true">${Array.from({length:count}, () => '<span></span>').join('')}</div>`;
+  return `<article class="news-card v4-entry">${content}</article>`;
 }
 
 export function renderHomeLead(day, file, link) {
@@ -174,5 +168,5 @@ export function renderOverview(day, rows, file, link, time, previous, next) {
     name, reason: rows.find(row => row.name === name)?.reason ?? ''
   }));
   const alertLink = groups[attention.section].heading.split('｜')[0].trim();
-  return `<div class="v4-page v4-overview"><div class="v4-overview-top"><nav class="v4-jump" aria-label="段落導覽">${Object.entries(groups).map(([key, group]) => link(file, target(key), group.name)).join('')}${link(file, target('maintenance'), copy.maintenance)}</nav><div class="v4-date"><h1>${esc(day.meta.date)} ${esc(day.meta.weekday)}</h1><p class="v4-time">${esc(time)}</p></div></div><nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, previous.href, `← ${previous.date}`) : ''}${next ? link(file, next.href, `${next.date} →`) : ''}</nav>${renderDrill(day, time)}<aside class="v4-attention${attention.facts?.length ? ' with-facts' : ''}"><div><p class="v4-alert-label">${copy.attention}</p><h2>${esc(attention.title)}</h2><p>${esc(attention.summary)}</p>${link(file, target(attention.section), alertLink)}</div>${attention.facts?.length ? facts(attention.facts) : ''}</aside><ul class="v4-counts">${counts}</ul><div class="v4-panels v4-lead">${panel('cve', 4)}${panel('products', 6)}</div>${tiles ? `<section><h2>${copy.productGrid}</h2><ul class="v4-products">${tiles}</ul></section>` : ''}<div class="v4-panels">${panel('knowledge',4)}${panel('taiwan',4)}${panel('ai',4)}</div>${unconfirmed.length ? `<section><h2>${copy.unconfirmed}</h2><ul>${unconfirmed.map(row => `<li>${esc(row.name)} ${esc(row.reason)}</li>`).join('')}</ul></section>` : ''}</div>`;
+  return `<div class="v4-page v4-overview"><div class="v4-overview-top"><div class="v4-date"><h1>${esc(day.meta.date)} ${esc(day.meta.weekday)}</h1><p class="v4-time">${esc(time)}</p></div><nav class="v4-jump" aria-label="段落導覽">${Object.entries(groups).map(([key, group]) => link(file, target(key), group.name)).join('')}${link(file, target('maintenance'), copy.maintenance)}</nav></div><nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, previous.href, `← ${previous.date}`) : ''}${next ? link(file, next.href, `${next.date} →`) : ''}</nav>${renderDrill(day, time)}<aside class="v4-attention${attention.facts?.length ? ' with-facts' : ''}"><div><p class="v4-alert-label">${copy.attention}</p><h2>${esc(attention.title)}</h2><p>${esc(attention.summary)}</p>${link(file, target(attention.section), alertLink)}</div>${attention.facts?.length ? facts(attention.facts) : ''}</aside><ul class="v4-counts">${counts}</ul><div class="v4-panels v4-lead">${panel('cve', 4)}${panel('products', 6)}</div>${tiles ? `<section><h2>${copy.productGrid}</h2><ul class="v4-products">${tiles}</ul></section>` : ''}<div class="v4-panels">${panel('knowledge',4)}${panel('taiwan',4)}${panel('ai',4)}</div>${unconfirmed.length ? `<section><h2>${copy.unconfirmed}</h2><ul>${unconfirmed.map(row => `<li>${esc(row.name)} ${esc(row.reason)}</li>`).join('')}</ul></section>` : ''}</div>`;
 }
