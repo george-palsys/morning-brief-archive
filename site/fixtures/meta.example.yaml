@@ -6,7 +6,7 @@
 # short／keyword 必填，寬度上限 24／8 半形字元，缺值無替代顯示。
 # date 選填 YYYY-MM-DD，缺值不顯示。
 # figures 選填 0–3 筆，label／value 必填；缺值隱藏數字區。
-# digest 選填，長度上限待定；缺值顯示 Markdown 完整標題。
+# digest 選填，長度上限建議值 ≤ 24（比照 short），待 George 確認；缺值顯示 Markdown 完整標題。
 # caveat 各段共用，選填無上限；缺值不顯示注意區塊。
 # ai_summary 選填，寬度上限 60；缺值只顯示「今天 N 則。」。
 # cve_ids／cvss 必填清單，沒有就填 []；無分數顯示「未提供」。
@@ -56,7 +56,7 @@ display:
 
   knowledge:
     - short: APAS 1.0
-      digest: AI 自主滲透測試的結果要怎樣才能採信
+      digest: AI 自主滲透測試的結果
       keyword: APAS
     - short: fTPM 狀態回放
       keyword: fTPM
