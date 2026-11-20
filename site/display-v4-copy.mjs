@@ -12,5 +12,7 @@ export const copy = {
   maintenance: '清單維護',
   productGrid: '26 項產品現況',
   unconfirmed: '無法確認',
+  backToOverview: '回到今日摘要',
+  moreCve: count => `再顯示 ${count} 則`,
   productCount: count => `${count} 項產品`,
 };

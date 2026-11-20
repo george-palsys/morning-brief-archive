@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { copy } from './display-v4-copy.mjs';
 import { readDisplay, renderOverview, renderEntry, renderDrill, renderWave } from './display-v4.mjs';
 import path from 'node:path';
 import MarkdownIt from 'markdown-it';
@@ -100,6 +101,14 @@ export function markdown(source, { section = '', summary = false, display } = {}
         if (!target) { body.push(token); continue; }
         const end = part.findIndex((item, j) => j > i && item.type === 'list_item_close' && item.level === token.level);
         if (end < 0) throw Error('Markdown list item is not closed');
+        if (target === impact) {
+          const children = part[i + 2].children;
+          const label = hasLabel('影響') ? '影響' : '對我們的影響';
+          const field = new children[0].constructor('html_inline', '', 0);
+          field.content = `<span class="field">${esc(lead.slice(0, label.length + 1))}</span>`;
+          children[0].content = lead.slice(label.length + 1);
+          children.unshift(field);
+        }
         target.push(...part.slice(i, end + 1)); i = end;
       }
       const main = render(body).replaceAll('<ul>\n</ul>\n', '');
@@ -112,6 +121,28 @@ export function markdown(source, { section = '', summary = false, display } = {}
         if (label.startsWith('來源：')) label = label.slice(3).trim();
         if (label.endsWith('：') || label.endsWith(':')) label = label.slice(0, -1).trim();
         if (label) { children[2].content = label; children.shift(); }
+      }
+      for (const { children } of sources) {
+        if (!children) continue;
+        let hostname = '';
+        let linkText = '';
+        for (let i = 0; i < children.length; i++) {
+          const child = children[i];
+          if (child.type === 'link_open') {
+            const target = URL.parse(child.attrGet('href'));
+            hostname = target && ['https:', 'http:'].includes(target.protocol) ? target.hostname : '';
+            linkText = '';
+          } else if (child.type === 'link_close' && hostname) {
+            if (linkText !== hostname && URL.parse(linkText)?.hostname !== hostname) {
+              const domain = new child.constructor('text', '', 0);
+              domain.content = `（${hostname}）`;
+              children.splice(++i, 0, domain);
+            }
+            hostname = '';
+          } else if (hostname && (child.type === 'text' || child.type === 'code_inline')) {
+            linkText += child.content;
+          }
+        }
       }
       return renderEntry(render(tokens.slice(start, start + 3)), main, display[index], section,
         impact.length ? render(impact) : '', sources.length ? render(sources) : '');
@@ -246,10 +277,10 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
         const yesterday = new Date(Date.parse(d.date + 'T00:00:00Z') - 86400000).toISOString().slice(0,10);
         const previous = days.find(day => day.date === yesterday && !day.legacy);
         page(file, `${group.name}－${d.date} 晨報`,
-          `<div class="v4-page">${renderDrill(d, collectionTime(d))}<div class="v4-hero${group.entries.length ? ' wave' : ''}"><h1>${esc(group.heading)}</h1><p>${esc(group.countText)}</p>${renderWave(group.entries.length)}${part === 'ai' && d.display.aiSummary ? `<p>${esc(d.display.aiSummary)}</p>` : ''}</div>${group.entries.length ? tocBody(rendered) : '<p>今天沒有</p>'}<nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, `${previous.base}/${part}.html`, `← ${previous.date}`) : ''}${link(file, d.href, '回到今日摘要')}</nav></div>`, 'daily', source);
+          `<div class="v4-page">${renderDrill(d, collectionTime(d))}<div class="v4-hero${group.entries.length ? ' wave' : ''}"><h1>${esc(group.heading)}</h1><p>${esc(group.countText)}</p>${renderWave(group.entries.length)}${part === 'ai' && d.display.aiSummary ? `<p>${esc(d.display.aiSummary)}</p>` : ''}</div>${group.entries.length ? tocBody(rendered) : '<p>今天沒有</p>'}<nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, `${previous.base}/${part}.html`, `← ${previous.date}`) : ''}${link(file, d.href, copy.backToOverview)}</nav></div>`, 'daily', source);
         continue;
       }
-      page(file, title, `${crumbs(file, 'daily', d.date)}<h1>${d.legacy && d.meta.title ? esc(d.meta.title) : `晨報 ${esc(d.date)}（${esc(d.meta.weekday || '')}）｜${label}`}</h1>${archiveNotice(d, file)}${d.publishedRehearsal ? '' : alternateEdition(d, file)}${tabs}${tocBody(rendered)}${timeline(d, part, file)}${!d.legacy && part !== 'index' ? link(file, d.href, '回到今日摘要') : ''}`, 'daily', source);
+      page(file, title, `${crumbs(file, 'daily', d.date)}<h1>${d.legacy && d.meta.title ? esc(d.meta.title) : `晨報 ${esc(d.date)}（${esc(d.meta.weekday || '')}）｜${label}`}</h1>${archiveNotice(d, file)}${d.publishedRehearsal ? '' : alternateEdition(d, file)}${tabs}${tocBody(rendered)}${timeline(d, part, file)}${!d.legacy && part !== 'index' ? link(file, d.href, copy.backToOverview) : ''}`, 'daily', source);
     }
   }
   const missingSnapshot = '本次是歷史演練分檔，未建立產品總表或產品頁來源快照；產品版本與各來源狀態本次未蒐集。';

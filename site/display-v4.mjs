@@ -93,10 +93,14 @@ function badges(entry, section) {
   return values.filter(Boolean).map(value => `<span class="v4-tag">${esc(value)}</span>`).join('');
 }
 
+const statusSymbols = {
+  exploited: { confirmed: '●', poc: '▲', none_seen: '○', unknown: '？' },
+  patch: { released: '✓', hotfix: '▲', pending: '▲', none: '●', unknown: '？' },
+};
 function status(entry, field, showDetail = true) {
   const value = entry[field];
   const detail = showDetail && entry[`${field}_detail`];
-  return `<div><span class="v4-tag v4-${value}">${copy[field][value]}</span>${detail ? ` <span>${esc(detail)}</span>` : ''}</div>`;
+  return `<div><span class="v4-tag v4-${value}"><span aria-hidden="true">${statusSymbols[field][value]}</span> ${esc(copy[field][value])}</span>${detail ? ` <span>${esc(detail)}</span>` : ''}</div>`;
 }
 
 const facts = values => `<dl class="v4-facts">${values.map(value =>
@@ -131,7 +135,7 @@ export function renderOverview(day, rows, file, link, time, previous) {
       `<li><h3>${esc(entry.short)}</h3><div class="v4-badges">${badges(entry, key)}</div>${['knowledge','taiwan','ai'].includes(key) ? `<p>${esc(entry.digest || group.titles[index])}</p>` : ''}${key === 'cve' ? scores(entry) + '<div class="v4-panel-status">' + status(entry, 'exploited', false) + status(entry, 'patch', false) + '</div>' : ''}</li>`);
     const visible = key === 'cve' ? items.slice(0, 2) : items;
     const remaining = key === 'cve' && items.length > 2
-      ? `<details class="v4-more"><summary>${esc(group.countText)}</summary><ul>${items.slice(2).join('')}</ul></details>`
+      ? `<details class="v4-more"><summary>${esc(copy.moreCve(items.length - 2))}</summary><ul>${items.slice(2).join('')}</ul></details>`
       : '';
     return `<section class="v4-panel v4-panel-${key}"><h2>${esc(group.name)}</h2>${key === 'products' ? `<p>${esc(copy.productCount(day.meta.products_updated.length))}</p>` : ''}${key === 'ai' ? `<p>${esc(aiSummary || group.countText)}</p>` : ''}${items.length ? `<ul>${visible.join('')}</ul>` : `<p>${copy.empty}</p>`}<div class="v4-panel-footer">${link(file, target(key), group.more)} <small>${esc(group.countText)}</small>${remaining}</div></section>`;
   }
