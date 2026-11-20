@@ -2,7 +2,7 @@
 
 - 紀錄日期：2026-11-20
 - Repository：george-palsys/morning-brief-archive
-- 紀錄狀態：三個 PR 皆已合併（#20、#19、#21）；合併後 main 的 CI 皆為 success（Quill 於 2026-11-20 以匿名 GitHub API 讀取，見 5.3 與 5.10）。本版新增 PR #21，取代只涵蓋 #19、#20 的前一版檔案
+- 紀錄狀態：PR #19、#20、#21、#22、#25 皆已合併；#25 於 2026-11-20 15:13（Asia/Taipei，UTC 07:13:36）合併，main 為 `8f16064511e8fcc2411c0ce80b92fdca83431369`，push 觸發的 run 44693398104 build 與 deploy 皆 success（Quill 以匿名 GitHub API 讀取，見第 9、10 章）。本版新增 PR #22 合併結果、PR #25 與當天兩次 main 建置失敗
 - 撰寫：Quill（文件撰寫）。本文件只整理成員報告與公開 API 讀到的內容，Quill 沒有重跑任何建置或測試；未重跑的數字一律標「Rigel 回報」或「Vega 回報」。
 - 本文件未驗證、尚未上傳；上傳方式見第 7 章。
 
@@ -497,7 +497,7 @@ Rigel 第一份報告寫 `digest` 上限為「長度上限待定」，第二份�
 | U2 | `digest` 長度上限 ≤ 24 | 待 George 確認，目前只是建議值 |
 | U3 | v4 欄位的線上畫面 | PR #21 合併後 build 已渲染 v4 欄位，但線上頁面未檢；目前 main 的真實資料沒有 `spec_version: 4` 的日期（Vega 回報），畫面只用 fixture 與注入資料驗證 |
 | U4 | 版本 4 的真實排程資料能否通過建置 | 只用暫改 `spec_version` 的 fixture 實驗，沒有真實 v4 日報 |
-| U5 | 合併後 Pages 部署的線上結果 | 只讀到 workflow run 為 success，是否有 deploy job 成功與線上頁面是否更新，Quill 未查；`PAGES_DEPLOY_ENABLED` 現況未查 |
+| U5 | 合併後 Pages 部署的線上結果 | 只讀到 workflow run 為 success，是否有 deploy job 成功與線上頁面是否更新，Quill 未查；`PAGES_DEPLOY_ENABLED` 現況未查；2026-11-20 15:13 之後 run 44693398104 的 deploy job 為 success，見第 10 章 |
 | U6 | PR #19 head 576c639 的兩檔實際行數 | 報告與指派皆沿用 eb1f5df 的數字 |
 | U7 | Vega 與 Iris 對這兩個 PR 的審查 | 本次資料沒有，未驗證 |
 | U8 | Node.js 版本 | 報告未載明 |
@@ -521,7 +521,7 @@ Rigel 第一份報告寫 `digest` 上限為「長度上限待定」，第二份�
 
 ## 9 後續 PR #22
 
-來源：Ada 轉述的 Lin 自報。Quill 未讀取 PR #22 的原始碼、diff 或 CI，也沒有重跑任何指令。
+來源：Ada 轉述的 Lin 自報，加上 2026-11-20 Quill 以匿名 GitHub API 讀回的 PR 中繼資料（狀態、合併時間、合併者、檔案清單、PR 內文）。Quill 沒有讀 PR #22 的原始碼逐行內容，也沒有重跑任何指令。
 
 ### 9.1 基本資料
 
@@ -529,8 +529,12 @@ Rigel 第一份報告寫 `digest` 上限為「長度上限待定」，第二份�
 |---|---|
 | PR | #22 |
 | 作者 | Lin |
-| 狀態 | Draft |
+| 狀態 | 已合併（匿名 API 讀回：2026-11-20T05:04:36Z，即台北 13:04:36，合併者 george-palsys） |
 | head | `8fbf76ba51a9c50c04c0b1f6a3e1f5d3b65b8cf5` |
+| merge commit | `da4087b783ccd48e0883ea066cba7a8313f21801` |
+| 規模 | 1 個 commit、6 個檔案、+67／−6（匿名 API 讀回）；檔案為 `SPEC.md`、`site/assets/toc.js`、`site/build.mjs`、`site/display-v4-copy.mjs`、`site/display-v4.mjs`、`site/test.mjs` |
+| PR 上的 CI | run 44674260900（head 8fbf76b，pull_request）conclusion 為 success |
+| 合併後 main 的 CI | run 44678588675（commit da4087b，push）conclusion 為 failure，deploy 被跳過，原因見第 10 章 |
 | 目的 | 處理 Iris 設計審查 L1、L2、L3、L4、L7，以及 Vega 參考事項 R1、R2 |
 
 ### 9.2 處理範圍逐項
@@ -553,7 +557,7 @@ Rigel 第一份報告寫 `digest` 上限為「長度上限待定」，第二份�
 
 | 項目 | Lin 自報 | 驗證狀態 |
 |---|---|---|
-| `npm test` | 37／37 通過 | Lin 自報，Rigel 與 Vega 驗證中 |
+| `npm test` | 37／37 通過 | Lin 自報；PR 內文同載 37/37；合併後 main 的 `npm test` 在 CI 失敗（見第 10 章） |
 | `npm run check:contrast` | 70 組 | Lin 自報，Rigel 與 Vega 驗證中 |
 | `npm run build` | 40 頁 | Lin 自報，Rigel 與 Vega 驗證中 |
 | 首屏產品格底 | 785.84px（預算 798px） | Lin 自報，Rigel 與 Vega 驗證中 |
@@ -566,11 +570,80 @@ Rigel 第一份報告寫 `digest` 上限為「長度上限待定」，第二份�
 | 「四則全展開產品格底 879.05px」 | Lin 自報的量測，未驗證 |
 | R1、R2 的實際修法 | 只知道 PR #22 宣稱處理，修法內容未取得 |
 | 新增固定文案「再顯示 N 則」 | 是否已寫入 SPEC.md 並標註待 George 確認，未查 |
-| 合併狀態 | Draft，尚未合併 |
+| 合併後的線上結果 | 合併後 main 的建置失敗，未部署；由 PR #25 修正後才部署成功，見第 10 章 |
 
 ---
 
-## 10 變更紀錄
+## 10 PR #25 與 2026-11-20 兩次 main 建置失敗
+
+來源：匿名 GitHub API 讀回（PR #25 內文與檔案清單、workflow run 與 job 的 step 結果、check-run 標註、commit 清單）。Actions 完整 log 的下載端點回 HTTP 403（需登入），所以**沒有讀到 `npm test` 的失敗輸出本文**；失敗原因以 PR #25 作者在 PR 內文寫的根因為依據，並標明哪些是推論。
+
+### 10.1 PR #25 基本資料
+
+| 項目 | 內容 |
+|---|---|
+| PR | #25「fix: 恢復 11/20 v4 晨報正式建置」 |
+| 作者與合併者 | george-palsys（作者）、george-palsys（合併者），匿名 API 讀回 |
+| 分支 | `fix/isolate-daily-tests` |
+| head commit | `60418896b743808c520d3a2321f9bae7de74ccf5`（訊息：fix: restore production build for the Friday v4 edition） |
+| 建立時間 | 2026-11-20T05:08:22Z（台北 13:08） |
+| 合併時間 | 2026-11-20T07:13:36Z（台北 15:13） |
+| merge commit | `8f16064511e8fcc2411c0ce80b92fdca83431369`（main） |
+| 規模 | 1 個 commit、4 個檔案、+39／−10 |
+| 變更檔案 | `site/build.mjs`（+7／−5）、`site/display-v4-copy.mjs`（+1／−0）、`site/display-v4.mjs`（+9／−3）、`site/test.mjs`（+22／−2） |
+| PR 上的 CI | run 44679010544（head 6041889，pull_request）conclusion 為 success，build 為 success、deploy 為 skipped |
+| Codex 自動審查 | `chatgpt-codex-connector[bot]` 留言：code review 已完成，`has_any_findings` 為 false |
+| 合併後 main 的 CI | run 44693398104（commit 8f16064，push）build success（07:13:50Z 完成）、deploy success（07:14:05Z 完成） |
+
+### 10.2 兩次建置失敗
+
+| 項目 | 第一次失敗 | 第二次失敗 |
+|---|---|---|
+| workflow run | 44677242319 | 44678588675 |
+| 觸發 commit | `91917ad`「Archive morning brief 2026-11-20 (7)」 | `da4087b`（合併 PR #22） |
+| 時間（UTC／台北） | 2026-11-20T04:52:09Z／12:52 | 2026-11-20T05:04:38Z／13:04 |
+| 觸發事件 | push 到 main | push 到 main |
+| 失敗 job 與 step | build job 的 step 6「Run npm test」failure | build job 的 step 6「Run npm test」failure |
+| 之後的 step | step 7 build 與 step 8 upload-pages-artifact 皆 skipped；deploy job skipped | 同左（逐項：step 7 build skipped、step 8 upload-pages-artifact skipped、deploy job skipped） |
+| 先前通過的 step | step 4「npm ci --ignore-scripts」與 step 5「npm run check:contrast」success | 同左（逐項：step 4 success、step 5 success） |
+| check-run 標註（第 980／981 行） | 「Process completed with exit code 1.」 | 「Process completed with exit code 1.」（第 981 行） |
+| 網站是否更新 | 沒有（deploy skipped） | 沒有（deploy skipped） |
+
+**證據可支持的結論**：兩次都在 `npm test` 失敗、都以 exit code 1 結束，網站建置與部署因此被跳過。`npm ci` 與 `check:contrast` 兩次都通過。
+
+**根因（來源：PR #25 內文，作者自述；Quill 沒有重跑）**：測試 fixture 只建立 11/19 的資料，卻讀入全站搜尋索引；main 有 11/20 的正式資料後，測試多出 36 筆 11/20 的缺頁警告，與預期的警告數（0 與 1）不符。PR #25 的 `site/test.mjs` 改為只把 fixture 日期的搜尋資料帶進測試。
+
+**PR #25 另修兩處 SPEC 相容問題（來源：PR #25 內文）**：`site/display-v4.mjs` 與 `site/display-v4-copy.mjs` 保留原有 N 則格式並支援產品盤點摘要，盤點總項與更新列分開，更新列仍須與段落標題、display 一致；`site/build.mjs` 保留週五回顧與動手題的小節，僅原始三級標題對應 v4 文章。另新增回歸測試。
+
+**PR #25 作者回報的驗證（來源：PR #25 內文；Quill 未重跑）**：依賴安裝 8 套件、0 漏洞；`npm test` 38/38；`check:contrast` 70 組通過；以未修改的正式 11/20 資料建置成功，47 HTML、26 個產品頁、3 份日報、45 筆搜尋項目、0 警告。PR 內文當時寫「GitHub Pages 部署尚未驗證」，之後 run 44693398104 的 deploy job 為 success。
+
+### 10.3 時間軸（匿名 API 讀回，台北時間）
+
+| 時間 | 事件 |
+|---|---|
+| 12:20 | main `f99d84c`（合併 PR #21）push 的 run 44673700126，build 與 deploy success |
+| 12:25 | PR #22 開啟（head 8fbf76b），run 44674260900 success |
+| 12:20 之後至 12:52 | main 上有 7 個 `Archive morning brief 2026-11-20` commit（無編號、(2) 至 (7)：aafde78、2a06100、7ee7a57、856a81c、5c628e3、a77c540、91917ad），最後一個為 91917ad（12:52:00）；前面各 commit 的精確時間 Quill 只讀到 7ee7a57 起（12:41:27 起） |
+| 12:52 | run 44677242319（91917ad）：`npm test` 失敗，部署被跳過 |
+| 13:04 | PR #22 合併為 `da4087b`；run 44678588675：`npm test` 失敗，部署被跳過 |
+| 13:08 | PR #25 開啟（head 6041889），run 44679010544 success（deploy skipped） |
+| 15:13 | PR #25 合併為 `8f16064`；run 44693398104：build 與 deploy success |
+
+### 10.4 未驗證與推論
+
+| 編號 | 項目 | 說明 |
+|---|---|---|
+| U24 | 兩次失敗的 `npm test` 輸出本文 | Actions log 下載回 403，Quill 沒有讀到；只看到 step 結果與「exit code 1」標註 |
+| U25 | 第一次失敗（91917ad）也是 11/20 搜尋索引警告造成 | **推論**：兩次失敗發生在同一 step，且發生在 11/20 資料進 main 之後，上一次 main 的 run（04:20，f99d84c）success，與 PR #25 內文的根因相符；但沒有失敗輸出可直接證明，標待驗證 |
+| U26 | 第二次失敗（da4087b）是否另含 PR #22 本身造成的測試失敗 | PR #25 內文只說明 fixture 與搜尋索引、v4 顯示兩處修正；PR #22 合併後的失敗是否同時涉及 PR #22 的變更，Quill 未能區分，標待驗證 |
+| U27 | 11/20 的 6 個 archive commit（(2) 至 (6)）是否各自觸發 run | 匿名 API 的 run 清單中，04:20 到 04:52 之間只有 91917ad 一筆 push run；其餘是否被取消、合併或未觸發，未查 |
+| U28 | 部署後線上網站內容 | 只讀到 deploy job success，線上頁面是否已更新到 11/20 v4 畫面，Quill 未檢查 |
+| U29 | PR #25 的 `npm test` 38/38、47 HTML 等數字 | 來自 PR 內文，Quill 未重跑；PR 的 CI 只能確認 build 成功，step 內的測試數字未讀 |
+| U30 | PR #22 內文 Lin 自報的 37/37 與 PR #25 的 38/38 | 差 1 筆為 PR #25 新增的回歸測試（PR #25 內文寫「新增回歸測試」；數量是否剛好 1 筆，未逐項確認） |
+
+---
+
+## 11 變更紀錄
 
 只往後加，舊列不改。
 
@@ -579,3 +652,4 @@ Rigel 第一份報告寫 `digest` 上限為「長度上限待定」，第二份�
 | 2026-11-20 | Quill | 建立本紀錄：PR #19（SPEC v4）與 PR #20（build 接受 spec_version 3 與 4）；資料來源為 Rigel 兩份驗證報告、Atlas 欄位草案與匿名 GitHub API 讀回 |
 | 2026-11-20 | Quill | 新增 PR #21（v4 畫面渲染，merge commit f99d84c）：變更檔 8 項、v4 欄位對應畫面、缺值行為、四關審查（Rigel、Vega 已有報告；Iris 報告未取得）、Vega R1 與 R2、已知偏差、待 George 決定四項、行數差異；資料來源為 Rigel 驗證報告與兩份波形複驗報告、Vega 安全審查報告、Iris 設計規格 v5 與匿名 GitHub API 讀回。檔名由「spec-v4-and-version-compat」改為「spec-v4-contract-compat-render」 |
 | 2026-11-20 | Quill | 更新 PR #21 章節：5.12 行數差異改為已查明（+629／−6，+444 為 Rigel 彙整標題筆誤）；U18 首屏餘裕 14px 出處為 Iris 設計審查 A1；5.11 補入 Iris L1 至 L7 與驗收 A1 至 A10（Iris 回報，由 Ada 轉述）；新增第 9 章後續 PR #22（Lin 自報，驗證中）；原第 9 章變更紀錄改為第 10 章；兩處用語改為金鑰字串與色彩變數 |
+| 2026-11-20 | Quill | 補 PR #22 合併結果（merge commit da4087b，台北 13:04）、新增第 10 章 PR #25（merge commit 8f16064，台北 15:13，run 44693398104 build 與 deploy success）與當天兩次 main 建置失敗（run 44677242319、44678588675，皆為 npm test 失敗、部署跳過；log 讀不到，根因引自 PR #25 內文並標推論）；原第 10 章變更紀錄改為第 11 章；新增 U24 至 U30；U5、U12 的部署狀況見第 10 章 |
