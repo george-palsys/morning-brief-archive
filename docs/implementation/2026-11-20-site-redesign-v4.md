@@ -290,3 +290,101 @@ MSYS_NO_PATHCONV=1 npm run build -- --base-path /morning-brief-archive/
 | --- | --- | --- | --- |
 | 2026-11-19 | Quill | 新增本文件：PR #16 改版紀錄、F1–F9、G1、H1、各關審查、未驗證項目與清理待辦 | 本次指派（Ada 轉達 George「先合併啊」）；數字與結論來源見各章 |
 | 2026-11-20 | Quill | 狀態更新：Rigel 對 `c3f9a37` 的補驗與合併後對 `9ec6f5c` 的補驗皆通過；更新開頭狀態、5.4 審查表、U2，其餘未動 | Rigel 回報，Ada 轉達；tree 相同為我另外用 `git rev-parse` 讀到 |
+
+# 2026-11-20 追加：首頁版面與 PR #24 防護整合
+
+本節整合原 PR #24 `2026-11-20-spec-v4-products-friday-fix.md` 的仍需項目；不另新增該獨立紀錄。基準為 main `8f16064`，僅修改程式、樣式、測試與本實作紀錄，未修改正式日報、產品快照、搜尋資料或 SPEC。
+
+## 基準實測與判定
+
+基準 `npm test` 為 38 pass、0 fail；`npm run check:contrast` 為 70 組通過。以 repo 原有、未修改的 11-20 正式資料執行 `npm run build`：
+
+```text
+BUILD OK: 47 HTML pages; 26/26 product pages; 3 daily editions; 45 search items; 0 warnings; mode=production
+```
+
+這證明正常資料可以建置，但不能證明錯誤輸入防護存在。直接呼叫基準 markdown 渲染器，附錄在第一則之前、附錄插在兩則之間、附錄後經其他 h2 再出現條目、display 有一筆卻沒有輸出條目，四者均實際得到 `ACCEPTED`。正式 knowledge 有 6 個 item-title、6 筆 display，附錄順序正確，但無 weekly-title 卡片。因此 #24 的順序防護、輸出條目數檢查與附錄卡片樣式仍缺；不能只因 main 正常 build 通過就關閉 #24。
+
+## 本次修改
+
+- `site/assets/site.css`：產品名稱允許正常換行與長字斷行，窄螢幕改 2 欄且不設固定高度；段落導覽單行橫向捲動；注意事項的數字小卡透明底加細邊框；每日清單連結保留 44px 高度並加水平內距（高於 24px 要求）。
+- `site/display-v4.mjs`：導覽移除產品總表與日期的混合連結，前後日期放獨立相鄰日期區；產品摘要先列 6 則，其餘在原生 details 內，十則時顯示「再顯示 4 則」；保留既有產品摘要表格列數／三級標題／display 數量一致檢查，補上完整產品狀態摘要的四狀態加總檢查。
+- `site/build.mjs`：將次日傳入摘要日期導覽；兩個 knowledge 附錄不占 display 索引，使用無 keyword 的 news-card 卡片；拒絕附錄在條目前、附錄後再有三級或更深標題（包含跨越其他 h2）；渲染後檢查實際條目數等於 display 長度。
+- `site/test.mjs`：附錄的兩張卡獨立計算，保留條目數與 keyword 數檢查；全形、半形冒號的產品狀態總和錯誤均須失敗。
+- `site/weekly-guards.test.mjs`、`package.json`：新增四個錯誤輸入拒絕案例，以及十則產品可達、日期離開段落導覽的回歸測試並加入 npm test。
+
+CVE 摘要計數的後續修正見「追加：CVE 完整計數與空分數條」。星期五強制附錄／非星期五禁止附錄、產品狀態逐項對總表政策仍不在本次範圍。
+
+## 最終驗證與重現
+
+1. 在本分支執行 `npm ci --ignore-scripts`，再執行 `npm ls --depth=0`；預期 markdown-it 15.0.3、yaml 2.9.1。首次安裝實測 8 packages、0 vulnerabilities。
+2. 執行 `npm test`；實測 `tests 45 / pass 45 / fail 0 / skipped 0`。既有 38 項保留，新增 7 項；附錄改為兩張卡，原卡片總數斷言同步更新且另驗證一般條目數，沒有放寬條目驗證。
+3. 執行 `npm run check:contrast`；實測 `CONTRAST OK: 70 CSS color pairs (light + dark)`。
+4. 執行 `node site/build.mjs --output ../site-verified`（目錄須不存在或為空）；實測仍為 47 HTML pages、26/26 product pages、3 daily editions、45 search items、0 warnings、production。
+5. 執行 `git diff --exit-code 8f16064 -- daily products items.jsonl state`；實測 exit 0、無輸出，正式資料與基準一致。正式 knowledge HTML 實測 6 個 item-title／6 筆 display、2 個 weekly-title，兩附錄在所有條目之後；四個錯誤輸入均改為 REJECTED。
+6. 執行 `git diff --check`；預期 exit 0。確認生成 HTML 沒有團隊成員名稱，發布前仍須重做部署後檢查。
+
+## #24 處置與未驗證
+
+本分支補回 #24 尚缺的防護並整合紀錄；本分支經 Leader 審查合併且確認上述檢查後，#24 可作為已被取代而關閉，不應單獨合併舊分支。本次未合併任何 PR，也未關閉 #24。
+
+當輪尚未驗證的 390px／1280px 瀏覽器視覺已於下節補做；觸控操作、螢幕閱讀器、部署後公開頁面仍未驗證。contrast 指令只證明它列出的 70 組，未宣稱涵蓋每一種版面組合。若需回復，對本次合併 commit 建立 revert PR，執行 `npm test` 與 `npm run check:contrast`，預期通過；不重設 main、不強制推送。
+
+## 追加：CVE 完整計數與空分數條
+
+首頁 CVE 不再先截為 4 則，再對截過的結果折疊。改為保留所有 entries，先顯示 2 則，其餘在 details 內。正式 11-20 資料的結果為 2 + 3 = 5，Cisco Expressway 保留。
+
+E2 原先「12 則 CVE 只在摘要輸出 4 個 h3、再顯示 2 則」的預期值鎖住了遺失條目的 bug；本次修正為 12 個 h3、再顯示 10 則，並額外斷言可見 2、折疊 10、兩者加總等於 display 宣告數。原有完整內容頁 12 張卡、item-12 連結與摘要 12 則的斷言均保留，並非放寬測試。
+
+空 cvss 使用 v4-score-empty，灰條放在 grid 第 2 欄並標記 aria-hidden；「未提供」放在第 3 欄，窄版也與灰條同列。未改 daily/、meta.yaml、items.jsonl；既有兩則空 cvss 是否應補資料仍留待資料決定。
+
+### Chromium 實測（390 與 1280 CSS px）
+
+使用內建瀏覽器載入原樣正式資料的本機建置頁；獨立驗證頁包含各寬度 iframe，讀取 iframe.contentWindow.innerWidth 確認為 390、1280。這是 Chromium 內的實際 CSS viewport 與 media query 量測，並非只縮窄容器。桌面截圖為完整 1280px viewport 按 70% 比例呈現，以容納瀏覽器觀看範圍；未改 iframe 內 CSS。
+
+| 實測項目 | 390 CSS px | 1280 CSS px |
+| --- | --- | --- |
+| CVE 預設可見／折疊／總數 | 2／3／5 | 2／3／5 |
+| 展開文字 | 再顯示 3 則 | 再顯示 3 則 |
+| Cisco Expressway | 保留於折疊內容 | 保留於折疊內容，展開截圖可見 |
+| 空分數條寬度 | 約 219.7px | 約 232.5px |
+| 未提供文字 | 灰條右側同列 | 灰條右側同列 |
+| 產品名稱截斷 | 26 個檢查，0 個截斷 | 26 個檢查，0 個截斷 |
+| 產品欄數 | 2 | 9 |
+| 段落導覽 | 單行，約 59.3px（含橫向捲軸） | 單行，32px |
+
+截圖：mobile-top.png、mobile-cve.png、mobile-products.png、desktop-overview.png、desktop-cve-expanded.png、desktop-products.png。量測原始 JSON：visual-metrics.json。這些佐證保存在交付 patch 同一工作目錄，未納入正式資料或網站產出。
+
+最後重跑 npm test（45 pass、0 fail）、check:contrast（70 組通過）、正式資料 build（47 頁、26/26 產品頁、3 期、45 搜尋筆、0 warnings）；git diff --exit-code 8f16064 -- daily products items.jsonl state 仍為 exit 0。
+
+### v3：展開區全寬與計數單位
+
+對所有寬度的 `.v4-panel-footer .v4-more[open]` 設定 `flex:1 0 100%`。展開後獨占 flex 一列，寬度等於面板扣除左右內距的可用寬度；不再與完整內容連結擠在同列。Chromium 實測如下，數值為 CSS px：
+
+| viewport | 區域 | 關閉 details 寬 | 展開 details 寬 | 面板內寬 | 面板外寬 |
+| --- | --- | --- | --- | --- | --- |
+| 390 | 產品 | 104.8 | 318.7 | 318.7 | 342.7 |
+| 390 | CVE | 96.2 | 318.7 | 318.7 | 342.7 |
+| 1280 | 產品 | 91.7 | 459.3 | 459.3 | 483.3 |
+| 1280 | CVE | 84.2 | 652.7 | 652.7 | 676.7 |
+
+產品標題同時顯示「10 項產品、19 則更新」，測試同步驗證兩種數量，既有各項斷言保留。產品仍為 6 則可見、13 則折疊；CVE 仍為 2 則可見、3 則折疊。390px、320px 的段落導覽採漸層遮罩提示可橫捲；桌面不套遮罩。每日清單連結合併為單一 min-height:var(--tap-min) 規則並保留水平內距，移除重複的 24px 規則。
+
+展開前後共八張截圖：v3-390-products-closed.png、v3-390-products-open.png、v3-390-cve-closed.png、v3-390-cve-open.png、v3-1280-products-closed.png、v3-1280-products-open.png、v3-1280-cve-closed.png、v3-1280-cve-open.png；原始量測為 visual-metrics-v3.json，保存在本次 patch 同一工作目錄。截圖均按 70% 顯示 iframe 實際 viewport，量測數字未縮放。
+
+本次不處理：既有更新條目的孤立日期標籤；空新知識加週五附錄無法建置。實體觸控、螢幕閱讀器及部署後公開頁面仍未驗證。
+
+### v4：手機導覽最後連結避開漸層
+
+固定漸層在捲到最右時仍會遮住最後連結。於同一 max-width:699px 區塊加入 `.v4-jump::after { content:""; flex:none; width:10%; min-width:2.5rem; }`，提供尾端空間；不改連結文字或資料。產品計數測試由部分文字比對收緊為 `/>0 項產品、10 則更新</`，避免錯誤前後綴仍通過。
+
+Chromium iframe 實際 viewport 捲到底的量測（CSS px）：
+
+| viewport | 導覽 clientWidth | scrollWidth | scrollLeft | 最後連結右緣 | 漸層起點 | 連結落在漸層區 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 390 | 343 | 701 | 358.7 | 306.4 | 324.7 | 0 |
+| 320 | 273 | 701 | 428.7 | 236.4 | 261.7 | 0 |
+
+兩寬度的尾端偽元素實測均為 40px，「清單維護」完整可見。截圖 v4-nav-end-390.png、v4-nav-end-320.png 與原始 visual-metrics-v4.json 保存在 patch 同一工作目錄。
+
+v4 實跑：npm test 為 45 tests、45 pass、0 fail、0 skipped；check:contrast 為 70 組通過；未修改 11-20 正式資料 build 為 47 HTML pages、26/26 product pages、3 daily editions、45 search items、0 warnings、production；資料 git diff --exit-code 為 exit 0。本次另不處理產品區展開欄數不一致；既有孤立日期標籤、空新知識加週五附錄仍列為本次不處理。

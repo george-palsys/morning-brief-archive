@@ -441,7 +441,7 @@ test('v4 fixture builds structured panels, source-specific scores and optional f
  assert.ok(cve.includes(example.display.cve[2].patch_detail));
  assert.ok(ai.includes(example.display.ai[2].caveat));
  assert.match(overview, /class="v4-drill"/);
- assert.ok(overview.includes(`<p>${base.products_updated.length} 項產品</p>`));
+ assert.ok(overview.includes(`<p>${base.products_updated.length} 項產品、${example.display.products.length} 則更新</p>`));
  assert.ok(ai.includes('>回到今日摘要</a>'));
  assert.ok(ai.includes('<span class="field">影響：</span>'));
  assert.ok(ai.includes('Google 官方部落格（2026-11-17）</a>（blog.google）'));
@@ -487,12 +487,25 @@ test('v4 accepts the product inventory summary and preserves Friday supplements'
  f.edit('knowledge.md', source => source + '\n\n## 本週回顧\n\n回顧內容。\n\n## 本週動手題\n\n驗證內容。\n');
  const page = f.run();
  const knowledge = page('knowledge');
- assert.equal((knowledge.match(/class="news-card v4-entry"/g) || []).length, f.meta.display.knowledge.length);
- assert.match(knowledge, /<\/article>\s*<h2[^>]*>本週回顧<\/h2>[^]*?<h2[^>]*>本週動手題<\/h2>/);
+ assert.equal((knowledge.match(/class="news-card v4-entry"/g) || []).length, f.meta.display.knowledge.length + 2);
+ assert.equal((knowledge.match(/class="item-title"/g) || []).length, f.meta.display.knowledge.length);
+ assert.match(knowledge, /<\/article>\s*<article class="news-card v4-entry"><h2[^>]*>本週回顧<\/h2>[^]*?<article class="news-card v4-entry"><h2[^>]*>本週動手題<\/h2>/);
+ assert.equal((knowledge.match(/class="weekly-title"/g) || []).length, 2);
+ assert.equal((knowledge.match(/class="v4-keyword"/g) || []).length, f.meta.display.knowledge.length);
  assert.match(page('index'), /產品動態<\/a> <strong>6 則<\/strong>/);
  f.edit('README.md', source => source.replace(/^\| \[CI\/CD\/Argo CD\][^\n]*\n/m, ''));
  assert.throws(() => f.run(), /products：摘要則數、段落標題與 display 則數不一致/);
 });
+
+for (const colon of [':', '：']) {
+ test('product state totals remain consistent with inventory ' + colon, () => {
+  const f = v4CaseFixture();
+  f.edit('README.md', s => s.replace(/6 則(?=[^\n]*products\.md)/, `26 項${colon}有更新 10、無更新 14、無法確認 1、無公開來源 1。`));
+  f.run();
+  f.edit('README.md', s => s.replace('無更新 14', '無更新 13'));
+  assert.throws(() => f.run(), /產品狀態項數加總與總項數不一致/);
+ });
+}
 
 test('v4 E1: empty AI section has zero count and no wave', () => {
  const f = v4CaseFixture();
@@ -505,7 +518,7 @@ test('v4 E1: empty AI section has zero count and no wave', () => {
  assert.match(page('ai'), /今天沒有/);
  assert.doesNotMatch(page('ai'), /class="v4-wave"|class="news-card v4-entry"/);
 });
-test('v4 E2: twelve CVEs have twelve articles and four overview entries', () => {
+test('v4 E2: twelve CVEs have twelve articles and twelve reachable overview entries', () => {
  const f = v4CaseFixture();
  for (let i = 6; i <= 12; i++) {
   f.meta.display.cve.push({short:'測試 ' + i,keyword:'TEST',cve_ids:[],cvss:[],exploited:'unknown',patch:'unknown',related:false});
@@ -516,9 +529,17 @@ test('v4 E2: twelve CVEs have twelve articles and four overview entries', () => 
  assert.equal((page('cve').match(/class="news-card v4-entry"/g) || []).length, 12);
  assert.match(page('cve'), /href="#item-12"/);
  const panel = page('index').split('class="v4-panel v4-panel-cve"')[1].split('</section>')[0];
- assert.equal((panel.match(/<h3>/g) || []).length, 4);
+ assert.equal((panel.match(/<h3>/g) || []).length, 12);
  assert.equal((panel.match(/12 則/g) || []).length, 1);
- assert.ok(panel.includes('<summary>再顯示 2 則</summary>'));
+ assert.ok(panel.includes('<summary>再顯示 10 則</summary>'));
+ const visible = panel.split('<details')[0];
+ const folded = panel.split('<details')[1];
+ const visibleCount = (visible.match(/<h3>/g) || []).length;
+ const foldedCount = (folded.match(/<h3>/g) || []).length;
+ assert.equal(visibleCount, 2);
+ assert.equal(foldedCount, 10);
+ assert.equal(visibleCount + foldedCount, f.meta.display.cve.length);
+ assert.match(panel, /class="v4-score v4-score-empty"><span class="v4-track" aria-hidden="true"><\/span>/);
 });
 for (const [id,state] of [['E3','有更新'],['E4','無更新']]) {
  test('v4 ' + id + ': all 26 products are ' + state, () => {

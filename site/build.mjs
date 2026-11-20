@@ -35,11 +35,22 @@ export function markdown(source, { section = '', summary = false, display } = {}
     .split(/\r?\n/).filter(line => !/^\[← (?:今日摘要|26 項產品現況)\]/.test(line)).join('\n');
   source = source.replace(/^> 歷史演練分檔：[^\n]*(?:\n|$)/gm, '');
   const tokens = md.parse(source, {});
-  const toc = []; let n = 0; let headers = []; let tableN = 0;
+  const toc = []; let n = 0; let headers = []; let tableN = 0; let weeklyStarted = false; let articleHeadings = 0;
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
     if (t.type === 'heading_open') {
       let level = Number(t.tag.slice(1));
+      const weekly = section === 'knowledge' && level === 2 &&
+        ['本週回顧', '本週動手題'].includes(plain(tokens[i + 1].content));
+      if (display && weekly) {
+        if (!articleHeadings) throw Error('knowledge：週五小節必須放在所有條目之後');
+        weeklyStarted = true;
+        t.attrSet('class', 'weekly-title');
+      }
+      if (display && section === 'knowledge' && weeklyStarted && level >= 3) {
+        throw Error('knowledge：週五小節之後不得再有條目標題');
+      }
+      if (level === 3) articleHeadings++;
       if (section && level >= 3) level--;
       if (level === 1) { tokens[i + 1].content = ''; tokens[i + 1].children = []; t.hidden = true; tokens[i + 2].hidden = true; continue; }
       if (section === 'cve' && level === 2) {
@@ -91,6 +102,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
     let entryIndex = 0;
     const html = starts.map((start, index) => {
       const end = starts[index + 1];
+      if (tokens[start].attrGet('class') === 'weekly-title') return `<article class="news-card v4-entry">${render(tokens.slice(start, end))}</article>`;
       if (tokens[start].attrGet('class') !== 'item-title') return render(tokens.slice(start, end));
       const part = tokens.slice(start + 3, end);
       const body = [], impact = [], sources = [];
@@ -149,6 +161,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
       return renderEntry(render(tokens.slice(start, start + 3)), main, display[entryIndex++], section,
         impact.length ? render(impact) : '', sources.length ? render(sources) : '');
     }).join('');
+    if (entryIndex !== display.length) throw Error(`display.${section} 項目數與輸出條目數不一致`);
     return { html, toc };
   }
   let html = md.renderer.render(tokens, md.options, {});
@@ -271,7 +284,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       const rendered = markdown(read(source), { section: !d.legacy && part !== 'index' ? part : '',
         summary: !d.legacy && part === 'index', display: d.display?.groups[part]?.entries });
       if (d.display && part === 'index') {
-        page(file, `${d.meta.date} 摘要`, renderOverview(d, rows, file, link, collectionTime(d), days.find(day => !day.legacy && Date.parse(d.date) - Date.parse(day.date) === 86400000)), 'daily', source);
+        page(file, `${d.meta.date} 摘要`, renderOverview(d, rows, file, link, collectionTime(d), days.find(day => !day.legacy && Date.parse(d.date) - Date.parse(day.date) === 86400000), days.find(day => !day.legacy && Date.parse(day.date) - Date.parse(d.date) === 86400000)), 'daily', source);
         continue;
       }
       if (d.display?.groups[part]) {
