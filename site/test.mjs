@@ -529,3 +529,32 @@ test('v4 E8: v3 without display retains the legacy text view', () => {
  delete f.meta.attention;
  assert.doesNotMatch(f.run()('index'), /v4-overview|v4-score/);
 });
+for (const colon of [':', '：']) {
+ test('SPEC v4 product summary accepts ' + colon + ' and independent article count', () => {
+  const f = v4CaseFixture();
+  f.edit('README.md', s => s.replace(/6 則(?=[^\n]*products\.md)/, `26 項${colon}有更新 10、無更新 14、無法確認 1、無公開來源 1。`));
+  assert.match(f.run()('products'), /26 項/);
+  f.edit('README.md', s => s.replace('無更新 14', '無更新 13'));
+  assert.throws(() => f.run(), /產品狀態項數加總與總項數不一致/);
+ });
+}
+test('SPEC v4 product summary still rejects display/title mismatch', () => {
+ const f = v4CaseFixture();
+ f.edit('README.md', s => s.replace(/6 則(?=[^\n]*products\.md)/, '26 項:有更新 10、無更新 14、無法確認 1、無公開來源 1。'));
+ f.meta.display.products.pop();
+ assert.throws(() => f.run(), /products：摘要則數/);
+});
+for (const weekly of [false, true]) {
+ test('SPEC v4 knowledge has six entries with weekly sections=' + weekly, () => {
+  const f = v4CaseFixture();
+  f.meta.weekday = '星期五';
+  if (weekly) f.edit('knowledge.md', s => s + '\n## 本週回顧\n\n本週學習回顧內容。\n\n## 本週動手題\n\n實作目標與預期結果。\n');
+  const html = f.run()('knowledge');
+  assert.equal((html.match(/class="news-card v4-entry"/g) || []).length, 6);
+  if (weekly) {
+   assert.match(html, /本週回顧<\/h2>[\s\S]*本週學習回顧內容。/);
+   assert.match(html, /本週動手題<\/h2>[\s\S]*實作目標與預期結果。/);
+   assert.equal((html.match(/class="item-title"/g) || []).length, 6);
+  }
+ });
+}

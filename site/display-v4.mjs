@@ -43,11 +43,16 @@ export function readDisplay(meta, overview, read, sections) {
     const headingIndex = summary.findIndex((token, i) => token.type === 'heading_open' &&
       token.tag === 'h2' && inlineText(summary[i + 1]).includes(label));
     const declaration = summary[headingIndex + 4]; // h2 open, inline, close, paragraph open, inline
-    const count = /^(\d+)\s*則/u.exec(inlineText(declaration));
+    const declarationText = inlineText(declaration);
+    const productCount = key === 'products' ? /^(\d+)\s*項\s*[：:]\s*有更新\s*(\d+)、\s*無更新\s*(\d+)、\s*無法確認\s*(\d+)、\s*無公開來源\s*(\d+)。/u.exec(declarationText) : null;
+    const count = productCount || /^(\d+)\s*則/u.exec(declarationText);
+    if (productCount && productCount.slice(2).reduce((sum, value) => sum + Number(value), 0) !== Number(productCount[1])) {
+      error(key, '產品狀態項數加總與總項數不一致');
+    }
     const more = linkToken(declaration, `${key}.md`);
     const entries = meta.display[key];
     if (!heading || headingIndex < 0 || !count || more < 0 || !Array.isArray(entries) ||
-      Number(count[1]) !== titles.length || entries.length !== titles.length) {
+      (!productCount && Number(count[1]) !== titles.length) || entries.length !== titles.length) {
       error(key, '摘要則數、段落標題與 display 則數不一致');
     }
     entries.forEach((entry, index) => {

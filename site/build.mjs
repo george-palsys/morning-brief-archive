@@ -34,11 +34,15 @@ export function markdown(source, { section = '', summary = false, display } = {}
     .split(/\r?\n/).filter(line => !/^\[← (?:今日摘要|26 項產品現況)\]/.test(line)).join('\n');
   source = source.replace(/^> 歷史演練分檔：[^\n]*(?:\n|$)/gm, '');
   const tokens = md.parse(source, {});
-  const toc = []; let n = 0; let headers = []; let tableN = 0;
+  const toc = []; let n = 0; let headers = []; let tableN = 0; let weekly = false;
   for (let i = 0; i < tokens.length; i++) {
     const t = tokens[i];
     if (t.type === 'heading_open') {
       let level = Number(t.tag.slice(1));
+      if (section === 'knowledge' && level === 2) {
+        weekly = ['本週回顧', '本週動手題'].includes(plain(tokens[i + 1].content));
+        if (weekly) t.attrSet('class', 'weekly-title');
+      }
       if (section && level >= 3) level--;
       if (level === 1) { tokens[i + 1].content = ''; tokens[i + 1].children = []; t.hidden = true; tokens[i + 2].hidden = true; continue; }
       if (section === 'cve' && level === 2) {
@@ -48,7 +52,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
         for (const child of inline.children || []) if (child.type === 'text') child.content = child.content.replaceAll('【與我們的產品線相關】', '');
         if (inline.meta.productRelated) t.attrSet('data-product-related', 'true');
       }
-      if (section && level === 2) t.attrSet('class', 'item-title');
+      if (section && level === 2 && !weekly) t.attrSet('class', 'item-title');
       t.tag = `h${level}`; tokens[i + 2].tag = t.tag;
       if (level === 2) {
         const title = plain(tokens[i + 1].content);
@@ -87,9 +91,13 @@ export function markdown(source, { section = '', summary = false, display } = {}
   if (display) {
     const render = part => md.renderer.render(part, md.options, {});
     const starts = tokens.flatMap((token, i) =>
-      token.type === 'heading_open' && token.attrGet('class') === 'item-title' ? [i] : []);
+      token.type === 'heading_open' && ['item-title', 'weekly-title'].includes(token.attrGet('class')) ? [i] : []);
+    let entryIndex = 0;
     const html = starts.map((start, index) => {
       const part = tokens.slice(start + 3, starts[index + 1]);
+      if (tokens[start].attrGet('class') === 'weekly-title') {
+        return `<article class="news-card">${render(tokens.slice(start, starts[index + 1]))}</article>`;
+      }
       const body = [], impact = [], sources = [];
       for (let i = 0; i < part.length; i++) {
         const token = part[i];
@@ -113,7 +121,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
         if (label.endsWith('：') || label.endsWith(':')) label = label.slice(0, -1).trim();
         if (label) { children[2].content = label; children.shift(); }
       }
-      return renderEntry(render(tokens.slice(start, start + 3)), main, display[index], section,
+      return renderEntry(render(tokens.slice(start, start + 3)), main, display[entryIndex++], section,
         impact.length ? render(impact) : '', sources.length ? render(sources) : '');
     }).join('');
     return { html, toc };
