@@ -1,0 +1,263 @@
+title: 晨報 2026-11-20
+date: '2026-11-20'
+weekday: 星期五
+type: morning-brief
+collected_at: '2026-11-20T10:03:00+08:00'
+cve_ids:
+- CVE-2026-18142
+- CVE-2026-59296
+- CVE-2026-87825
+- CVE-2026-87877
+- CVE-2026-87795
+- CVE-2026-87824
+- CVE-2026-89046
+- CVE-2026-90560
+- CVE-2026-90852
+- CVE-2026-59969
+- CVE-2026-84501
+- CVE-2026-15176
+- CVE-2026-93479
+- CVE-2026-95101
+- CVE-2026-97629
+- CVE-2026-97205
+- CVE-2026-77299
+- CVE-2026-123007
+- CVE-2026-123634
+- CVE-2026-123633
+- CVE-2026-121810
+- CVE-2026-113425
+- CVE-2026-114938
+- CVE-2026-115560
+- CVE-2026-126714
+- CVE-2026-129182
+- CVE-2026-129289
+- CVE-2026-129474
+- CVE-2026-129496
+- CVE-2026-129481
+- CVE-2026-75804
+- CVE-2026-84782
+- CVE-2026-111497
+- CVE-2026-46729
+- CVE-2026-56153
+- CVE-2026-59685
+- CVE-2026-63292
+- CVE-2026-63686
+- CVE-2026-63718
+- CVE-2026-73636
+- CVE-2026-42528
+- CVE-2026-57941
+- CVE-2026-93546
+- CVE-2026-56154
+- CVE-2026-59797
+- CVE-2026-119618
+- CVE-2026-118899
+- CVE-2026-120993
+- CVE-2026-125283
+- CVE-2026-120967
+- CVE-2026-123640
+- CVE-2026-123890
+- CVE-2026-123891
+- CVE-2026-123892
+- CVE-2026-123893
+- CVE-2026-123894
+- CVE-2026-102764
+- CVE-2026-129448
+- CVE-2026-82384
+- CVE-2026-76466
+products:
+- MQ
+- Coverity
+- JBoss EAP
+- CI/CD
+- OpenShift
+- 3scale
+- JBCS httpd
+- Rancher / RKE2
+- Confluent Platform
+- Palsys One
+tags:
+- NGINX2Root
+- Java4Shell
+- OpenShift
+- JBoss EAP
+- IBM MQ
+- Coverity
+- CI/CD
+- VMware vCenter
+- PQC
+spec_version: 4
+products_checked: 26
+products_updated:
+- MQ
+- Coverity
+- JBoss EAP
+- CI/CD
+- OpenShift
+- 3scale
+- JBCS httpd
+- Rancher / RKE2
+- Confluent Platform
+- Palsys One
+products_unconfirmed:
+- Software Risk Manager (SRM)
+cicd_tools_updated:
+- GitLab
+- GitHub Actions
+- Argo CD
+- Sonatype Nexus Repository
+attention:
+  section: products
+  title: NGINX2Root：5 個漏洞，評為 Critical
+  summary: Red Hat 發布 RHSB-2026-019，評為 Critical，已有公開 PoC，修補尚未釋出；Red Hat 3scale API Management Platform 2 列為直接受影響產品。
+  facts:
+  - label: CVSS 3.1
+    value: '8.1'
+    source: Red Hat
+  - label: PoC
+    value: PoC 已公開
+  - label: 修補
+    value: 尚未列出 errata
+display:
+  products:
+  - short: MQ CVE-2026-18142
+    keyword: MQ
+  - short: Coverity 2026.9.1
+    keyword: COVERITY
+  - short: EAP XP 6.0 Update 7.1
+    keyword: EAP
+  - short: GitLab 19.6
+    keyword: GITLAB
+    date: 2026-11-19
+  - short: RHEL runner 映像 GA
+    keyword: ACTIONS
+  - short: Argo CD 3.6.2 等三版
+    keyword: ARGO
+  - short: Nexus 3.98.3
+    keyword: NEXUS
+    date: 2026-11-19
+  - short: RHSB-2026-019 nginx
+    keyword: NGINX
+    date: 2026-11-19
+  - short: RHSB-2026-018 OpenJDK
+    keyword: JAVA
+    date: 2026-11-19
+  - short: RHSB-2026-020 PHP
+    keyword: PHP
+  - short: OCP 4.12 EUS 結束
+    keyword: EUS
+    figures:
+    - label: 終止日期
+      value: '2027-01-17'
+  - short: 5 筆映像 errata
+    keyword: ERRATA
+    date: 2026-11-19
+  - short: 3scale 受 nginx 影響
+    keyword: 3SCALE
+  - short: JBCS httpd 2.4.62 SP7
+    keyword: JBCS
+  - short: RKE2 v1.37.2
+    keyword: RKE2
+    date: 2026-11-05
+  - short: RKE2 v1.35.10
+    keyword: RKE2
+    date: 2026-11-05
+  - short: CONFSA-2026-37
+    keyword: CONFSA
+  - short: NGINX 不影響自管 CP
+    keyword: CP
+  - short: AppScan on Cloud 更新
+    keyword: ASOC
+  knowledge:
+  - short: NIST IR 8547 定案
+    keyword: NIST
+  - short: eMudhra 弱金鑰
+    keyword: EMUDHRA
+  - short: AI 滲透測試框架
+    keyword: PENTEST
+  - short: kube-proxy ipvs 移除
+    keyword: IPVS
+  - short: Vault Client
+    keyword: VAULT
+  - short: QuePaxa 共識演算法
+    keyword: QUEPAXA
+  cve:
+  - short: Java4Shell 後續
+    keyword: JAVA
+    cve_ids:
+    - CVE-2026-114938
+    cvss: []
+    exploited: unknown
+    exploited_detail: 開始出現攻擊嘗試
+    patch: released
+    patch_detail: Red Hat 釋出第一張 errata
+    related: true
+  - short: NGINX2Root
+    keyword: NGINX
+    cve_ids:
+    - CVE-2026-123007
+    cvss: []
+    exploited: unknown
+    patch: released
+    patch_detail: F5 緊急修補；Red Hat 的修補見產品動態
+    related: true
+  - short: vCenter 驗證繞過
+    keyword: VCENTER
+    date: 2026-11-19
+    cve_ids:
+    - CVE-2026-123890
+    cvss:
+    - score: 9.8
+      version: null
+      source: Broadcom
+    exploited: confirmed
+    patch: released
+    related: false
+  - short: Roller 反序列化
+    keyword: ROLLER
+    date: 2026-11-17
+    cve_ids:
+    - CVE-2026-129448
+    cvss:
+    - score: 9.8
+      version: '3.1'
+      source: Apache
+    exploited: confirmed
+    patch: released
+    related: false
+  - short: Cisco Expressway
+    keyword: CISCO
+    cve_ids:
+    - CVE-2026-76466
+    cvss:
+    - score: 9.8
+      version: '3.1'
+      source: Cisco
+    exploited: confirmed
+    patch: released
+    related: false
+  taiwan:
+  - short: momo 資料遭存取
+    keyword: MOMO
+    kind: 個資
+  - short: 鳳凰旅遊個資外洩
+    keyword: TRAVEL
+    kind: 個資
+  - short: 大車隊子公司遭入侵
+    keyword: TAXI
+    kind: 入侵
+  - short: 台積電暫停中國訂單
+    keyword: TSMC
+    kind: 政策
+  ai:
+  - short: Gemini 4 Neon
+    keyword: GEMINI
+    date: 2026-11-18
+  - short: 銀行 AI agent 條款
+    keyword: BANK
+  - short: Anthropic 掛牌
+    keyword: IPO
+    figures:
+    - label: 首日收盤
+      value: 97.17 美元
+  - short: 川習 AI 監管共識
+    keyword: POLICY
