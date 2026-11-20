@@ -383,3 +383,17 @@ test('home attention preview never cuts through a version at the 48-character bo
  assert.ok(attention.includes(`<span class="attention-preview">：${prefix}…</span>`));
  assert.ok(attention.includes(sentence));
 });
+
+test('daily metadata accepts numeric v3 and v4, rejects unsupported versions', () => {
+ const dir = fixture();
+ const file = path.join(dir, 'daily/2026-11-19/meta.yaml');
+ const meta = parse(fs.readFileSync(file, 'utf8'));
+ for (const version of [3, 4]) {
+  fs.writeFileSync(file, stringify({ ...meta, spec_version: version }));
+  assert.ok(run(dir).pages.has('daily/2026-11-19/index.html'));
+ }
+ for (const version of [2, 5, '4']) {
+  fs.writeFileSync(file, stringify({ ...meta, spec_version: version }));
+  assert.throws(() => run(dir), /meta.yaml 日期、版本或檢查數無效/);
+ }
+});
