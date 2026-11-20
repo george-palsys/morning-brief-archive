@@ -375,8 +375,8 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     if (/^\d{4}-\d{2}-\d{2}\.md$/.test(source)) source = `daily/${source}`;
     const file = url(source);
     if (!/^(?:daily|products)\/[A-Za-z0-9_/-]+\.md$/.test(source) || !pages.has(file) || !exists(source)) {
-      const displayPath = file.length > 200 ? file.slice(0, 199) + '…' : file;
-      warn(`搜尋項目 ${item.id} 指向不存在的頁面 ${displayPath}，不加入索引`);
+      const truncate = value => value.length > 200 ? value.slice(0, 199) + '…' : value;
+      warn(`搜尋項目 ${truncate(String(item.id))} 指向不存在的頁面 ${truncate(file)}，不加入索引`);
       continue;
     }
     linkedStories.push({ ...item, source });
