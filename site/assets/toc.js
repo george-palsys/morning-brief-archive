@@ -49,7 +49,7 @@ if (typeof IntersectionObserver === 'function') {
 const wave = document.querySelector?.('.v4-wave');
 if (wave) {
  const articles = [...document.querySelectorAll('.v4-entry')];
- const headings = articles.map(article => article.querySelector('h3') ?? article);
+ const headings = articles.map(article => article.querySelector('.item-title') ?? article);
  const peaks = [...wave.children];
  const header = document.querySelector('.header-inner');
  const miniWave = wave.cloneNode(true);
@@ -58,6 +58,14 @@ if (wave) {
  const miniPeaks = [...miniWave.children];
  let selected = -1;
  let frame = 0;
+ let anchorIndex = -1;
+ let anchorReachedEnd = false;
+
+ function readAnchor() {
+  const fragment = window.location.hash.slice(1);
+  anchorIndex = fragment ? headings.findIndex(heading => heading.id === fragment) : -1;
+  anchorReachedEnd = false;
+ }
 
  function updateWave() {
   frame = 0;
@@ -67,7 +75,19 @@ if (wave) {
   const atEnd = window.scrollY > 0 &&
    Math.ceil(window.scrollY + viewportHeight) >= document.documentElement.scrollHeight - 1;
   const readingLine = Math.max(headerBottom, viewportHeight * 0.30);
+  if (!atEnd && anchorReachedEnd) {
+   anchorIndex = -1;
+   anchorReachedEnd = false;
+  }
   let next = atEnd ? articles.length - 1 : 0;
+  if (atEnd && anchorIndex >= 0) {
+   const anchor = headings[anchorIndex];
+   const scrollMargin = parseFloat(getComputedStyle(anchor).scrollMarginTop) || 0;
+   if (anchor.getBoundingClientRect().top >= scrollMargin - 1) {
+    next = anchorIndex;
+    anchorReachedEnd = true;
+   }
+  }
   if (!atEnd) {
    for (const [index, heading] of headings.entries()) {
     if (heading.getBoundingClientRect().top > readingLine + 1) break;
@@ -88,6 +108,17 @@ if (wave) {
  window.addEventListener('scroll', scheduleWave, { passive: true });
  window.addEventListener('resize', scheduleWave);
  window.addEventListener('pageshow', scheduleWave);
- window.addEventListener('hashchange', scheduleWave);
+ window.addEventListener('hashchange', () => {
+  readAnchor();
+  scheduleWave();
+ });
+ document.addEventListener('click', event => {
+  const link = event.target.closest?.('a[href^="#item-"]');
+  if (!event.defaultPrevented && link && link.hash === window.location.hash) {
+   readAnchor();
+   scheduleWave();
+  }
+ });
+ readAnchor();
  updateWave();
 }
