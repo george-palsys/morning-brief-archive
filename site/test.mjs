@@ -265,7 +265,7 @@ test('R2: summary cards have no false scroll hint; wide tables retain it',()=>{
 });
 test('R3/R5: CVE badge survives inline code; TOC labels strip Markdown',()=>{
  const result=markdown('# CVE\n\n### 【與我們的產品線相關】CVE-2026-1234 的 `Java` **修正**\n\n內容',{section:'cve'});
- assert.match(result.html,/<h2[^>]*><code>CVE-2026-1234<\/code> 的 <code>Java<\/code> <strong>修正<\/strong><\/h2><span class="type-tag">與我們的產品線相關<\/span>/);
+ assert.match(result.html,/<h2[^>]*><code class="cve-code">CVE-2026-1234<\/code> 的 <code>Java<\/code> <strong>修正<\/strong><\/h2><span class="type-tag">與我們的產品線相關<\/span>/);
  assert.equal(result.toc[0].title,'CVE-2026-1234 的 Java 修正');
  assert.ok(!markdown('### CVE-2026-1234 其他新聞',{section:'cve'}).html.includes('type-tag'));
 });

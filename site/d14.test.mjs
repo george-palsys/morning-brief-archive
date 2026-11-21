@@ -7,6 +7,19 @@ import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
 import {wrapCveText} from './visual-kit.mjs';
 
+test('PR35: only a single inline CVE gets a nowrap class, without nested spans or unsafe code',()=>{
+ const html=markdown('- `CVE-2026-123007`\n- CVE-2026-123634\n- `CVE-2026-123007, CVE-2026-123634`\n- `<img src=x>`\n\n```\nCVE-2026-123007\n```').html;
+ assert.equal((html.match(/class="cve-code"/g)||[]).length,2);
+ assert.match(html,/<code class="cve-code">CVE-2026-123007<\/code>/);
+ assert.match(html,/<code>CVE-2026-123007, CVE-2026-123634<\/code>/);
+ assert.match(html,/<code>&lt;img src=x&gt;<\/code>/);
+ assert.doesNotMatch(html,/<code[^>]*><span/);
+ assert.match(html,/<pre[^>]+><code>CVE-2026-123007/);
+ const css=fs.readFileSync('site/assets/visuals/visual.css','utf8');
+ assert.match(css,/\.d14 \.prose code\.cve-code\{white-space:nowrap;overflow-wrap:normal;word-break:normal\}/);
+ assert.doesNotMatch(css,/:is\(td,th\) code\.cve-code\{white-space:normal/);
+});
+
 test('PR35: an unterminated quoted attribute tail is preserved without CVE markup',()=>{
  for(const tail of ['<a title="unfinished > CVE-2026-12345</a>',"<a title='unfinished > CVE-2026-12345</a>"]){
   assert.equal(wrapCveText(tail),tail);

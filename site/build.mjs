@@ -55,7 +55,9 @@ export function markdown(source, { section = '', summary = false, display, cards
   };
   // Images from source content never make network requests (including tracking pixels).
   md.renderer.rules.image = (t, i) => esc(t[i].content);
-  md.renderer.rules.text = (t, i) => esc(t[i].content).replace(/\bCVE-\d{4}-\d+\b/g, '<code>$&</code>');
+  const codeMarkup = value => `<code${/^CVE-\d{4}-\d{4,}$/.test(value) ? ' class="cve-code"' : ''}>${esc(value)}</code>`;
+  md.renderer.rules.code_inline = (t, i) => codeMarkup(t[i].content);
+  md.renderer.rules.text = (t, i) => esc(t[i].content).replace(/\bCVE-\d{4}-\d+\b/g, id => codeMarkup(id));
   source = source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
     .split(/\r?\n/).filter(line => !/^\[← (?:今日摘要|26 項產品現況)\]/.test(line)).join('\n');
   source = source.replace(/^> 歷史演練分檔：[^\n]*(?:\n|$)/gm, '');

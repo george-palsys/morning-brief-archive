@@ -177,6 +177,8 @@ td .cve-id{white-space:normal}
 
 /* r4 review: keep CVE heading tokens and their closing punctuation together. */
 .d14 .item-title code{white-space:nowrap;overflow-wrap:normal;word-break:normal}
+.d14 .prose code.cve-code{white-space:nowrap;overflow-wrap:normal;word-break:normal}
+/* Only exact single identifiers are locked, including tables; compound code still wraps. */
 .feature h2 .mb-cve-group{display:inline-block;white-space:nowrap}
 /* Keep the original headline font; reserve enough text width for the CVE group. */
 @media(min-width:1024px) and (max-width:1280px){
