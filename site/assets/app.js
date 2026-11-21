@@ -146,7 +146,8 @@ const groupedDirectory = document.querySelector('.mb-directory');
 if (groupedDirectory && bar) {
   const syncGroups = () => {
     for (const group of groupedDirectory.tBodies) {
-      group.hidden = !group.querySelector('tr[data-status]:not([hidden])');
+      const heading = group.querySelector('tr.grp');
+      if (heading) heading.hidden = !group.querySelector('tr[data-status]:not([hidden])');
     }
   };
   bar.addEventListener('input', syncGroups);

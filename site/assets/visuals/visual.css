@@ -61,7 +61,7 @@
 .mb-directory .mb-dir-meta{display:none}
 .mb-directory .grp th{padding:0 16px;height:44px;background:var(--wash)}
 .mb-directory .grp h2{margin:0;font-size:16px;font-weight:700}
-.mb-directory tbody[hidden]{display:none}
+.mb-directory .grp[hidden]{display:none}
 @media(max-width:640px){
  .mb-home-feature .mb-art{display:none}
  .mb-banner img,.mb-product-banner img{max-height:88px}

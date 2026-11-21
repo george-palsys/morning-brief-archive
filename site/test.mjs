@@ -723,3 +723,34 @@ test('preview homepage links eight story titles to their actual rendered anchors
   'updated', 'unknown', 'nosource', 'unchanged',
  ]);
 });
+
+test('preview product filtering hides and restores the group heading rows', () => {
+ const make = () => ({ hidden: false, listeners: {}, addEventListener(name, fn) { this.listeners[name] = fn; } });
+ const chips = ['all', 'updated'].map(filter => ({ ...make(), dataset: { filter }, setAttribute() {} }));
+ const input = { ...make(), value: '' };
+ const rows = ['updated', 'unchanged'].map(status => ({ ...make(), dataset: { status }, textContent: status }));
+ const headings = [make(), make()];
+ const directory = { tBodies: rows.map((row, i) => ({
+  querySelector(selector) { return selector === 'tr.grp' ? headings[i] : row.hidden ? null : row; },
+ })) };
+ const bar = { ...make(), querySelector: () => input, querySelectorAll: () => chips };
+ const count = make();
+ const empty = make();
+ const elements = { '#filterbar': bar, '#results-count': count, '#empty-state': empty, '.mb-directory': directory };
+ const context = vm.createContext({
+  document: { documentElement: { classList: { add() {} } }, querySelector: selector => elements[selector],
+   querySelectorAll: selector => selector === '.directory tbody tr[data-status]' ? rows : [] },
+  matchMedia: () => ({ matches: false, addEventListener() {} }), window: { addEventListener() {} },
+ });
+ vm.runInContext(fs.readFileSync('site/assets/app.js', 'utf8'), context);
+ const visible = () => headings.map(heading => !heading.hidden);
+ assert.deepEqual(visible(), [true, true]);
+ chips[1].listeners.click(); bar.listeners.click();
+ assert.deepEqual(visible(), [true, false]);
+ input.value = 'no-match'; input.listeners.input(); bar.listeners.input();
+ assert.deepEqual(visible(), [false, false]);
+ assert.equal(empty.hidden, false);
+ input.value = ''; chips[0].listeners.click(); bar.listeners.click();
+ assert.deepEqual(visible(), [true, true]);
+ assert.equal(empty.hidden, true);
+});
