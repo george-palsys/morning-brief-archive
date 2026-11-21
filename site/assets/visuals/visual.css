@@ -39,16 +39,6 @@
 .mb-patch-icon{vertical-align:middle}
 .mb-status-label{font-weight:700;margin:6px 0 0}
 .directory .dir-status-cell .st--updated{color:#1f3fae;background:#e8edfb}
-@media(max-width:640px){
- .directory-wrap .directory,.directory-wrap .directory tbody,.directory-wrap .directory tr{display:block;width:100%}
- .directory-wrap .directory thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
- .directory-wrap .directory :is(th,td){display:block;width:100%;white-space:normal}
- .directory-wrap .directory td::before{display:block;color:var(--muted);font-weight:700}
- .directory-wrap .dir-status-cell::before{content:"狀態"}
- .directory-wrap .dir-version::before{content:"目前最新版本"}
- .directory-wrap .dir-date-cell::before{content:"最後檢查"}
- .directory-wrap .directory tr[hidden]{display:none}
-}
 
 .mb-home-feature .feature__label i{animation:mb-pulse 480ms ease-out 2}
 .mb-home-feature .mb-art img.mb-in-view{animation:mb-art-reveal 400ms ease-out both,mb-breathe 8s ease-in-out 400ms 1}

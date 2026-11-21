@@ -1,5 +1,5 @@
 import { pathToFileURL } from 'node:url';
-import { fullSentences, readVisualAsset } from './visual-kit.mjs';
+import { fullSentences, readSiteAsset } from './visual-kit.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -664,9 +664,31 @@ test('visual asset copying rejects linked directories and non-files', () => {
  fs.mkdirSync(assets);
  fs.writeFileSync(path.join(external, 'icon-ai.svg'), 'external');
  fs.symlinkSync(external, visuals, process.platform === 'win32' ? 'junction' : 'dir');
- assert.throws(() => readVisualAsset(root, 'icon-ai.svg'), /directory must not be a symbolic link/);
+ assert.throws(() => readSiteAsset(root, 'icon-ai.svg', true), /directory must not be a symbolic link/);
  fs.unlinkSync(visuals);
  fs.mkdirSync(visuals);
  fs.mkdirSync(path.join(visuals, 'icon-ai.svg'));
- assert.throws(() => readVisualAsset(root, 'icon-ai.svg'), /must be a regular file/);
+ assert.throws(() => readSiteAsset(root, 'icon-ai.svg', true), /must be a regular file/);
+});
+
+test('asset copying rejects an allowlisted file that is a symbolic link', () => {
+ const dir = newDir('asset-file-link-');
+ const root = pathToFileURL(dir + path.sep);
+ const assets = path.join(dir, 'assets');
+ const target = path.join(dir, 'outside.css');
+ fs.mkdirSync(path.join(assets, 'visuals'), { recursive: true });
+ fs.writeFileSync(target, 'external');
+ fs.symlinkSync(target, path.join(assets, 'site.css'), 'file');
+ fs.symlinkSync(target, path.join(assets, 'visuals', 'visual.css'), 'file');
+ assert.throws(() => readSiteAsset(root, 'site.css'), /must be a regular file/);
+ assert.throws(() => readSiteAsset(root, 'visual.css', true), /must be a regular file/);
+});
+
+test('asset copying rejects a linked assets root in both build modes', () => {
+ const dir = newDir('asset-root-link-');
+ const root = pathToFileURL(dir + path.sep);
+ const target = newDir('external-root-');
+ fs.symlinkSync(target, path.join(dir, 'assets'), process.platform === 'win32' ? 'junction' : 'dir');
+ assert.throws(() => readSiteAsset(root, 'app.js'), /directory must not be a symbolic link/);
+ assert.throws(() => readSiteAsset(root, 'visual.css', true), /directory must not be a symbolic link/);
 });

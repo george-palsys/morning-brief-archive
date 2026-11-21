@@ -1,14 +1,18 @@
 import fs from 'node:fs';
 
-export function readVisualAsset(siteRoot, name) {
-  if (!/^[-a-z]+\.(?:webp|svg|css)$/.test(name)) throw Error('Invalid visual asset');
-  for (const folder of ['assets/', 'assets/visuals/']) {
+export function readSiteAsset(siteRoot, name, visual = false) {
+  const allowed = visual
+    ? /^[-a-z]+\.(?:webp|svg|css)$/.test(name)
+    : ['site.css', 'design-tokens.css', 'app.js'].includes(name);
+  if (!allowed) throw Error('Invalid site asset');
+  const folders = visual ? ['assets', 'assets/visuals'] : ['assets'];
+  for (const folder of folders) {
     if (!fs.lstatSync(new URL(folder, siteRoot)).isDirectory()) {
-      throw Error(`Visual asset directory must not be a symbolic link: ${folder}`);
+      throw Error(`Site asset directory must not be a symbolic link: ${folder}`);
     }
   }
-  const file = new URL(`assets/visuals/${name}`, siteRoot);
-  if (!fs.lstatSync(file).isFile()) throw Error(`Visual asset must be a regular file: ${name}`);
+  const file = new URL(`${folders.at(-1)}/${name}`, siteRoot);
+  if (!fs.lstatSync(file).isFile()) throw Error(`Site asset must be a regular file: ${name}`);
   return fs.readFileSync(file);
 }
 

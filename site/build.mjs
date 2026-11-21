@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { pageContent, productMeta } from './d14.mjs';
-import { readVisualAsset, visualPicture } from './visual-kit.mjs';
+import { readSiteAsset, visualPicture } from './visual-kit.mjs';
 import { shell, directory, homepage } from './round3.mjs';
 import { copy } from './display-v4-copy.mjs';
 import { readDisplay, renderOverview, renderEntry, renderDrill } from './display-v4.mjs';
@@ -411,7 +411,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   files.set('search/index.json', JSON.stringify({ months: months.map(m => `index-${m}.json`), products: productIndex }));
   for (const month of months) files.set(`search/index-${month}.json`, JSON.stringify(index.filter(i => i.date.startsWith(month))));
   for (const asset of ['site.css', 'design-tokens.css', 'app.js']) {
-    const bytes = fs.readFileSync(new URL(`./assets/${asset}`, import.meta.url));
+    const bytes = readSiteAsset(new URL('./', import.meta.url), asset);
     if (asset === 'app.js') {
       const boundary = bytes.indexOf('/* Visual preview motion */');
       files.set(`assets/${asset}`, !visualPreview && boundary >= 0 ? bytes.subarray(0, boundary) : bytes);
@@ -425,7 +425,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       ...['ai','archive','book','cloud','document','layers','network','patch','radar','search','shield','spark'].map(name => `icon-${name}.svg`)];
     for (const name of names) {
       const asset = `assets/visuals/${name}`;
-      files.set(asset, readVisualAsset(new URL('./', import.meta.url), name));
+      files.set(asset, readSiteAsset(new URL('./', import.meta.url), name, true));
     }
   }
   files.set('.nojekyll', '');
