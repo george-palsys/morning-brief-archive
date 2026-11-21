@@ -103,7 +103,8 @@ export function homepage({day, time, rows, catalog, stories, link, badge, fallba
   const ids = focused?.cve_ids || [];
   const count = Number(a?.title.match(/(\d+)\s*個漏洞/u)?.[1]);
   const cveLabel = ids.length === 1 && count > 1 ? `${ids[0]} 等 ${count} 個` : ids.join('、');
-  const emphasis = severity ? escape(a.title).replace(severity,`<em>${escape(severity)}</em>`) : escape(a?.title);
+  const titleEmphasis = severity ? escape(a.title).replace(severity,`<em>${escape(severity)}</em>`) : escape(a?.title);
+  const emphasis = titleEmphasis?.replace(/（(CVE-\d{4}-\d{4,})）/g, '<span class="mb-cve-group">（$1）</span>');
   const feature = a ? `<article class="feature on-dark"><div class="feature__top"><div class="feature__label"><i aria-hidden="true"></i>今天最需要注意的一件事</div><span class="feature__serial">晨報 ${escape(date)}</span></div><div class="feature__main"><div class="feature__badges">${severity ? `<span class="tag tag--mint">${escape(severity)}${score?.source ? ' · '+escape(score.source) : ''}</span>` : ''}${ids.length ? `<span class="tag tag--dark tag--mono">${escape(cveLabel)}</span>` : ''}${poc ? `<span class="tag tag--dark">${escape(poc.value)}</span>` : ''}</div><h2>${emphasis}</h2><p class="feature__lead">${escape(a.summary)}</p></div><dl class="facts">${[[score,'CVSS 3.1','—'],[poc,'PoC','未提供'],[patch,'修補','尚未列出']].map(([fact,label,blank])=>`<div><dt>${escape(fact?.label || label)}</dt><dd>${escape(fact?.value || blank)}${fact?.source ? `<small>${escape(fact.source)}</small>` : !fact && label==='CVSS 3.1' ? '<small>未提供</small>' : ''}</dd></div>`).join('')}</dl><div class="feature__bottom"><small>來源：${date ? escape(date)+' 晨報摘要' : '未提供'}</small>${link(target,'閱讀完整內容','btn btn--light',arrow)}</div></article>` : '';
   const stats = counts(rows);
   const when = checked(rows);
