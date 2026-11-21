@@ -34,3 +34,8 @@ export function fullSentences(value, limit = 160) {
   }
   return excerpt;
 }
+
+// Match text nodes only: never rewrite hrefs, attributes, or raw input data.
+export function wrapCveText(html) {
+  return html.split(/(<[^>]+>)/g).map(part => part.startsWith('<') ? part : part.replace(/CVE-\d{4}-\d{4,}/g, id => `<span class="cve-id">${id}</span>`)).join('');
+}

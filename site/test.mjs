@@ -631,7 +631,8 @@ test('visual preview publishes only allowlisted binary assets and adds preview p
  const input = legacyFixture();
  const standard = run(input);
  const preview = run(input, {visualPreview:true,basePath:'/morning-brief-preview/'});
- assert.doesNotMatch(standard.pages.get('index.html'), /noindex|assets\/visuals/);
+ assert.doesNotMatch(standard.pages.get('index.html'), /noindex/);
+ assert.match(standard.pages.get('index.html'), /assets\/visuals\/visual.css/);
  assert.match(preview.pages.get('index.html'), /<meta name="robots" content="noindex, nofollow">/);
  assert.match(preview.pages.get('404.html'), /href="\/morning-brief-preview\/assets\/site.css"/);
  assert.match(preview.pages.get('products/index.html'), /\.\.\/assets\/visuals\/hero-infrastructure-mobile\.webp/);
@@ -643,11 +644,11 @@ test('visual preview publishes only allowlisted binary assets and adds preview p
  assert.equal(Object.keys(baseline).length, 26);
  assert.deepEqual(logos(directory), baseline);
  assert.doesNotMatch(directory, /icon-document\.svg/);
- assert.equal(fs.existsSync(path.join(standard.output, 'assets/visuals')), false);
+ assert.equal(fs.existsSync(path.join(standard.output, 'assets/visuals')), true);
  const asset = 'assets/visuals/hero-cybersecurity.webp';
  assert.deepEqual(fs.readFileSync(path.join(preview.output, asset)), fs.readFileSync(new URL(asset, import.meta.url)));
  assert.match(fs.readFileSync(path.join(preview.output, 'assets/app.js'), 'utf8'), /Visual preview motion/);
- assert.doesNotMatch(fs.readFileSync(path.join(standard.output, 'assets/app.js'), 'utf8'), /Visual preview motion/);
+ assert.match(fs.readFileSync(path.join(standard.output, 'assets/app.js'), 'utf8'), /Visual preview motion/);
 });
 
 test('preview excerpts keep full sentences without changing source text', () => {
