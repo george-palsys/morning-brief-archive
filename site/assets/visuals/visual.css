@@ -130,3 +130,24 @@
  .overview-stat span.lab{flex-direction:column;justify-content:flex-start;gap:2px;margin-top:4px;font-size:12px;line-height:1.3;text-align:center;overflow-wrap:anywhere}
  .mb-status-meter{margin-block:0 12px}
 }
+
+/* Round 4: preserve signal-first mobile reading order. */
+.cve-id{white-space:nowrap}
+td .cve-id{white-space:normal}
+.mb-jump{display:none}
+@media(max-width:640px){
+ .overview-stat span.lab{word-break:keep-all;overflow-wrap:normal;line-break:strict}
+ .mb-news-card{grid-template-columns:minmax(0,1fr)}
+ .mb-news-card .mb-news-icon{display:none}
+}
+@media(min-width:1024px) and (max-width:1180px){
+ .mb-home-feature .facts{grid-template-columns:repeat(3,auto);justify-content:space-between;column-gap:12px}
+ .mb-home-feature .facts dd{white-space:nowrap}
+ .metric-panel--wide{justify-content:space-between}
+ .metric-panel--wide .metric-link{margin-top:0}
+}
+@media(max-width:1023px){
+ .mb-news .section-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+ .mb-jump{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-size:14px;font-weight:700;white-space:nowrap}
+ .mb-news .section-head>.sub-link{display:none}
+}
