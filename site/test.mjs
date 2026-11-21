@@ -1,3 +1,4 @@
+import { fullSentences } from './visual-kit.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -623,4 +624,26 @@ test('v4 E8: v3 without display retains the legacy text view', () => {
  delete f.meta.display;
  delete f.meta.attention;
  assert.doesNotMatch(f.run()('index'), /v4-overview|v4-score/);
+});
+
+test('visual preview publishes only allowlisted binary assets and adds preview paths', () => {
+ const input = legacyFixture();
+ const standard = run(input);
+ const preview = run(input, {visualPreview:true,basePath:'/morning-brief-preview/'});
+ assert.doesNotMatch(standard.pages.get('index.html'), /noindex|assets\/visuals/);
+ assert.match(preview.pages.get('index.html'), /<meta name="robots" content="noindex, nofollow">/);
+ assert.match(preview.pages.get('404.html'), /href="\/morning-brief-preview\/assets\/site.css"/);
+ assert.match(preview.pages.get('products/index.html'), /\.\.\/assets\/visuals\/hero-infrastructure-mobile\.webp/);
+ assert.equal(fs.existsSync(path.join(standard.output, 'assets/visuals')), false);
+ const asset = 'assets/visuals/hero-cybersecurity.webp';
+ assert.deepEqual(fs.readFileSync(path.join(preview.output, asset)), fs.readFileSync(new URL(asset, import.meta.url)));
+ assert.match(fs.readFileSync(path.join(preview.output, 'assets/app.js'), 'utf8'), /Visual preview motion/);
+ assert.doesNotMatch(fs.readFileSync(path.join(standard.output, 'assets/app.js'), 'utf8'), /Visual preview motion/);
+});
+
+test('preview excerpts keep full sentences without changing source text', () => {
+ assert.equal(fullSentences('第一句。第二句！第三句？', 8), '第一句。第二句！');
+ const long = '甲'.repeat(200) + '。';
+ assert.equal(fullSentences(long + '不截斷。'), long);
+ assert.equal(fullSentences('無句號的原文'), '無句號的原文');
 });

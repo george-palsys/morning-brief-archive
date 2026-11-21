@@ -141,3 +141,21 @@ ui.querySelectorAll('input[type=checkbox],select').forEach(el => el.addEventList
 document.querySelector('#all').addEventListener('click', () => update(true));
 
 }
+/* Visual preview motion */
+if (document.querySelector('.mb-motion-art')) {
+  for (const image of document.querySelectorAll('.mb-art img')) {
+    const hide = () => { image.closest('picture').hidden = true; };
+    image.addEventListener('error', hide, { once: true });
+    if (image.complete && image.naturalWidth === 0) hide();
+  }
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add('mb-in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+    document.querySelectorAll('.mb-motion-art').forEach(art => observer.observe(art));
+  }
+}

@@ -1,3 +1,6 @@
+import { visualPicture, visualIcon, fullSentences } from './visual-kit.mjs';
+import { copy } from './display-v4-copy.mjs';
+
 const menuButton = `<summary class="menu__btn" aria-label="開啟選單"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>`;
 const arrow = '<svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>';
 const textArrow = ' <span aria-hidden="true">→</span>';
@@ -11,7 +14,7 @@ const status = [
   ['updated','有更新'], ['unchanged','無更新'], ['unknown','無法確認'], ['nosource','無公開來源'],
 ];
 const dot = key => `<span class="dot dot--${key}" aria-hidden="true"></span>`;
-export function shell({file, area, day, today, time, url, source, content}) {
+export function shell({file, area, day, today, time, url, source, content, visuals = false}) {
   const cvePage = today && !today.legacy ? `${today.base}/cve.html` : today?.href || 'daily/index.html';
   const home = 'index.html';
   const nav = [[home,'今日晨報'],[cvePage,'重大 CVE'],['products/index.html','產品追蹤'],
@@ -20,7 +23,7 @@ export function shell({file, area, day, today, time, url, source, content}) {
   const current = file === home ? 0 : file === cvePage ? 1 : area === 'products' ? 2 :
     area === 'daily' ? 5 : area === 'search' ? 6 : area === 'about' ? 7 : -1;
   const links = (max, withIcons = false) => nav.slice(0,max).map(([target,label],i) =>
-    `<a href="${escape(url(file,target))}"${i === current ? ` aria-current="${file === target ? 'page' : 'true'}"` : ''}>${withIcons ? icons[i] : ''}${label}</a>`).join('');
+    `<a href="${escape(url(file,target))}"${i === current ? ` aria-current="${file === target ? 'page' : 'true'}"` : ''}>${withIcons ? visuals && (i === 5 || i === 6) ? visualIcon('assets/visuals/', i === 5 ? 'archive' : 'search', 24) : icons[i] : ''}${label}</a>`).join('');
   const date = today?.date;
   const short = date ? date.slice(5).split('-').map(Number).join('/') : '';
   const edition = date ? `<div class="side-date"><span class="micro">TODAY'S EDITION</span><strong>${escape(short)} ${escape(today.meta.weekday?.replace('星期','週') || '')}</strong>${time ? `<span>資料截點 ${escape(time)}</span><span>台北時間</span>` : ''}</div>` : '';
@@ -37,7 +40,7 @@ function checked(rows) {
   const dates = rows.map(row=>row.checked).filter(value=>/^\d{4}-\d{2}-\d{2}$/.test(value));
   return dates.sort().at(-1);
 }
-export function directory({rows, catalog, link, badge, warnings, empty}) {
+export function directory({rows, catalog, link, badge, warnings, empty, visuals = false}) {
   const stats = counts(rows);
   const when = checked(rows);
   const controls = [['all','全部',catalog.length],...stats].map(([key,label,total]) =>
@@ -51,13 +54,13 @@ export function directory({rows, catalog, link, badge, warnings, empty}) {
     const initials = (words.length === 1 ? Array.from(words[0]).slice(0,2).join('') : words.slice(0,2).map(word=>word[0]).join('')).toUpperCase();
     const version = row?.version?.trim();
     const missing = '—<span class="sr-only">（來源未提供）</span>';
-    return `<tr id="${escape(slug)}" data-status="${key}"><th scope="row"><div class="dir-product"><div class="dir-logo" aria-hidden="true">${escape(initials)}</div><div>${link(`products/${slug}.html`,name,'dir-name')}<small>${escape(product.vendor)}</small></div></div></th><td class="dir-status-cell">${badge(row?.state || '無法確認')}</td><td class="dir-version">${version && version !== '—' ? escape(version) : row && key !== 'nosource' ? '見產品頁' : missing}</td><td class="dir-date dir-date-cell">${/^\d{4}-\d{2}-\d{2}$/.test(row?.checked) ? escape(row.checked) : '—<span class="sr-only">（未提供）</span>'}</td></tr>`;
+    return `<tr id="${escape(slug)}" data-status="${key}"><th scope="row"><div class="dir-product"><div class="dir-logo" aria-hidden="true">${visuals ? visualIcon('../assets/visuals/', ({cloud:'cloud', middleware:'layers', network:'network', security:'shield'})[product.category] || 'document', 40) : escape(initials)}</div><div>${link(`products/${slug}.html`,name,'dir-name')}<small>${escape(product.vendor)}</small></div></div></th><td class="dir-status-cell">${badge(row?.state || '無法確認')}</td><td class="dir-version">${version && version !== '—' ? escape(version) : row && key !== 'nosource' ? '見產品頁' : missing}</td><td class="dir-date dir-date-cell">${/^\d{4}-\d{2}-\d{2}$/.test(row?.checked) ? escape(row.checked) : '—<span class="sr-only">（未提供）</span>'}</td></tr>`;
   }).join('');
-  return `<nav class="crumbs" aria-label="所在位置">${link('index.html','首頁')}<span aria-hidden="true">/</span><span aria-current="page">產品追蹤</span></nav><div class="kicker">PRODUCT WATCH / 產品監測</div><h1 class="section-title">${catalog.length} 項產品追蹤</h1>${warnings}${rows.length ? `<p class="subhead">${when ? escape(when)+' 檢查' : '檢查日期未提供'}：${stats.map(([,label,total])=>label+' '+total).join('、')}。清單與 products/README.md 的 ${catalog.length} 列一一對應，點產品名稱開啟原始產品頁。</p><div class="overview-stats"><div class="overview-stat is-total"><strong>${catalog.length}</strong><span class="lab">項追蹤產品</span></div>${stats.map(([key,label,total])=>`<div class="overview-stat"><strong>${total}</strong><span class="lab">${dot(key)}${label}</span></div>`).join('')}</div>` : empty}
+  return `<nav class="crumbs" aria-label="所在位置">${link('index.html','首頁')}<span aria-hidden="true">/</span><span aria-current="page">產品追蹤</span></nav><div class="kicker">PRODUCT WATCH / 產品監測</div><h1 class="section-title">${catalog.length} 項產品追蹤</h1>${visuals ? visualPicture('../assets/visuals/', 'infrastructure') : ''}${warnings}${rows.length ? `<p class="subhead">${when ? escape(when)+' 檢查' : '檢查日期未提供'}：${stats.map(([,label,total])=>label+' '+total).join('、')}。清單與 products/README.md 的 ${catalog.length} 列一一對應，點產品名稱開啟原始產品頁。</p><div class="overview-stats"><div class="overview-stat is-total"><strong>${catalog.length}</strong><span class="lab">項追蹤產品</span></div>${stats.map(([key,label,total])=>`<div class="overview-stat"><strong>${total}</strong><span class="lab">${dot(key)}${label}</span></div>`).join('')}</div>${visuals ? `<ul class="meter mb-status-meter mb-motion-art" aria-hidden="true">${stats.filter(([, ,n])=>n).map(([key,,n])=>`<li class="m-${key} m-count-${Math.min(n,26)}"></li>`).join('')}</ul>` : ''}` : empty}
 <div class="filterbar js-only" id="filterbar" role="group" aria-label="產品篩選"><div class="filters">${controls}</div><label class="field">${searchIcon}<span class="sr-only">搜尋產品或原廠</span><input id="product-search" type="search" placeholder="搜尋產品或原廠…" autocomplete="off"></label></div><p class="results" id="results-count" aria-live="polite">目前顯示 ${catalog.length} / ${catalog.length} 項</p><p class="empty-state" id="empty-state" hidden>沒有符合條件的產品。請清除搜尋字或改選「全部」。</p>
 <div class="directory-wrap"><table class="directory"><caption class="sr-only">${catalog.length} 項追蹤產品的當天狀態、目前最新版本與最後檢查日</caption><thead><tr><th scope="col">產品／原廠</th><th scope="col" class="col-st">狀態</th><th scope="col" class="col-ver">目前最新版本</th><th scope="col" class="col-date">最後檢查</th></tr></thead><tbody>${products}</tbody></table></div>`;
 }
-export function homepage({day, time, rows, catalog, stories, link, badge, fallback}) {
+export function homepage({day, time, rows, catalog, stories, link, badge, fallback, visuals = false}) {
   const date = day?.date;
   const stamp = date && new Date(date+'T00:00:00Z');
   const en = stamp ? new Intl.DateTimeFormat('en', { weekday:'long', month:'long', timeZone:'UTC' }).formatToParts(stamp) : [];
@@ -72,8 +75,8 @@ export function homepage({day, time, rows, catalog, stories, link, badge, fallba
   const target = cvIndex >= 0 ? `${cveFile}#item-${cvIndex+1}` : cveFile;
   const details = a?.facts || [];
   const score = details.find(item=>item.label.startsWith('CVSS'));
-  const poc = details.find(item=>item.label==='PoC');
-  const patch = details.find(item=>item.label==='修補');
+  const poc = visuals && focused && focused.exploited !== 'unknown' ? {value:copy.exploited[focused.exploited]} : details.find(item=>item.label==='PoC');
+  const patch = visuals && focused && focused.patch !== 'unknown' ? {value:copy.patch[focused.patch]} : details.find(item=>item.label==='修補');
   const severity = a?.title.match(/\b(?:Critical|High|Medium|Low|Important)\b/iu)?.[0];
   const ids = focused?.cve_ids || [];
   const count = Number(a?.title.match(/(\d+)\s*個漏洞/u)?.[1]);
@@ -92,7 +95,10 @@ export function homepage({day, time, rows, catalog, stories, link, badge, fallba
   const radar = ['knowledge','ai','taiwan-it','knowledge'].flatMap((kind,i)=>today.filter(item=>item.category===kind).slice(i===3?1:0,i===3?2:1));
   const storyLink = item => `<a href="${escape(original(item.source))}">${escape(item.title)}</a>`;
   const spotlight = rows.filter(row=>focused?.cve_ids.some(id=>today.some(item=>item.cve_ids?.includes(id)&&item.products?.includes(row.name)))).slice(0,4);
-  const news = signals.length || radar.length ? `<section id="news" aria-labelledby="news-h"><div class="section-head"><div><span class="section-kicker">THE SIGNAL / 當日重點</span><h2 id="news-h">不該錯過的消息</h2></div>${link(target,'閱讀 '+(focused?.short || '完整')+' 內容','sub-link',textArrow)}</div><div class="headline-area"><div class="news-list">${signals.map((item,i)=>`<article class="news-row"><span class="news-index" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><div><div class="news-meta"><span class="tx">${categories[item.category]}</span><span aria-hidden="true">·</span><span>${escape(item.cve_ids?.[0] || item.products?.[0])}</span>${item.category==='cve' && item.cve_ids?.some(id=>confirmed.has(id)) ? '<span class="tag tag--confirmed">已確認遭實際利用</span>' : ''}</div><h3 class="news-title">${storyLink(item)}</h3><p class="news-excerpt">${escape(String(item.impact || item.summary || '').slice(0,160))}</p></div></article>`).join('')}</div>${radar.length ? `<aside class="radars" aria-label="技術雷達"><div class="radars-header"><strong>TECH RADAR / 技術雷達</strong><span>${radar.length} 則</span></div>${radar.map(item=>`<div class="radar-item"><div class="topic">${categories[item.category]}</div><h3>${storyLink(item)}</h3><p>${escape(item.source_published || item.date)}</p></div>`).join('')}<a class="radar-footer" href="${original(day.base+'/README.md')}">完整晨報摘要（GitHub） ↗</a></aside>` : ''}</div></section>` : '<span id="news"></span>';
+  const excerpt = item => fullSentences(item.impact || item.summary || '');
+  const card = item => `<li class="mb-news-card"><span class="mb-news-icon">${visualIcon('assets/visuals/', ({cve:'shield', product:'layers', ai:'ai', knowledge:'book', 'taiwan-it':'radar'})[item.category] || 'document', 36, true)}</span><div><p class="topic">${escape(categories[item.category])}${item.cve_ids?.[0] || item.products?.[0] ? ' · '+escape(item.cve_ids?.[0] || item.products?.[0]) : ''}${item.category==='cve' && item.cve_ids?.some(id=>confirmed.has(id)) ? ' · 已確認遭實際利用' : ''}</p><h3>${storyLink(item)}</h3><p class="mb-excerpt">${escape(excerpt(item))}</p><p class="mb-news-date">${escape(item.source_published || item.date)}</p></div></li>`;
+  const visualNews = () => `<section id="news" class="mb-news" aria-labelledby="news-h"><div class="section-head"><div><span class="section-kicker">THE SIGNAL / 當日重點</span><h2 id="news-h">不該錯過的消息</h2></div>${link(target,'閱讀 '+(focused?.short || '完整')+' 內容','sub-link',textArrow)}</div><div class="headline-area"><ul class="mb-news-list">${signals.map(card).join('')}</ul>${radar.length ? `<aside class="radars" aria-label="技術雷達"><div class="radars-header">${visualIcon('assets/visuals/', 'radar', 28)}<strong>TECH RADAR / 技術雷達</strong><span>${radar.length} 則</span></div><ul class="mb-news-list">${radar.map(card).join('')}</ul><a class="radar-footer" href="${original(day.base+'/README.md')}">完整晨報摘要（GitHub） ↗</a></aside>` : ''}</div></section>`;
+  const news = signals.length || radar.length ? visuals ? visualNews() : `<section id="news" aria-labelledby="news-h"><div class="section-head"><div><span class="section-kicker">THE SIGNAL / 當日重點</span><h2 id="news-h">不該錯過的消息</h2></div>${link(target,'閱讀 '+(focused?.short || '完整')+' 內容','sub-link',textArrow)}</div><div class="headline-area"><div class="news-list">${signals.map((item,i)=>`<article class="news-row"><span class="news-index" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><div><div class="news-meta"><span class="tx">${categories[item.category]}</span><span aria-hidden="true">·</span><span>${escape(item.cve_ids?.[0] || item.products?.[0])}</span>${item.category==='cve' && item.cve_ids?.some(id=>confirmed.has(id)) ? '<span class="tag tag--confirmed">已確認遭實際利用</span>' : ''}</div><h3 class="news-title">${storyLink(item)}</h3><p class="news-excerpt">${escape(String(item.impact || item.summary || '').slice(0,160))}</p></div></article>`).join('')}</div>${radar.length ? `<aside class="radars" aria-label="技術雷達"><div class="radars-header"><strong>TECH RADAR / 技術雷達</strong><span>${radar.length} 則</span></div>${radar.map(item=>`<div class="radar-item"><div class="topic">${categories[item.category]}</div><h3>${storyLink(item)}</h3><p>${escape(item.source_published || item.date)}</p></div>`).join('')}<a class="radar-footer" href="${original(day.base+'/README.md')}">完整晨報摘要（GitHub） ↗</a></aside>` : ''}</div></section>` : '<span id="news"></span>';
   const recent = spotlight.length ? `<section id="recent" class="product-band" aria-labelledby="recent-h"><div class="band-head"><div><h2 id="recent-h">重點產品動態</h2><p>從 ${catalog.length} 項追蹤產品中，與今天最需要注意的一件事直接相關的 ${spotlight.length} 項。</p></div>${link('products/index.html','完整產品清單','sub-link',textArrow)}</div><div class="product-cards">${spotlight.map(row=>`<a class="product-card" href="products/index.html#${escape(row.slug)}"><div class="top"><span>${escape(row.vendor)}</span>${badge(row.state)}</div><strong>${escape(row.name)}</strong><small>${escape(row.version)}</small></a>`).join('')}</div></section>` : '<span id="recent"></span>';
-  return intro + (feature || watch ? `<section class="hero-grid" aria-label="今日焦點">${feature || fallback}${watch}</section>` : fallback) + news + recent;
+  return intro + (feature || watch ? `<section class="hero-grid" aria-label="今日焦點">${visuals && feature ? `<div class="mb-home-feature">${feature}${visualPicture('assets/visuals/', 'cybersecurity')}</div>` : feature || fallback}${watch}</section>` : fallback) + news + recent;
 }

@@ -108,10 +108,10 @@ const statusSymbols = {
   exploited: { confirmed: '●', poc: '▲', none_seen: '○', unknown: '？' },
   patch: { released: '✓', hotfix: '▲', pending: '▲', none: '●', unknown: '？' },
 };
-function status(entry, field, showDetail = true) {
+function status(entry, field, showDetail = true, decoration = '') {
   const value = entry[field];
   const detail = showDetail && entry[`${field}_detail`];
-  return `<div><span class="tag ${value === 'released' ? 'tag--mint' : `tag--${value}`}"><span aria-hidden="true">${statusSymbols[field][value]}</span> ${esc(copy[field][value])}</span>${detail ? ` <span>${esc(detail)}</span>` : ''}</div>`;
+  return `<div><span class="tag ${value === 'released' ? 'tag--mint' : `tag--${value}`}">${decoration}<span aria-hidden="true">${statusSymbols[field][value]}</span> ${esc(copy[field][value])}</span>${detail ? ` <span>${esc(detail)}</span>` : ''}</div>`;
 }
 
 const facts = values => `<dl class="v4-facts">${values.map(value =>
@@ -122,14 +122,15 @@ export function renderDrill(day, time) {
   return day.meta.drill ? `<p class="v4-drill">${esc(copy.drill(day.date, time))}</p>` : '';
 }
 
-export function renderEntry(heading, body, entry, section, impact, sources) {
+export function renderEntry(heading, body, entry, section, impact, sources, visualStatus = false) {
   if (!entry) throw Error(`display.${section} 項目與輸出標題不一致`);
   const cve = section === 'cve';
   const kev = entry.kev?.length ? `<ul>${entry.kev.map(row =>
     `<li>${esc(copy.kev(row))}</li>`).join('')}</ul>` : '';
   const details = `${body}${entry.figures?.length ? facts(entry.figures) : ''}${entry.caveat ? `<blockquote>${esc(entry.caveat)}</blockquote>` : ''}${impact ? `<ul class="v4-impact">${impact}</ul>` : ''}${sources ? `<ul class="v4-sources">${sources}</ul>` : ''}`;
+  const patchIcon = visualStatus ? '<img class="mb-motion-art mb-patch-icon" src="../../assets/visuals/icon-patch.svg" alt="" width="20" height="20" loading="lazy"> ' : '';
   const content = cve
-    ? `${heading}<aside class="design-cve-rail">${badges(entry, section)}${scores(entry)}${status(entry, 'exploited')}${status(entry, 'patch')}${kev}</aside><div class="design-cve-content">${details}</div>`
+    ? `${heading}<aside class="design-cve-rail">${badges(entry, section)}${scores(entry)}${visualStatus ? '<p class="mb-status-label">PoC／利用現況</p>' : ''}${status(entry, 'exploited')}${visualStatus ? '<p class="mb-status-label">修補</p>' : ''}${status(entry, 'patch', true, patchIcon)}${kev}</aside><div class="design-cve-content">${details}</div>`
     : `${heading}<div>${badges(entry, section)}</div>${details}`;
   return `<article class="news-card v4-entry">${content}</article>`;
 }

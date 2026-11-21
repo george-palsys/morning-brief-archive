@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { pageContent, productMeta } from './d14.mjs';
+import { visualPicture } from './visual-kit.mjs';
 import { shell, directory, homepage } from './round3.mjs';
 import { copy } from './display-v4-copy.mjs';
 import { readDisplay, renderOverview, renderEntry, renderDrill } from './display-v4.mjs';
@@ -27,7 +28,7 @@ export function url(s) {
   if (/^https?:\/\//i.test(s)) return s;
   return s.replace(/(^|\/)README\.md(?=$|[?#])/g, '$1index.html').replace(/\.md(?=$|[?#])/g, '.html');
 }
-export function markdown(source, { section = '', summary = false, display, cards = false } = {}) {
+export function markdown(source, { section = '', summary = false, display, cards = false, visualStatus = false } = {}) {
   const md = new MarkdownIt({ html: false, linkify: true, typographer: false });
   for (const rule of ['fence', 'code_block']) {
     const original = md.renderer.rules[rule];
@@ -183,7 +184,7 @@ export function markdown(source, { section = '', summary = false, display, cards
         }
       }
       return renderEntry(render(tokens.slice(start, start + 3)), main, display[entryIndex++], section,
-        impact.length ? render(impact) : '', sources.length ? render(sources) : '');
+        impact.length ? render(impact) : '', sources.length ? render(sources) : '', visualStatus);
     }).join('');
     if (entryIndex !== display.length) throw Error(`display.${section} 項目數與輸出條目數不一致`);
     return { html, toc };
@@ -219,7 +220,7 @@ function front(source) {
   return m ? parse(m[1]) : {};
 }
 function relative(from, to) { return path.posix.relative(path.posix.dirname(from), to) || path.posix.basename(to); }
-export function build({ input = '.', output = '_site', allowRehearsal = false, basePath = '/morning-brief-archive/' } = {}) {
+export function build({ input = '.', output = '_site', allowRehearsal = false, basePath = '/morning-brief-archive/', visualPreview = false } = {}) {
   if (!/^\/(?:[A-Za-z0-9_-]+\/)*$/.test(basePath)) throw Error('base-path 必須是 / 或以 / 開頭、結尾的站台路徑（只允許英數字、底線、連字號）');
   input = path.resolve(input); output = path.resolve(output);
   if (input === output || input.startsWith(output + path.sep)) throw Error('輸出不得覆寫來源資料夾');
@@ -276,11 +277,13 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     return `<a href="${esc(sitePath(from, to))}"${current ? ' aria-current="page"' : ''}${klass ? ` class="${klass}"` : ''}>${esc(label)}</a>`;
   };
   const crumbs = (file, area, title) => `<nav aria-label="目前位置"><ol class="breadcrumbs"><li>${link(file, 'index.html', '首頁')}</li><li>${link(file, `${area}/index.html`, area === 'daily' ? '每日' : '產品')}</li><li aria-current="page">${esc(title)}</li></ol></nav>`;
+  const visualCve = file => visualPreview && file === 'daily/2026-11-21/cve.html';
+  const visualPage = file => visualPreview && (file === 'index.html' || file === 'products/index.html' || visualCve(file));
   function page(file, title, body, area = '', source = '') {
     const content = (allowRehearsal ? '<p role="note" class="notice">演練資料，非正式晨報</p>' : '') +
       (file === 'index.html' || file === 'products/index.html' ? body : pageContent(file, body, (to, label) => link(file, to, label)));
-    const chrome = shell({file, area, today:latest, time:latest ? collectionTime(latest) : '', url:sitePath, source, content});
-    pages.set(file, externalLinks(`<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/design-tokens.css'))}"><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}"><script src="${esc(sitePath(file, 'assets/app.js'))}" defer></script></head>` + `<body>${chrome}</body></html>\n`));
+    const chrome = shell({file, area, today:latest, time:latest ? collectionTime(latest) : '', url:sitePath, source, content, visuals:visualPage(file) && file === 'index.html'});
+    pages.set(file, externalLinks(`<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light">${visualPreview ? '<meta name="robots" content="noindex, nofollow">' : ''}<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/design-tokens.css'))}"><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}">${visualPage(file) ? `<link rel="stylesheet" href="${esc(sitePath(file, 'assets/visuals/visual.css'))}">` : ''}<script src="${esc(sitePath(file, 'assets/app.js'))}" defer></script></head>` + `<body>${chrome}</body></html>\n`));
   }
   function tocBody(rendered) {
     if (!rendered.toc.length) return `<div class="prose">${rendered.html}</div>`;
@@ -309,7 +312,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       const title = `${d.date} ${label}`;
       const tabs = d.legacy ? '<p role="note" class="notice">這一天是舊版單檔格式：只有 CVE、台灣 IT、AI 三段，沒有產品動態與新知識。</p>' : `<div class="tabs-scroll" role="region" aria-label="段落導覽" tabindex="-1"><nav class="section-tabs" aria-label="本日段落">${sections.map(([key, name]) => link(file, `${d.base}/${key}.html`, name, part === key)).join('')}${link(file, 'products/index.html', '26 項產品現況')}</nav></div>`;
       const rendered = markdown(read(source), { section: !d.legacy && part !== 'index' ? part : '',
-        summary: !d.legacy && part === 'index', display: d.display?.groups[part]?.entries,
+        summary: !d.legacy && part === 'index', visualStatus: visualCve(file), display: d.display?.groups[part]?.entries,
         cards: d.legacy || (!d.display && part === 'index') });
       if (d.display && part === 'index') {
         page(file, `${d.meta.date} 摘要`, renderOverview(d, rows, file, link, collectionTime(d), days.find(day => !day.legacy && Date.parse(d.date) - Date.parse(day.date) === 86400000), days.find(day => !day.legacy && Date.parse(day.date) - Date.parse(d.date) === 86400000)), 'daily', source);
@@ -321,7 +324,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
         const previous = days.find(day => day.date === yesterday && !day.legacy);
         const sectionHeading = `<nav class="crumbs" aria-label="所在位置">${link(file, 'index.html', '首頁')}<span aria-hidden="true">/</span><span aria-current="page">${esc(group.name)}</span></nav><div class="kicker">${esc(group.name)} · ${esc(d.date)}</div><h1 class="section-title">${esc(group.name)}</h1><p class="subhead">${esc(d.date)} 晨報，共 ${esc(group.countText)}。</p>${part === 'ai' && d.display.aiSummary ? `<p class="subhead">${esc(d.display.aiSummary)}</p>` : ''}`;
         page(file, `${group.name}－${d.date} 晨報`,
-          `<div class="v4-page" data-section="${part}">${renderDrill(d, collectionTime(d))}${sectionHeading}${tabs}${group.entries.length ? tocBody(rendered) : '<p class="empty-state">今天沒有</p>'}<nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, `${previous.base}/${part}.html`, `← ${previous.date}`) : ''}${link(file, d.href, copy.backToOverview)}</nav></div>`, 'daily', source);
+          `<div class="v4-page" data-section="${part}">${renderDrill(d, collectionTime(d))}${visualCve(file) ? `<figure class="mb-banner">${visualPicture('../../assets/visuals/', 'cybersecurity')}<figcaption>概念插畫，非事件現場</figcaption></figure>` : ''}${sectionHeading}${tabs}${group.entries.length ? tocBody(rendered) : '<p class="empty-state">今天沒有</p>'}<nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, `${previous.base}/${part}.html`, `← ${previous.date}`) : ''}${link(file, d.href, copy.backToOverview)}</nav></div>`, 'daily', source);
         continue;
       }
       page(file, title, `${crumbs(file, 'daily', d.date)}<h1>${d.legacy && d.meta.title ? esc(d.meta.title) : `晨報 ${esc(d.date)}（${esc(d.meta.weekday || '')}）｜${label}`}</h1>${archiveNotice(d, file)}${d.publishedRehearsal ? '' : alternateEdition(d, file)}${tabs}${tocBody(rendered)}${timeline(d, part, file)}${!d.legacy && part !== 'index' ? link(file, d.href, copy.backToOverview) : ''}`, 'daily', source);
@@ -343,7 +346,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   const boundLink = file => (target,label,klass,decoration = '') => `<a${klass ? ` class="${klass}"` : ''} href="${esc(sitePath(file,target))}">${esc(label)}${decoration}</a>`;
   page(directoryFile, '26 項產品追蹤', directory({
     rows, catalog:catalog.map((product,i)=>({ ...product, slug:slugs[i] })), link:boundLink(directoryFile),
-    badge, warnings:warningHtml(), empty,
+    badge, warnings:warningHtml(), empty, visuals:visualPreview,
   }), 'products', exists('products/README.md') ? 'products/README.md' : 'products.yaml');
   const dayList = (file, list) => `<ul class="day-list">${list.map(d => `<li>${link(file, d.href, `${d.date} ${d.meta.weekday || ''}${d.publishedRehearsal ? `｜${collectionTime(d)} 演練分檔` : ''}`)} ${d.legacy ? '<span class="type-tag">舊版</span>' : `<span>${d.publishedRehearsal ? '原演練記錄：' : ''}有更新 ${d.meta.products_updated.length} 項產品</span>`}${alternateEdition(d, file)}${d.legacy ? '' : `<span class="day-sections"><span class="type-tag">${sections.length} 分頁</span>${sections.slice(1).map(([part,label]) => link(file,`${d.base}/${part}.html`,label)).join('')}</span>`}</li>`).join('')}</ul>`;
   page('daily/index.html', '每日清單', `<h1>每日清單</h1>${dayList('daily/index.html', calendarDays)}`, 'daily');
@@ -398,7 +401,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       products:item.products || [], cve_ids:item.cve_ids || [], summary:String(item.summary || '').slice(0, 160), file });
   }
   page(homeFile, '今日晨報', archiveNotice(latest, homeFile, mergedSnapshotNotice ? `<p>${missingSnapshot}</p>` : '') + warningHtml() +
-    homepage({day:latest, time:latest ? collectionTime(latest) : '', rows, catalog, stories:linkedStories, link:boundLink(homeFile), badge, fallback}));
+    homepage({day:latest, time:latest ? collectionTime(latest) : '', rows, catalog, stories:linkedStories, link:boundLink(homeFile), badge, fallback, visuals:visualPreview}));
   page('about.html', '關於與產生規則', `<h1>關於晨報歸檔</h1><p>內容為彙整，以原廠頁面為準。</p><p><a href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer">晨報產生規則 SPEC.md</a></p><div class="prose">${markdown(read('README.md')).html.replace(/href="(SPEC|products)\.html"/g, (_, name) => name === 'SPEC' ? 'href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer"' : 'href="products/index.html"')}</div>`, 'about', 'README.md');
   page('404.html', '找不到頁面', `<h1>找不到頁面</h1><p>這個網址可能已變更，或這一天還沒有晨報。可以從下面三個入口繼續。</p><p class="actions"><a class="btn btn--primary" href="${esc(sitePath('404.html', 'index.html'))}">回到首頁</a><a class="btn" href="${esc(sitePath('404.html', 'daily/index.html'))}">每日清單</a><a class="btn" href="${esc(sitePath('404.html', 'search/index.html'))}">搜尋晨報</a></p>`);
   page('search/index.html', '搜尋晨報', `<h1>搜尋晨報</h1><noscript><p class="notice">搜尋需要 JavaScript，你也可以直接用瀏覽器的頁內搜尋或 <a href="https://github.com/george-palsys/morning-brief-archive/search" rel="noopener noreferrer">GitHub 倉庫搜尋</a>。</p></noscript><div id="search-ui" hidden><div class="search-filterbar filterbar card"><div class="search-query"><label for="query">搜尋晨報</label><input id="query" type="search" autofocus autocomplete="off" enterkeyhint="search" class="field"></div><fieldset><legend>類別</legend>${[['cve', 'CVE'], ['taiwan-it', '台灣 IT'], ['ai', 'AI'], ['product', '產品'], ['knowledge', '新知識']].map(([k, v]) => `<label class="chip"><input type="checkbox" name="category" value="${k}" checked>${v}</label>`).join('')}</fieldset><div class="search-range"><label for="range">時間範圍</label><select id="range" class="field"><option value="all">全部</option><option value="30">近 30 天</option></select></div><button id="all" class="btn" type="button">搜尋全部（較慢）</button></div><p id="search-empty" class="empty-state" hidden>找不到符合的內容</p><p id="search-status" aria-live="polite">輸入關鍵字搜尋，預設載入最近 3 個月。</p><ol id="results" hidden></ol></div>`, 'search');
@@ -407,7 +410,25 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   const files = new Map(pages);
   files.set('search/index.json', JSON.stringify({ months: months.map(m => `index-${m}.json`), products: productIndex }));
   for (const month of months) files.set(`search/index-${month}.json`, JSON.stringify(index.filter(i => i.date.startsWith(month))));
-  for (const asset of ['site.css', 'design-tokens.css', 'app.js']) files.set(`assets/${asset}`, fs.readFileSync(new URL(`./assets/${asset}`, import.meta.url), 'utf8'));
+  for (const asset of ['site.css', 'design-tokens.css', 'app.js']) {
+    const bytes = fs.readFileSync(new URL(`./assets/${asset}`, import.meta.url));
+    if (asset === 'app.js') {
+      const boundary = bytes.indexOf('/* Visual preview motion */');
+      files.set(`assets/${asset}`, !visualPreview && boundary >= 0 ? bytes.subarray(0, boundary) : bytes);
+    } else {
+      files.set(`assets/${asset}`, bytes);
+    }
+  }
+  if (visualPreview) {
+    const names = ['visual.css', 'blank.svg', 'hero-cybersecurity.webp', 'hero-cybersecurity-mobile.webp',
+      'hero-infrastructure.webp', 'hero-infrastructure-mobile.webp', 'hero-ai.webp', 'hero-ai-mobile.webp',
+      ...['ai','archive','book','cloud','document','layers','network','patch','radar','search','shield','spark'].map(name => `icon-${name}.svg`)];
+    for (const name of names) {
+      if (!/^[-a-z]+\.(?:webp|svg|css)$/.test(name)) throw Error('Invalid visual asset');
+      const asset = `assets/visuals/${name}`;
+      files.set(asset, fs.readFileSync(new URL(`./${asset}`, import.meta.url)));
+    }
+  }
   files.set('.nojekyll', '');
   files.set('build-report.json', JSON.stringify({ mode: allowRehearsal ? 'rehearsal' : 'production', basePath, days: days.map(d => ({ date: d.date, legacy: d.legacy })), productPages: slugs.map(s => `products/${s}.html`), statusCounts: Object.fromEntries(Object.keys(states).map(s => [s, rows.filter(r => r.state === s).length])), warnings }, null, 2));
   // Never recursively delete an arbitrary caller-supplied output directory.
@@ -419,5 +440,5 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2); const value = key => args.includes(key) ? args[args.indexOf(key) + 1] : undefined;
-  try { build({ input: value('--input'), output: value('--output'), basePath: value('--base-path'), allowRehearsal: args.includes('--allow-rehearsal') }); } catch (error) { console.error(`BUILD FAILED: ${error.message}`); process.exitCode = 1; }
+  try { build({ input: value('--input'), output: value('--output'), basePath: value('--base-path') ?? process.env.SITE_BASE_PATH, visualPreview: args.includes('--visual-preview'), allowRehearsal: args.includes('--allow-rehearsal') }); } catch (error) { console.error(`BUILD FAILED: ${error.message}`); process.exitCode = 1; }
 }
