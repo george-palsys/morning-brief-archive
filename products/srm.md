@@ -10,12 +10,16 @@
 
 | 來源 | 類別 | 工具 | 最新一筆 | 日期 | 檢查結果 |
 |---|---|---|---|---|---|
-| [Software Risk Manager Release Notes（官方文件入口）](https://docs.blackduck.com/) | 新版本 | — | 無（文件集內找不到 release notes 章節） | 頁面沒有日期 | 頁面沒有可比對的清單 |
+| [Software Risk Manager 文件入口](https://docs.blackduck.com/p/softwareriskmanagement) | 新版本 | — | 無（入口頁打得開，找不到 release notes 頁） | 頁面沒有日期 | 頁面沒有可比對的清單 |
 | 未查到公開的安全公告頁 | 安全公告 | — | 無 | 頁面沒有日期 | 頁面沒有可比對的清單 |
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-21
+
+- 無法確認：文件入口頁 https://docs.blackduck.com/p/softwareriskmanagement 打得開，但找不到 release notes 頁（試的網址被導回首頁），也沒有找到公開的安全公告頁，無法確認最新版本與是否有更新。
 
 ### 2026-11-20
 

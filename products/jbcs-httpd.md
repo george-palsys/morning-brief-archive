@@ -4,8 +4,8 @@
 
 - 全名：Red Hat JBoss Core Services Apache HTTP Server
 - 原廠：Red Hat
-- 最後檢查：2026-11-20
-- 當天狀態：有更新
+- 最後檢查：2026-11-21
+- 當天狀態：無更新
 
 ## 各來源目前看到的最新一筆
 

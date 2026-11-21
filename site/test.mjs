@@ -366,6 +366,15 @@ test('maintenance presentation retains source details without changing Markdown'
  assert.equal(source,'# 清單維護\n\n本次未蒐集。\n\n### 來源\n\n本次未蒐集。');
 });
 
+test('search controls and source badges can shrink without clipping', () => {
+ const css = fs.readFileSync(new URL('./assets/site.css', import.meta.url), 'utf8');
+ assert.match(css, /#search-ui\{[^}]*grid-template-columns:minmax\(0,1fr\);min-width:0/);
+ assert.match(css, /#search-ui fieldset\{[^}]*min-width:0;flex-wrap:wrap/);
+ assert.match(css, /#results\{[^}]*grid-template-columns:minmax\(0,1fr\);overflow-wrap:anywhere/);
+ assert.match(css, /td:has\(> \.source-warning\)\{min-width:7em\}/);
+ assert.match(css, /\.source-warning\{display:inline-block;box-sizing:border-box;max-width:100%;[^}]*word-break:keep-all;overflow-wrap:anywhere/);
+});
+
 test('reading CSS retains mobile typography, nested indent and desktop navigation', () => {
  const css = fs.readFileSync(new URL('./assets/site.css', import.meta.url), 'utf8');
  assert.match(css, /h2\{font-size:var\(--fs-24\)/);
