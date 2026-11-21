@@ -1,4 +1,5 @@
-import { fullSentences } from './visual-kit.mjs';
+import { pathToFileURL } from 'node:url';
+import { fullSentences, readVisualAsset } from './visual-kit.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -646,4 +647,20 @@ test('preview excerpts keep full sentences without changing source text', () => 
  const long = '甲'.repeat(200) + '。';
  assert.equal(fullSentences(long + '不截斷。'), long);
  assert.equal(fullSentences('無句號的原文'), '無句號的原文');
+});
+
+test('visual asset copying rejects linked directories and non-files', () => {
+ const dir = newDir('visual-assets-');
+ const root = pathToFileURL(dir + path.sep);
+ const assets = path.join(dir, 'assets');
+ const external = newDir('external-assets-');
+ const visuals = path.join(assets, 'visuals');
+ fs.mkdirSync(assets);
+ fs.writeFileSync(path.join(external, 'icon-ai.svg'), 'external');
+ fs.symlinkSync(external, visuals, process.platform === 'win32' ? 'junction' : 'dir');
+ assert.throws(() => readVisualAsset(root, 'icon-ai.svg'), /directory must not be a symbolic link/);
+ fs.unlinkSync(visuals);
+ fs.mkdirSync(visuals);
+ fs.mkdirSync(path.join(visuals, 'icon-ai.svg'));
+ assert.throws(() => readVisualAsset(root, 'icon-ai.svg'), /must be a regular file/);
 });

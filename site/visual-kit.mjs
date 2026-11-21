@@ -1,3 +1,17 @@
+import fs from 'node:fs';
+
+export function readVisualAsset(siteRoot, name) {
+  if (!/^[-a-z]+\.(?:webp|svg|css)$/.test(name)) throw Error('Invalid visual asset');
+  for (const folder of ['assets/', 'assets/visuals/']) {
+    if (!fs.lstatSync(new URL(folder, siteRoot)).isDirectory()) {
+      throw Error(`Visual asset directory must not be a symbolic link: ${folder}`);
+    }
+  }
+  const file = new URL(`assets/visuals/${name}`, siteRoot);
+  if (!fs.lstatSync(file).isFile()) throw Error(`Visual asset must be a regular file: ${name}`);
+  return fs.readFileSync(file);
+}
+
 export function visualIcon(root, name, size, lazy = false) {
   return `<img class="mb-motion-art" src="${root}icon-${name}.svg" width="${size}" height="${size}" alt=""${lazy ? ' loading="lazy"' : ''}>`;
 }

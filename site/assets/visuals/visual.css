@@ -60,3 +60,8 @@
 @media(prefers-reduced-motion:reduce),print{
  .mb-home-feature .feature__label i,.mb-home-feature .mb-art img.mb-in-view{animation:none}
 }
+.headline-area > .mb-news-list{align-content:start}
+.mb-news .radars-header strong{flex:1;text-align:left}
+.mb-news .radars-header span{flex:none}
+.mb-product-banner{margin-block:16px}
+.crumbs a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}

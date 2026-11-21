@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { pageContent, productMeta } from './d14.mjs';
-import { visualPicture } from './visual-kit.mjs';
+import { readVisualAsset, visualPicture } from './visual-kit.mjs';
 import { shell, directory, homepage } from './round3.mjs';
 import { copy } from './display-v4-copy.mjs';
 import { readDisplay, renderOverview, renderEntry, renderDrill } from './display-v4.mjs';
@@ -282,7 +282,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   function page(file, title, body, area = '', source = '') {
     const content = (allowRehearsal ? '<p role="note" class="notice">演練資料，非正式晨報</p>' : '') +
       (file === 'index.html' || file === 'products/index.html' ? body : pageContent(file, body, (to, label) => link(file, to, label)));
-    const chrome = shell({file, area, today:latest, time:latest ? collectionTime(latest) : '', url:sitePath, source, content, visuals:visualPage(file) && file === 'index.html'});
+    const chrome = shell({file, area, today:latest, time:latest ? collectionTime(latest) : '', url:sitePath, source, content});
     pages.set(file, externalLinks(`<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light">${visualPreview ? '<meta name="robots" content="noindex, nofollow">' : ''}<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/design-tokens.css'))}"><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}">${visualPage(file) ? `<link rel="stylesheet" href="${esc(sitePath(file, 'assets/visuals/visual.css'))}">` : ''}<script src="${esc(sitePath(file, 'assets/app.js'))}" defer></script></head>` + `<body>${chrome}</body></html>\n`));
   }
   function tocBody(rendered) {
@@ -424,9 +424,8 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       'hero-infrastructure.webp', 'hero-infrastructure-mobile.webp', 'hero-ai.webp', 'hero-ai-mobile.webp',
       ...['ai','archive','book','cloud','document','layers','network','patch','radar','search','shield','spark'].map(name => `icon-${name}.svg`)];
     for (const name of names) {
-      if (!/^[-a-z]+\.(?:webp|svg|css)$/.test(name)) throw Error('Invalid visual asset');
       const asset = `assets/visuals/${name}`;
-      files.set(asset, fs.readFileSync(new URL(`./${asset}`, import.meta.url)));
+      files.set(asset, readVisualAsset(new URL('./', import.meta.url), name));
     }
   }
   files.set('.nojekyll', '');
