@@ -16,7 +16,6 @@
 .mb-news-card .mb-excerpt{margin:0 0 8px;font-size:15px;line-height:1.65}
 .mb-news .radars-header img{flex:none;margin-inline-end:8px}
 .mb-news .radar-footer{min-height:44px;display:flex;align-items:center}
-.directory .dir-logo:has(img){width:40px;height:40px}
 .mb-status-meter{margin-block:0 16px}
 .mb-in-view{animation:mb-art-reveal 400ms ease-out both}
 @keyframes mb-art-reveal{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -28,7 +27,6 @@
  .mb-news-list{gap:12px}
  .mb-news-card{grid-template-columns:40px minmax(0,1fr);padding:14px}
  .mb-news-icon{width:40px;height:40px}
- .directory .dir-logo:has(img),.directory .dir-logo img{width:32px;height:32px}
 }
 @media(prefers-reduced-data:reduce){
  .mb-art{display:none}

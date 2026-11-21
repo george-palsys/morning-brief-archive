@@ -635,6 +635,12 @@ test('visual preview publishes only allowlisted binary assets and adds preview p
  assert.match(preview.pages.get('index.html'), /<meta name="robots" content="noindex, nofollow">/);
  assert.match(preview.pages.get('404.html'), /href="\/morning-brief-preview\/assets\/site.css"/);
  assert.match(preview.pages.get('products/index.html'), /\.\.\/assets\/visuals\/hero-infrastructure-mobile\.webp/);
+ const directory = preview.pages.get('products/index.html');
+ const logos = html => [...html.matchAll(/<div class="dir-logo" aria-hidden="true">([^<]*)<\/div>/g)].map(match => match[1]);
+ const baseline = logos(standard.pages.get('products/index.html'));
+ assert.equal(baseline.length, 26);
+ assert.deepEqual(logos(directory), baseline);
+ assert.doesNotMatch(directory, /icon-document\.svg/);
  assert.equal(fs.existsSync(path.join(standard.output, 'assets/visuals')), false);
  const asset = 'assets/visuals/hero-cybersecurity.webp';
  assert.deepEqual(fs.readFileSync(path.join(preview.output, asset)), fs.readFileSync(new URL(asset, import.meta.url)));
