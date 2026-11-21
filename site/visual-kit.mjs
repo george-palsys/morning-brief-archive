@@ -42,7 +42,9 @@ export function fullSentences(value, limit = 160) {
 export function wrapCveText(html) {
   // Consume comments and raw/RCDATA elements whole, including embedded < or >.
   // The stack also makes an already wrapped CVE span idempotent.
-  const tokens = /<!--[\s\S]*?(?:-->|$)|<(title|script|style|textarea)\b(?:"[^"]*"|'[^']*'|[^'">])*>[\s\S]*?(?:<\/\1\s*>|$)|<(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  // If a tag has an unterminated quoted value, preserve the entire remaining tail.
+  // Never interpret its CVE text as a text node and insert markup into an attribute.
+  const tokens = /<!--[\s\S]*?(?:-->|$)|<(title|script|style|textarea)\b(?:"[^"]*"|'[^']*'|[^'">])*>[\s\S]*?(?:<\/\1\s*>|$)|<(?:"[^"]*"|'[^']*'|[^'">])*>|<[a-z!/][\s\S]*$/gi;
   const stack = [];
   let cursor = 0;
   let output = '';

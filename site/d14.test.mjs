@@ -7,6 +7,22 @@ import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
 import {wrapCveText} from './visual-kit.mjs';
 
+test('PR35: an unterminated quoted attribute tail is preserved without CVE markup',()=>{
+ for(const tail of ['<a title="unfinished > CVE-2026-12345</a>',"<a title='unfinished > CVE-2026-12345</a>"]){
+  assert.equal(wrapCveText(tail),tail);
+  assert.equal(wrapCveText('CVE-2026-67890 '+tail),'<span class="cve-id">CVE-2026-67890</span> '+tail);
+ }
+});
+
+test('PR35: archive reserves section width and preserves the edition group without shrinking headlines',()=>{
+ const css=fs.readFileSync('site/assets/visuals/visual.css','utf8');
+ assert.match(css,/\.d14 \.day-list>li\{grid-template-columns:minmax\(240px,34%\) minmax\(0,1fr\)\}/);
+ assert.match(css,/\.d14 \.day-list \.day-edition\{white-space:nowrap\}/);
+ assert.match(css,/\.feature h2 \.mb-cve-group\{display:inline-block;white-space:nowrap\}/);
+ assert.doesNotMatch(css,/\.feature h2:has\(\.mb-cve-group\)\{font-size:/);
+ assert.match(css,/@media\(min-width:1024px\) and \(max-width:1280px\)\{\s*\.mb-home-feature\{grid-template-columns:minmax\(0,1fr\) minmax\(0,22%\)\}/);
+});
+
 test('Round 4 review: quoted greater-than attribute stays intact while CVE text wraps',()=>{
  const source='<a title="details > CVE-2026-12345" data-note=\'other > CVE-2026-67890\'>CVE-2026-12345</a>';
  assert.equal(wrapCveText(source),'<a title="details > CVE-2026-12345" data-note=\'other > CVE-2026-67890\'><span class="cve-id">CVE-2026-12345</span></a>');
