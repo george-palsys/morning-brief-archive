@@ -7,6 +7,18 @@ import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
 import {wrapCveText} from './visual-kit.mjs';
 
+test('Round 4: dynamic CVE labels use text nodes without interpreting search content',()=>{
+ const helper=fs.readFileSync('site/assets/app.js','utf8').split("document.documentElement.classList.add('js');")[0];
+ const context=vm.createContext({document:{createElement:()=>({}),createTextNode:text=>({text})}});
+ vm.runInContext(helper,context);
+ const element={children:[],append(node){this.children.push(node)}};
+ context.setCveText(element,'<img src=x> CVE-2026-12345 text');
+ assert.equal(element.children[0].text,'<img src=x> ');
+ assert.equal(element.children[1].className,'cve-id');
+ assert.equal(element.children[1].textContent,'CVE-2026-12345');
+ assert.equal(element.children[2].text,' text');
+});
+
 test('Round 4: CVE text markup never rewrites attributes or raw head content',()=>{
  const source='<title>CVE-2026-12345</title><a href="/CVE-2026-12345">CVE-2026-12345</a>';
  assert.equal(wrapCveText(source),'<title>CVE-2026-12345</title><a href="/CVE-2026-12345"><span class="cve-id">CVE-2026-12345</span></a>');

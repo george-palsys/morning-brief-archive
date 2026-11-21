@@ -1,3 +1,13 @@
+function setCveText(element, value) {
+ const text = String(value ?? '');
+ if (!/CVE-\d{4}-\d{4,}/.test(text)) { element.textContent = text; return; }
+ element.textContent = '';
+ for (const part of text.split(/(CVE-\d{4}-\d{4,})/g)) {
+  if (/^CVE-\d{4}-\d{4,}$/.test(part)) {
+   const span = document.createElement('span'); span.className = 'cve-id'; span.textContent = part; element.append(span);
+  } else element.append(document.createTextNode(part));
+ }
+}
 document.documentElement.classList.add('js');
 // Native details remains useful without JavaScript. Desktop expands the same DOM.
 const wide = matchMedia('(min-width:1380px)');
@@ -112,7 +122,7 @@ function render() {
   const a = document.createElement('a');
   // Only builder-produced relative page paths can become result destinations.
   if (!/^(?:daily|products)\/[a-zA-Z0-9/_-]+\.html(?:#item-\d+)?$/.test(item.file)) continue;
-  a.href = '../' + item.file; a.textContent = item.title;
+  a.href = '../' + item.file; setCveText(a, item.title);
   const meta = document.createElement('p');
   meta.className = 'search-meta';
   const category = document.createElement('span');
@@ -124,7 +134,7 @@ function render() {
   li.append(a,meta);
   if (item.summary) {
    const excerpt = document.createElement('p');
-   excerpt.className = 'search-excerpt'; excerpt.textContent = item.summary; li.append(excerpt);
+   excerpt.className = 'search-excerpt'; setCveText(excerpt, item.summary); li.append(excerpt);
   }
   results.append(li);
  }

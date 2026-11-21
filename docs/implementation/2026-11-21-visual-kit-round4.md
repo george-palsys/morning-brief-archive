@@ -47,7 +47,7 @@ visual-preview 參數保留為相容入口與 noindex 控制；預設建置也�
 3. 首頁八個標題的 regex 允許唯一新增的 cve-id span；仍檢查八則、原始標題文字、來源 URL 與真實錨點。panel regex 接受唯一 product-watch id，另加「id 僅一個」斷言，保留順序與兩個 panel 內容相同的斷言。
 4. 新增 CVE 屬性／raw head 不被重寫、主題初始化白名單與儲存例外、手動循環與跨頁 storage 同步測試。未修改任何正式資料。
 
-本機修改階段實跑 npm test：62 tests、62 pass、0 fail、0 skipped；check:contrast：40 pairs × 2 themes。乾淨 clone 的最終指令與完整輸出另附交付報告。
+本機修改階段實跑 npm test：62 tests、62 pass、0 fail、0 skipped；check:contrast：40 pairs × 2 themes。其後補上動態搜尋的 CVE span：使用 createTextNode/createElement/textContent，沒有 innerHTML；增加對含 HTML 字樣搜尋文字不被解讀的測試。乾淨 clone 的最終指令與完整輸出另附交付報告。
 
 ## 未做與待驗證
 
