@@ -636,9 +636,11 @@ test('visual preview publishes only allowlisted binary assets and adds preview p
  assert.match(preview.pages.get('404.html'), /href="\/morning-brief-preview\/assets\/site.css"/);
  assert.match(preview.pages.get('products/index.html'), /\.\.\/assets\/visuals\/hero-infrastructure-mobile\.webp/);
  const directory = preview.pages.get('products/index.html');
- const logos = html => [...html.matchAll(/<div class="dir-logo" aria-hidden="true">([^<]*)<\/div>/g)].map(match => match[1]);
+ const logos = html => Object.fromEntries([...html.matchAll(
+  /<tr id="([^"]+)"[^>]*>.*?<(?:div|span) class="dir-logo" aria-hidden="true">([^<]*)<\/(?:div|span)>/g
+ )].map(([, slug, label]) => [slug, label]));
  const baseline = logos(standard.pages.get('products/index.html'));
- assert.equal(baseline.length, 26);
+ assert.equal(Object.keys(baseline).length, 26);
  assert.deepEqual(logos(directory), baseline);
  assert.doesNotMatch(directory, /icon-document\.svg/);
  assert.equal(fs.existsSync(path.join(standard.output, 'assets/visuals')), false);
@@ -691,4 +693,33 @@ test('asset copying rejects a linked assets root in both build modes', () => {
  fs.symlinkSync(target, path.join(dir, 'assets'), process.platform === 'win32' ? 'junction' : 'dir');
  assert.throws(() => readSiteAsset(root, 'app.js'), /directory must not be a symbolic link/);
  assert.throws(() => readSiteAsset(root, 'visual.css', true), /directory must not be a symbolic link/);
+});
+
+test('preview homepage links eight story titles to their actual rendered anchors', () => {
+ const input = legacyFixture();
+ fs.cpSync('daily/2026-11-21', path.join(input, 'daily/2026-11-21'), { recursive: true });
+ fs.cpSync('products', path.join(input, 'products'), { recursive: true });
+ const stories = fs.readFileSync('items.jsonl', 'utf8').trim().split(/\r?\n/).map(line => JSON.parse(line))
+  .filter(item => item.date === '2026-11-21');
+ fs.writeFileSync(path.join(input, 'items.jsonl'), stories.map(item => JSON.stringify(item)).join('\n'));
+ const result = run(input, { visualPreview: true });
+ const home = result.pages.get('index.html');
+ const cards = [...home.matchAll(/<li class="mb-news-card">[\s\S]*?<h3><a href="([^"#]+)#(item-\d+)">([^<]+)<\/a><\/h3>[\s\S]*?<a class="mb-source" href="([^"]+)" target="_blank" rel="noopener noreferrer"/g)];
+ assert.equal(cards.length, 8);
+ assert.deepEqual(cards.map(([, file, id]) => file.split('/').at(-1) + '#' + id), [
+  'cve.html#item-2', 'products.html#item-1', 'products.html#item-2', 'products.html#item-3',
+  'knowledge.html#item-1', 'ai.html#item-1', 'taiwan.html#item-1', 'knowledge.html#item-2',
+ ]);
+ for (const [, file, id, title, source] of cards) {
+  const heading = [...result.pages.get(file).matchAll(/<h2[^>]*id="(item-\d+)"[^>]*>([\s\S]*?)<\/h2>/g)].find(([, key]) => key === id);
+  assert.equal(heading?.[2].replace(/<[^>]+>/g, '').trim(), title);
+  assert.ok(stories.some(item => item.source_url === source));
+ }
+ assert.match(home, /class="radar-footer" href="daily\/2026-11-21\/index.html"/);
+ assert.match(home, /media="\(max-width: 640px\)" srcset="assets\/visuals\/blank.svg"/);
+ const directory = result.pages.get('products/index.html');
+ assert.equal([...directory.matchAll(/<tr class="grp">/g)].length, 4);
+ assert.deepEqual([...new Set([...directory.matchAll(/<tr id="[^"]+" data-status="([^"]+)"/g)].map(match => match[1]))], [
+  'updated', 'unknown', 'nosource', 'unchanged',
+ ]);
 });
