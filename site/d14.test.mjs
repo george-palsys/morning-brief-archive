@@ -7,6 +7,22 @@ import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
 import {wrapCveText} from './visual-kit.mjs';
 
+test('Round 4 review: quoted greater-than attribute stays intact while CVE text wraps',()=>{
+ const source='<a title="details > CVE-2026-12345" data-note=\'other > CVE-2026-67890\'>CVE-2026-12345</a>';
+ assert.equal(wrapCveText(source),'<a title="details > CVE-2026-12345" data-note=\'other > CVE-2026-67890\'><span class="cve-id">CVE-2026-12345</span></a>');
+ const escaped='<a title="details &gt; CVE-2026-12345">CVE-2026-12345</a>';
+ assert.equal(wrapCveText(escaped),'<a title="details &gt; CVE-2026-12345"><span class="cve-id">CVE-2026-12345</span></a>');
+});
+
+test('Round 4 review: mixed CVE titles use block flow and selected controls use theme tokens',()=>{
+ const css=fs.readFileSync('site/assets/site.css','utf8');
+ const visual=fs.readFileSync('site/assets/visuals/visual.css','utf8');
+ assert.match(visual,/\.mb-news-card h3 a\{display:block;min-height:44px/);
+ assert.match(css,/\.d14 #results>li>a\{display:block;[^}]*min-height:44px/);
+ assert.match(css,/\.d14 \.section-tabs a\[aria-current="page"\]\{background:var\(--selected-bg\);color:var\(--selected-ink\);border-color:var\(--selected-border\)/);
+ assert.match(css,/label:has\(:checked\)\{color:var\(--selected-ink\);background:var\(--selected-bg\);border-color:var\(--selected-border\)/);
+});
+
 test('Round 4: dynamic CVE labels use text nodes without interpreting search content',()=>{
  const helper=fs.readFileSync('site/assets/app.js','utf8').split("document.documentElement.classList.add('js');")[0];
  const context=vm.createContext({document:{createElement:()=>({}),createTextNode:text=>({text})}});

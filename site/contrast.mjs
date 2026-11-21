@@ -13,6 +13,7 @@ function luminance(hex) {
   return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
 }
 const pairs = [
+  ['selected-ink', 'selected-bg', 4.5], ['selected-border', 'selected-bg', 3],
   ['ink', 'source-warning-bg', 4.5],
   ['ink-2', 'factbox-bg', 4.5], ['muted', 'factbox-bg', 4.5],
   ['ink-2', 'directory-head-bg', 4.5], ['muted', 'directory-head-bg', 4.5],
@@ -33,7 +34,7 @@ for (const [fg, bg, min] of pairs) {
   const a = luminance(tokens[fg]), b = luminance(tokens[bg]);
   const ratio = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
   assert.ok(ratio >= min, `${fg}/${bg} ${ratio.toFixed(2)} < ${min}`);
-  if (bg === 'source-warning-bg') console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
+  if (bg === 'source-warning-bg' || bg === 'selected-bg') console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
 }
 }
 console.log(`CONTRAST OK: ${pairs.length} pairs × 2 themes`);

@@ -35,10 +35,13 @@ export function fullSentences(value, limit = 160) {
   return excerpt;
 }
 
+// Input is builder-owned HTML: esc/escape encode &, <, > and quotes in values.
+// This is not a parser for arbitrary untrusted HTML. Keep that escaping contract.
+// Quote-aware tag splitting also preserves a literal > inside a quoted value.
 // Match text nodes only: never rewrite hrefs, attributes, or raw input data.
 export function wrapCveText(html) {
   let raw = false;
-  return html.split(/(<[^>]+>)/g).map(part => {
+  return html.split(/(<(?:"[^"]*"|'[^']*'|[^'">])*>)/g).map(part => {
     if (part.startsWith('<')) {
       if (/^<(?:title|script|style)\b/i.test(part)) raw = true;
       if (/^<\/(?:title|script|style)>/i.test(part)) raw = false;
