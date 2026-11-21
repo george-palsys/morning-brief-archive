@@ -1,3 +1,5 @@
+import { pathToFileURL } from 'node:url';
+import { fullSentences, readSiteAsset } from './visual-kit.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -623,4 +625,146 @@ test('v4 E8: v3 without display retains the legacy text view', () => {
  delete f.meta.display;
  delete f.meta.attention;
  assert.doesNotMatch(f.run()('index'), /v4-overview|v4-score/);
+});
+
+test('visual preview publishes only allowlisted binary assets and adds preview paths', () => {
+ const input = legacyFixture();
+ const standard = run(input);
+ const preview = run(input, {visualPreview:true,basePath:'/morning-brief-preview/'});
+ assert.doesNotMatch(standard.pages.get('index.html'), /noindex/);
+ assert.match(standard.pages.get('index.html'), /assets\/visuals\/visual.css/);
+ assert.match(preview.pages.get('index.html'), /<meta name="robots" content="noindex, nofollow">/);
+ assert.match(preview.pages.get('404.html'), /href="\/morning-brief-preview\/assets\/site.css"/);
+ assert.match(preview.pages.get('products/index.html'), /\.\.\/assets\/visuals\/hero-infrastructure-mobile\.webp/);
+ const directory = preview.pages.get('products/index.html');
+ const logos = html => Object.fromEntries([...html.matchAll(
+  /<tr id="([^"]+)"[^>]*>.*?<(?:div|span) class="dir-logo" aria-hidden="true">([^<]*)<\/(?:div|span)>/g
+ )].map(([, slug, label]) => [slug, label]));
+ const baseline = logos(standard.pages.get('products/index.html'));
+ assert.equal(Object.keys(baseline).length, 26);
+ assert.deepEqual(logos(directory), baseline);
+ assert.doesNotMatch(directory, /icon-document\.svg/);
+ assert.equal(fs.existsSync(path.join(standard.output, 'assets/visuals')), true);
+ const asset = 'assets/visuals/hero-cybersecurity.webp';
+ assert.deepEqual(fs.readFileSync(path.join(preview.output, asset)), fs.readFileSync(new URL(asset, import.meta.url)));
+ assert.match(fs.readFileSync(path.join(preview.output, 'assets/app.js'), 'utf8'), /Visual preview motion/);
+ assert.match(fs.readFileSync(path.join(standard.output, 'assets/app.js'), 'utf8'), /Visual preview motion/);
+});
+
+test('preview excerpts keep full sentences without changing source text', () => {
+ assert.equal(fullSentences('第一句。第二句！第三句？', 8), '第一句。第二句！');
+ const long = '甲'.repeat(200) + '。';
+ assert.equal(fullSentences(long + '不截斷。'), long);
+ assert.equal(fullSentences('無句號的原文'), '無句號的原文');
+});
+
+test('visual asset copying rejects linked directories and non-files', () => {
+ const dir = newDir('visual-assets-');
+ const root = pathToFileURL(dir + path.sep);
+ const assets = path.join(dir, 'assets');
+ const external = newDir('external-assets-');
+ const visuals = path.join(assets, 'visuals');
+ fs.mkdirSync(assets);
+ fs.writeFileSync(path.join(external, 'icon-ai.svg'), 'external');
+ fs.symlinkSync(external, visuals, process.platform === 'win32' ? 'junction' : 'dir');
+ assert.throws(() => readSiteAsset(root, 'icon-ai.svg', true), /directory must not be a symbolic link/);
+ fs.unlinkSync(visuals);
+ fs.mkdirSync(visuals);
+ fs.mkdirSync(path.join(visuals, 'icon-ai.svg'));
+ assert.throws(() => readSiteAsset(root, 'icon-ai.svg', true), /must be a regular file/);
+});
+
+test('asset copying rejects an allowlisted file that is a symbolic link', () => {
+ const dir = newDir('asset-file-link-');
+ const root = pathToFileURL(dir + path.sep);
+ const assets = path.join(dir, 'assets');
+ const target = path.join(dir, 'outside.css');
+ fs.mkdirSync(path.join(assets, 'visuals'), { recursive: true });
+ fs.writeFileSync(target, 'external');
+ fs.symlinkSync(target, path.join(assets, 'site.css'), 'file');
+ fs.symlinkSync(target, path.join(assets, 'visuals', 'visual.css'), 'file');
+ assert.throws(() => readSiteAsset(root, 'site.css'), /must be a regular file/);
+ assert.throws(() => readSiteAsset(root, 'visual.css', true), /must be a regular file/);
+});
+
+test('asset copying rejects a linked assets root in both build modes', () => {
+ const dir = newDir('asset-root-link-');
+ const root = pathToFileURL(dir + path.sep);
+ const target = newDir('external-root-');
+ fs.symlinkSync(target, path.join(dir, 'assets'), process.platform === 'win32' ? 'junction' : 'dir');
+ assert.throws(() => readSiteAsset(root, 'app.js'), /directory must not be a symbolic link/);
+ assert.throws(() => readSiteAsset(root, 'visual.css', true), /directory must not be a symbolic link/);
+});
+
+test('preview homepage links eight story titles to their actual rendered anchors', () => {
+ const input = legacyFixture();
+ fs.cpSync('daily/2026-11-21', path.join(input, 'daily/2026-11-21'), { recursive: true });
+ fs.cpSync('products', path.join(input, 'products'), { recursive: true });
+ const stories = fs.readFileSync('items.jsonl', 'utf8').trim().split(/\r?\n/).map(line => JSON.parse(line))
+  .filter(item => item.date === '2026-11-21');
+ fs.writeFileSync(path.join(input, 'items.jsonl'), stories.map(item => JSON.stringify(item)).join('\n'));
+ const result = run(input, { visualPreview: true });
+ const home = result.pages.get('index.html');
+ const cards = [...home.matchAll(/<li class="mb-news-card">[\s\S]*?<h3><a href="([^"#]+)#(item-\d+)">((?:[^<]|<span class="cve-id">[^<]+<\/span>)+)<\/a><\/h3>[\s\S]*?<a class="mb-source" href="([^"]+)" target="_blank" rel="noopener noreferrer"/g)];
+ assert.equal(cards.length, 8);
+ const panels = [...home.matchAll(/<aside class="metric-panel (metric-panel--wide|metric-panel--stack)" (?:id="product-watch" )?aria-label="[^"]+">([\s\S]*?)<\/aside>/g)];
+ assert.equal((home.match(/id="product-watch"/g)||[]).length,1);
+ assert.deepEqual(panels.map(panel => panel[1]), ['metric-panel--wide', 'metric-panel--stack']);
+ assert.equal(panels[0][2], panels[1][2]);
+ assert.ok(home.indexOf('class="mb-home-feature"') < panels[0].index);
+ const signalFlow = home.split('class="mb-signal-flow"')[1].split('<aside class="radars"')[0];
+ assert.equal((signalFlow.split('<aside class="metric-panel metric-panel--stack"')[0].match(/class="mb-news-card"/g)||[]).length,2);
+ assert.match(signalFlow, /<\/aside><ul class="mb-news-list mb-news-continuation">/);
+ assert.doesNotMatch(home, /class="mb-jump"/);
+ const visualCss = fs.readFileSync(new URL('./assets/visuals/visual.css', import.meta.url), 'utf8');
+ assert.match(visualCss, /\.metric-panel--wide\{display:none\}\s*@media\(min-width:1024px\)\{\s*\.metric-panel--wide\{display:flex\}\s*\.metric-panel--stack\{display:none\}/);
+ assert.match(visualCss, /@media\(max-width:640px\)\{[^@]+\.overview-stats\{grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+
+ assert.deepEqual(cards.map(([, file, id]) => file.split('/').at(-1) + '#' + id), [
+  'cve.html#item-2', 'products.html#item-1', 'products.html#item-2', 'products.html#item-3',
+  'knowledge.html#item-1', 'ai.html#item-1', 'taiwan.html#item-1', 'knowledge.html#item-2',
+ ]);
+ for (const [, file, id, title, source] of cards) {
+  const heading = [...result.pages.get(file).matchAll(/<h2[^>]*id="(item-\d+)"[^>]*>([\s\S]*?)<\/h2>/g)].find(([, key]) => key === id);
+  assert.equal(heading?.[2].replace(/<[^>]+>/g, '').trim(), title.replace(/<[^>]+>/g,''));
+  assert.ok(stories.some(item => item.source_url === source));
+ }
+ assert.match(home, /class="radar-footer" href="daily\/2026-11-21\/index.html"/);
+ assert.match(home, /media="\(max-width: 640px\)" srcset="assets\/visuals\/blank.svg"/);
+ const directory = result.pages.get('products/index.html');
+ assert.equal([...directory.matchAll(/<tr class="grp">/g)].length, 4);
+ assert.deepEqual([...new Set([...directory.matchAll(/<tr id="[^"]+" data-status="([^"]+)"/g)].map(match => match[1]))], [
+  'updated', 'unknown', 'nosource', 'unchanged',
+ ]);
+});
+
+test('preview product filtering hides and restores the group heading rows', () => {
+ const make = () => ({ hidden: false, listeners: {}, addEventListener(name, fn) { this.listeners[name] = fn; } });
+ const chips = ['all', 'updated'].map(filter => ({ ...make(), dataset: { filter }, setAttribute() {} }));
+ const input = { ...make(), value: '' };
+ const rows = ['updated', 'unchanged'].map(status => ({ ...make(), dataset: { status }, textContent: status }));
+ const headings = [make(), make()];
+ const directory = { tBodies: rows.map((row, i) => ({
+  querySelector(selector) { return selector === 'tr.grp' ? headings[i] : row.hidden ? null : row; },
+ })) };
+ const bar = { ...make(), querySelector: () => input, querySelectorAll: () => chips };
+ const count = make();
+ const empty = make();
+ const elements = { '#filterbar': bar, '#results-count': count, '#empty-state': empty, '.mb-directory': directory };
+ const context = vm.createContext({
+  document: { documentElement: { classList: { add() {} } }, querySelector: selector => elements[selector],
+   querySelectorAll: selector => selector === '.directory tbody tr[data-status]' ? rows : [] },
+  matchMedia: () => ({ matches: false, addEventListener() {} }), window: { addEventListener() {} },
+ });
+ vm.runInContext(fs.readFileSync('site/assets/app.js', 'utf8'), context);
+ const visible = () => headings.map(heading => !heading.hidden);
+ assert.deepEqual(visible(), [true, true]);
+ chips[1].listeners.click(); bar.listeners.click();
+ assert.deepEqual(visible(), [true, false]);
+ input.value = 'no-match'; input.listeners.input(); bar.listeners.input();
+ assert.deepEqual(visible(), [false, false]);
+ assert.equal(empty.hidden, false);
+ input.value = ''; chips[0].listeners.click(); bar.listeners.click();
+ assert.deepEqual(visible(), [true, true]);
+ assert.equal(empty.hidden, true);
 });
