@@ -706,6 +706,15 @@ test('preview homepage links eight story titles to their actual rendered anchors
  const home = result.pages.get('index.html');
  const cards = [...home.matchAll(/<li class="mb-news-card">[\s\S]*?<h3><a href="([^"#]+)#(item-\d+)">([^<]+)<\/a><\/h3>[\s\S]*?<a class="mb-source" href="([^"]+)" target="_blank" rel="noopener noreferrer"/g)];
  assert.equal(cards.length, 8);
+ const panels = [...home.matchAll(/<aside class="metric-panel (metric-panel--wide|metric-panel--stack)" aria-label="[^"]+">([\s\S]*?)<\/aside>/g)];
+ assert.deepEqual(panels.map(panel => panel[1]), ['metric-panel--wide', 'metric-panel--stack']);
+ assert.equal(panels[0][2], panels[1][2]);
+ assert.ok(home.indexOf('class="mb-home-feature"') < panels[0].index);
+ assert.match(home, /<ul class="mb-news-list">[\s\S]*?<\/ul><aside class="metric-panel metric-panel--stack"[\s\S]*?<\/aside><aside class="radars"/);
+ const visualCss = fs.readFileSync(new URL('./assets/visuals/visual.css', import.meta.url), 'utf8');
+ assert.match(visualCss, /\.metric-panel--wide\{display:none\}\s*@media\(min-width:1024px\)\{\s*\.metric-panel--wide\{display:flex\}\s*\.metric-panel--stack\{display:none\}/);
+ assert.match(visualCss, /@media\(max-width:640px\)\{[^@]+\.overview-stats\{grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+
  assert.deepEqual(cards.map(([, file, id]) => file.split('/').at(-1) + '#' + id), [
   'cve.html#item-2', 'products.html#item-1', 'products.html#item-2', 'products.html#item-3',
   'knowledge.html#item-1', 'ai.html#item-1', 'taiwan.html#item-1', 'knowledge.html#item-2',
