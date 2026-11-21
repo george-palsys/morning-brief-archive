@@ -192,3 +192,8 @@ td .cve-id{white-space:normal}
 @media(min-width:681px){
  .d14 .day-list>li{grid-template-columns:minmax(240px,34%) minmax(0,1fr)}
 }
+
+/* Optional A4: only the vertical legend-to-link gap, not the 16px hero grid gap. */
+@media(min-width:1024px) and (max-width:1180px){
+ .metric-panel--wide .metric-link{margin-top:24px}
+}
