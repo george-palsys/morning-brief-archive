@@ -712,7 +712,10 @@ test('preview homepage links eight story titles to their actual rendered anchors
  assert.deepEqual(panels.map(panel => panel[1]), ['metric-panel--wide', 'metric-panel--stack']);
  assert.equal(panels[0][2], panels[1][2]);
  assert.ok(home.indexOf('class="mb-home-feature"') < panels[0].index);
- assert.match(home, /<ul class="mb-news-list">[\s\S]*?<\/ul><aside class="metric-panel metric-panel--stack"[\s\S]*?<\/aside><aside class="radars"/);
+ const signalFlow = home.split('class="mb-signal-flow"')[1].split('<aside class="radars"')[0];
+ assert.equal((signalFlow.split('<aside class="metric-panel metric-panel--stack"')[0].match(/class="mb-news-card"/g)||[]).length,2);
+ assert.match(signalFlow, /<\/aside><ul class="mb-news-list mb-news-continuation">/);
+ assert.doesNotMatch(home, /class="mb-jump"/);
  const visualCss = fs.readFileSync(new URL('./assets/visuals/visual.css', import.meta.url), 'utf8');
  assert.match(visualCss, /\.metric-panel--wide\{display:none\}\s*@media\(min-width:1024px\)\{\s*\.metric-panel--wide\{display:flex\}\s*\.metric-panel--stack\{display:none\}/);
  assert.match(visualCss, /@media\(max-width:640px\)\{[^@]+\.overview-stats\{grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);

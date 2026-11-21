@@ -40,13 +40,27 @@ export function fullSentences(value, limit = 160) {
 // Quote-aware tag splitting also preserves a literal > inside a quoted value.
 // Match text nodes only: never rewrite hrefs, attributes, or raw input data.
 export function wrapCveText(html) {
-  let raw = false;
-  return html.split(/(<(?:"[^"]*"|'[^']*'|[^'">])*>)/g).map(part => {
-    if (part.startsWith('<')) {
-      if (/^<(?:title|script|style)\b/i.test(part)) raw = true;
-      if (/^<\/(?:title|script|style)>/i.test(part)) raw = false;
-      return part;
+  // Consume comments and raw/RCDATA elements whole, including embedded < or >.
+  // The stack also makes an already wrapped CVE span idempotent.
+  const tokens = /<!--[\s\S]*?(?:-->|$)|<(title|script|style|textarea)\b(?:"[^"]*"|'[^']*'|[^'">])*>[\s\S]*?(?:<\/\1\s*>|$)|<(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  const stack = [];
+  let cursor = 0;
+  let output = '';
+  const text = value => stack.some(entry => entry.skip) ? value : value.replace(/(?<![A-Za-z0-9_-])CVE-\d{4}-\d{4,}(?![A-Za-z0-9_-])/g, id => `<span class="cve-id">${id}</span>`);
+  for (const match of html.matchAll(tokens)) {
+    output += text(html.slice(cursor, match.index)) + match[0];
+    const tag = match[0];
+    const name = /^<\/?([a-z][a-z0-9:-]*)\b/i.exec(tag)?.[1].toLowerCase();
+    if (name && !/^(?:title|script|style|textarea)$/.test(name)) {
+      if (/^<\//.test(tag)) {
+        const index = stack.map(entry => entry.name).lastIndexOf(name);
+        if (index >= 0) stack.length = index;
+      } else if (!/\/\s*>$/.test(tag) && !/^(?:area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/.test(name)) {
+        const classes = /\bclass\s*=\s*(?:"([^"]*)"|'([^']*)')/i.exec(tag);
+        stack.push({name, skip: /^(?:code|pre)$/.test(name) || (classes?.[1] || classes?.[2] || '').split(/\s+/).includes('cve-id')});
+      }
     }
-    return raw ? part : part.replace(/CVE-\d{4}-\d{4,}/g, id => `<span class="cve-id">${id}</span>`);
-  }).join('');
+    cursor = match.index + tag.length;
+  }
+  return output + text(html.slice(cursor));
 }

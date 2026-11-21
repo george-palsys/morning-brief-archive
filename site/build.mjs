@@ -285,10 +285,10 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   function page(file, title, body, area = '', source = '') {
     let content = (allowRehearsal ? '<p role="note" class="notice">演練資料，非正式晨報</p>' : '') +
       (file === 'index.html' || file === 'products/index.html' ? body : pageContent(file, body, (to, label) => link(file, to, label)));
-    if (/class="d14 d14-reading/.test(content) && !content.includes('class="mb-banner"')) {
+    if (/class="d14 d14-(?:reading|overview|archive|legacy)/.test(content) && !content.includes('class="mb-banner"')) {
       const topic = /\/ai\.html$/.test(file) ? 'ai' : /\/(?:cve|taiwan)\.html$/.test(file) ? 'cybersecurity' : 'infrastructure';
       const root = sitePath(file, 'assets/visuals/blank.svg').replace(/blank\.svg$/, '');
-      content = content.replace(/(<div class="d14 d14-reading"[^>]*>)/, `$1<figure class="mb-banner">${visualPicture(root, topic)}<figcaption>概念插畫，非事件現場</figcaption></figure>`);
+      content = content.replace(/(<div class="d14 d14-(?:reading|overview|archive|legacy)"[^>]*>)/, `$1<figure class="mb-banner">${visualPicture(root, topic)}<figcaption>概念插畫，非事件現場</figcaption></figure>`);
     }
     if (content.includes('d14-legacy')) content = content.replace(/(<div class="d14 d14-legacy"[^>]*>)/, '$1<p class="type-tag">舊版</p>');
     const chrome = shell({file, area, today:latest, time:latest ? collectionTime(latest) : '', url:sitePath, source, content});

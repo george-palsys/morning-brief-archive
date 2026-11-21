@@ -171,3 +171,29 @@ test('D14: seven lead-in labels remain text, never form fields',()=>{
  assert.equal((quoted.match(/class="card d14-section"/g)||[]).length,2);
  assert.match(quoted,/<blockquote>[^]*?引用內標題[^]*?<\/blockquote>/);
 });
+
+
+test('Round 4 r3: CVE text boundaries preserve raw elements, comments and existing spans',()=>{
+ const id='CVE-2026-12345';
+ const wrapped=`<span class="cve-id">${id}</span>`;
+ for(const source of [
+  `<!-- > ${id} -->`, `<script>if (a < b) { const id="${id}"; }</script >`,
+  `<STYLE>.x::after{content:"${id}"}</STYLE>`, `<textarea>text < > ${id}</textarea>`,
+  `<title>${id}</title >`, `<pre><code>${id}</code></pre>`, wrapped,
+  `<span class='other cve-id'>${id}</span>`, `prefix${id}`, `${id}suffix`, `${id}-suffix`,
+  `<!-- unterminated ${id}`, `<script>unterminated ${id}`,
+ ]) assert.equal(wrapCveText(source),source,source);
+ assert.equal(wrapCveText(`(${id})、${id}。`),`(${wrapped})、${wrapped}。`);
+ assert.equal(wrapCveText(wrapCveText(`<p>${id}</p>`)),`<p>${wrapped}</p>`);
+ assert.equal(wrapCveText(`<code>${id}</code><p>${id}</p>`),`<code>${id}</code><p>${wrapped}</p>`);
+ console.log('CVE BOUNDARY PROBE: raw/comments/code/existing spans preserved; exact token and idempotency passed');
+});
+
+test('Round 4 r3: daily overviews, archive and legacy pages each include one hero',()=>{
+ const result=build({output:fs.mkdtempSync(path.resolve('.site-test/r3-hero-'))});
+ const pages=[...result.pages].filter(([,html])=>/data-page-type="(?:overview|archive|legacy)"/.test(html));
+ assert.ok(pages.some(([file])=>file==='daily/index.html'));
+ assert.ok(pages.some(([,html])=>html.includes('data-page-type="overview"')));
+ for(const [file,html] of pages) assert.equal((html.match(/class="mb-banner"/g)||[]).length,1,file);
+ console.log(`HERO PROBE: ${pages.length} overview/archive/legacy pages; one hero each`);
+});
