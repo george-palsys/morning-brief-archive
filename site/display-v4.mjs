@@ -128,7 +128,7 @@ export function renderEntry(heading, body, entry, section, impact, sources, visu
   const kev = entry.kev?.length ? `<ul>${entry.kev.map(row =>
     `<li>${esc(copy.kev(row))}</li>`).join('')}</ul>` : '';
   const details = `${body}${entry.figures?.length ? facts(entry.figures) : ''}${entry.caveat ? `<blockquote>${esc(entry.caveat)}</blockquote>` : ''}${impact ? `<ul class="v4-impact">${impact}</ul>` : ''}${sources ? `<ul class="v4-sources">${sources}</ul>` : ''}`;
-  const patchIcon = visualStatus ? '<img class="mb-motion-art mb-patch-icon" src="../../assets/visuals/icon-patch.svg" alt="" width="20" height="20" loading="lazy"> ' : '';
+  const patchIcon = visualStatus ? '<img class="mb-motion-art mb-patch-icon mb-icon-patch" src="../../assets/visuals/icon-patch.svg" alt="" width="20" height="20" loading="lazy"> ' : '';
   const content = cve
     ? `${heading}<aside class="design-cve-rail">${badges(entry, section)}${scores(entry)}${visualStatus ? '<p class="mb-status-label">PoC／利用現況</p>' : ''}${status(entry, 'exploited')}${visualStatus ? '<p class="mb-status-label">修補</p>' : ''}${status(entry, 'patch', true, patchIcon)}${kev}</aside><div class="design-cve-content">${details}</div>`
     : `${heading}<div>${badges(entry, section)}</div>${details}`;

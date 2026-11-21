@@ -5,6 +5,37 @@ import path from 'node:path';
 import vm from 'node:vm';
 import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
+import {wrapCveText} from './visual-kit.mjs';
+
+test('Round 4: CVE text markup never rewrites attributes or raw head content',()=>{
+ const source='<title>CVE-2026-12345</title><a href="/CVE-2026-12345">CVE-2026-12345</a>';
+ assert.equal(wrapCveText(source),'<title>CVE-2026-12345</title><a href="/CVE-2026-12345"><span class="cve-id">CVE-2026-12345</span></a>');
+});
+
+test('Round 4: pre-CSS preference accepts only light/dark and handles blocked storage',()=>{
+ const script=fs.readFileSync('site/assets/theme-init.js','utf8');
+ for(const value of [null,'light','dark','unexpected']){
+  const root={dataset:{}};
+  vm.runInNewContext(script,{document:{documentElement:root},localStorage:{getItem:()=>value}});
+  assert.equal(root.dataset.theme,['light','dark'].includes(value)?value:undefined);
+ }
+ const root={dataset:{}};
+ vm.runInNewContext(script,{document:{documentElement:root},localStorage:{getItem(){throw Error('blocked')}}});
+ assert.deepEqual(root.dataset,{});
+});
+
+test('Round 4: manual theme cycles auto/light/dark and removes preference for auto',()=>{
+ const script=fs.readFileSync('site/assets/app.js','utf8').split('/* Local theme preference:')[1];
+ const handlers={},values=new Map(),root={dataset:{}};
+ const button={hidden:true,setAttribute(k,v){this[k]=v},addEventListener(k,v){handlers[k]=v}};
+ vm.runInNewContext('/* Local theme preference:'+script,{document:{documentElement:root,querySelector:()=>button},window:{addEventListener(k,v){handlers[k]=v}},localStorage:{setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)}});
+ assert.equal(button.textContent,'自動');assert.equal(button.hidden,false);
+ handlers.click();assert.equal(root.dataset.theme,'light');assert.equal(values.get('mb-theme'),'light');
+ handlers.click();assert.equal(root.dataset.theme,'dark');assert.equal(values.get('mb-theme'),'dark');
+ handlers.click();assert.equal(root.dataset.theme,undefined);assert.equal(values.has('mb-theme'),false);
+ handlers.storage({key:'mb-theme',newValue:'dark'});assert.equal(root.dataset.theme,'dark');
+ handlers.storage({key:'mb-theme',newValue:null});assert.equal(root.dataset.theme,undefined);
+});
 
 test('D14: eight page types, 26 source pages and real filter inputs retain their content', () => {
  fs.mkdirSync('.site-test',{recursive:true});
@@ -14,7 +45,11 @@ test('D14: eight page types, 26 source pages and real filter inputs retain their
   const type=/data-page-type="([^"]+)"/.exec(html)?.[1];
   if(type) types.add(type);
   assert.doesNotMatch(html, /class="legacy"|<span class="field">/,file);
-  assert.equal((html.match(/<script\b/g)||[]).length,1,file);
+  assert.equal((html.match(/<script\b/g)||[]).length,2,file);
+  assert.match(html, /<script src="[^"]*assets\/theme-init\.js"><\/script>/,file);
+  assert.ok(html.indexOf('assets/theme-init.js') < html.indexOf('<link rel="stylesheet"'),file);
+  assert.match(html,/default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'/,file);
+  assert.match(html,/assets\/visuals\/visual.css/,file);
   for (const anchor of html.match(/<a\b[^>]*>回到今日摘要<\/a>/g)||[]) assert.match(anchor,/class="btn back-to-overview"/,file);
   if(type==='legacy' && html.includes('同日演練分檔')) assert.match(html,/class="btn alternate-edition">同日演練分檔/,file);
  }

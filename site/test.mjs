@@ -705,9 +705,10 @@ test('preview homepage links eight story titles to their actual rendered anchors
  fs.writeFileSync(path.join(input, 'items.jsonl'), stories.map(item => JSON.stringify(item)).join('\n'));
  const result = run(input, { visualPreview: true });
  const home = result.pages.get('index.html');
- const cards = [...home.matchAll(/<li class="mb-news-card">[\s\S]*?<h3><a href="([^"#]+)#(item-\d+)">([^<]+)<\/a><\/h3>[\s\S]*?<a class="mb-source" href="([^"]+)" target="_blank" rel="noopener noreferrer"/g)];
+ const cards = [...home.matchAll(/<li class="mb-news-card">[\s\S]*?<h3><a href="([^"#]+)#(item-\d+)">((?:[^<]|<span class="cve-id">[^<]+<\/span>)+)<\/a><\/h3>[\s\S]*?<a class="mb-source" href="([^"]+)" target="_blank" rel="noopener noreferrer"/g)];
  assert.equal(cards.length, 8);
- const panels = [...home.matchAll(/<aside class="metric-panel (metric-panel--wide|metric-panel--stack)" aria-label="[^"]+">([\s\S]*?)<\/aside>/g)];
+ const panels = [...home.matchAll(/<aside class="metric-panel (metric-panel--wide|metric-panel--stack)" (?:id="product-watch" )?aria-label="[^"]+">([\s\S]*?)<\/aside>/g)];
+ assert.equal((home.match(/id="product-watch"/g)||[]).length,1);
  assert.deepEqual(panels.map(panel => panel[1]), ['metric-panel--wide', 'metric-panel--stack']);
  assert.equal(panels[0][2], panels[1][2]);
  assert.ok(home.indexOf('class="mb-home-feature"') < panels[0].index);
@@ -722,7 +723,7 @@ test('preview homepage links eight story titles to their actual rendered anchors
  ]);
  for (const [, file, id, title, source] of cards) {
   const heading = [...result.pages.get(file).matchAll(/<h2[^>]*id="(item-\d+)"[^>]*>([\s\S]*?)<\/h2>/g)].find(([, key]) => key === id);
-  assert.equal(heading?.[2].replace(/<[^>]+>/g, '').trim(), title);
+  assert.equal(heading?.[2].replace(/<[^>]+>/g, '').trim(), title.replace(/<[^>]+>/g,''));
   assert.ok(stories.some(item => item.source_url === source));
  }
  assert.match(home, /class="radar-footer" href="daily\/2026-11-21\/index.html"/);

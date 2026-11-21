@@ -302,7 +302,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       }
       storyTitles.set(file, entries);
     }
-    pages.set(file, wrapCveText(externalLinks(`<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light">${visualPreview ? '<meta name="robots" content="noindex, nofollow">' : ''}<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/design-tokens.css'))}"><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}">${visualPage(file) ? `<link rel="stylesheet" href="${esc(sitePath(file, 'assets/visuals/visual.css'))}">` : ''}<script src="${esc(sitePath(file, 'assets/app.js'))}" defer></script></head>` + `<body>${chrome}</body></html>\n`)));
+    pages.set(file, wrapCveText(externalLinks(`<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark">${visualPreview ? '<meta name="robots" content="noindex, nofollow">' : ''}<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><script src="${esc(sitePath(file, 'assets/theme-init.js'))}"></script><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/design-tokens.css'))}"><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}">${visualPage(file) ? `<link rel="stylesheet" href="${esc(sitePath(file, 'assets/visuals/visual.css'))}">` : ''}<script src="${esc(sitePath(file, 'assets/app.js'))}" defer></script></head>` + `<body>${chrome}</body></html>\n`)));
   }
   function tocBody(rendered) {
     if (!rendered.toc.length) return `<div class="prose">${rendered.html}</div>`;
@@ -433,7 +433,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     return '';
   };
   page(homeFile, '今日晨報', archiveNotice(latest, homeFile, mergedSnapshotNotice ? `<p>${missingSnapshot}</p>` : '') + warningHtml() +
-    homepage({day:latest, time:latest ? collectionTime(latest) : '', rows, catalog, stories:linkedStories, link:boundLink(homeFile), badge, fallback, visuals:true, storyTarget}));
+    homepage({day:latest, time:latest ? collectionTime(latest) : '', rows, catalog, stories:linkedStories, link:boundLink(homeFile), badge, fallback, visuals:visualPreview || !!latest?.display, storyTarget}));
   page('about.html', '關於與產生規則', `<h1>關於晨報歸檔</h1><p>內容為彙整，以原廠頁面為準。</p><p><a href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer">晨報產生規則 SPEC.md</a></p><div class="prose">${markdown(read('README.md')).html.replace(/href="(SPEC|products)\.html"/g, (_, name) => name === 'SPEC' ? 'href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer"' : 'href="products/index.html"')}</div>`, 'about', 'README.md');
   page('404.html', '找不到頁面', `<h1>找不到頁面</h1><p>這個網址可能已變更，或這一天還沒有晨報。可以從下面三個入口繼續。</p><p class="actions"><a class="btn btn--primary" href="${esc(sitePath('404.html', 'index.html'))}">回到首頁</a><a class="btn" href="${esc(sitePath('404.html', 'daily/index.html'))}">每日清單</a><a class="btn" href="${esc(sitePath('404.html', 'search/index.html'))}">搜尋晨報</a></p>`);
   page('search/index.html', '搜尋晨報', `<h1>搜尋晨報</h1><noscript><p class="notice">搜尋需要 JavaScript，你也可以直接用瀏覽器的頁內搜尋或 <a href="https://github.com/george-palsys/morning-brief-archive/search" rel="noopener noreferrer">GitHub 倉庫搜尋</a>。</p></noscript><div id="search-ui" hidden><div class="search-filterbar filterbar card"><div class="search-query"><label for="query">搜尋晨報</label><input id="query" type="search" autofocus autocomplete="off" enterkeyhint="search" class="field"></div><fieldset><legend>類別</legend>${[['cve', 'CVE'], ['taiwan-it', '台灣 IT'], ['ai', 'AI'], ['product', '產品'], ['knowledge', '新知識']].map(([k, v]) => `<label class="chip"><input type="checkbox" name="category" value="${k}" checked>${v}</label>`).join('')}</fieldset><div class="search-range"><label for="range">時間範圍</label><select id="range" class="field"><option value="all">全部</option><option value="30">近 30 天</option></select></div><button id="all" class="btn" type="button">搜尋全部（較慢）</button></div><p id="search-empty" class="empty-state" hidden>找不到符合的內容</p><p id="search-status" aria-live="polite">輸入關鍵字搜尋，預設載入最近 3 個月。</p><ol id="results" hidden></ol></div>`, 'search');
@@ -442,7 +442,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   const files = new Map(pages);
   files.set('search/index.json', JSON.stringify({ months: months.map(m => `index-${m}.json`), products: productIndex }));
   for (const month of months) files.set(`search/index-${month}.json`, JSON.stringify(index.filter(i => i.date.startsWith(month))));
-  for (const asset of ['site.css', 'design-tokens.css', 'app.js']) {
+  for (const asset of ['site.css', 'design-tokens.css', 'app.js', 'theme-init.js']) {
     const bytes = readSiteAsset(new URL('./', import.meta.url), asset);
     if (asset === 'app.js') {
       const boundary = bytes.indexOf('/* Visual preview motion */');
@@ -455,7 +455,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   {
     const names = ['visual.css', 'blank.svg', 'hero-cybersecurity.webp', 'hero-cybersecurity-mobile.webp',
       'hero-infrastructure.webp', 'hero-infrastructure-mobile.webp', 'hero-ai.webp', 'hero-ai-mobile.webp',
-      ...['ai','archive','book','cloud','document','layers','network','patch','radar','search','shield','spark'].map(name => `icon-${name}.svg`)];
+      ...['ai','archive','book','cloud','document','layers','network','patch','radar','search','shield','spark'].flatMap(name => [`icon-${name}.svg`, `icon-${name}-dark.svg`])];
     for (const name of names) {
       const asset = `assets/visuals/${name}`;
       files.set(asset, readSiteAsset(new URL('./', import.meta.url), name, true));

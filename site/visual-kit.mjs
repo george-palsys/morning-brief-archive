@@ -3,7 +3,7 @@ import fs from 'node:fs';
 export function readSiteAsset(siteRoot, name, visual = false) {
   const allowed = visual
     ? /^[-a-z]+\.(?:webp|svg|css)$/.test(name)
-    : ['site.css', 'design-tokens.css', 'app.js'].includes(name);
+    : ['site.css', 'design-tokens.css', 'app.js', 'theme-init.js'].includes(name);
   if (!allowed) throw Error('Invalid site asset');
   const folders = visual ? ['assets', 'assets/visuals'] : ['assets'];
   for (const folder of folders) {
@@ -17,7 +17,7 @@ export function readSiteAsset(siteRoot, name, visual = false) {
 }
 
 export function visualIcon(root, name, size, lazy = false) {
-  return `<img class="mb-motion-art" src="${root}icon-${name}.svg" width="${size}" height="${size}" alt=""${lazy ? ' loading="lazy"' : ''}>`;
+  return `<img class="mb-motion-art mb-icon-${name}" src="${root}icon-${name}.svg" width="${size}" height="${size}" alt=""${lazy ? ' loading="lazy"' : ''}>`;
 }
 
 export function visualPicture(root, topic, hideOnMobile = false) {
@@ -37,5 +37,13 @@ export function fullSentences(value, limit = 160) {
 
 // Match text nodes only: never rewrite hrefs, attributes, or raw input data.
 export function wrapCveText(html) {
-  return html.split(/(<[^>]+>)/g).map(part => part.startsWith('<') ? part : part.replace(/CVE-\d{4}-\d{4,}/g, id => `<span class="cve-id">${id}</span>`)).join('');
+  let raw = false;
+  return html.split(/(<[^>]+>)/g).map(part => {
+    if (part.startsWith('<')) {
+      if (/^<(?:title|script|style)\b/i.test(part)) raw = true;
+      if (/^<\/(?:title|script|style)>/i.test(part)) raw = false;
+      return part;
+    }
+    return raw ? part : part.replace(/CVE-\d{4}-\d{4,}/g, id => `<span class="cve-id">${id}</span>`);
+  }).join('');
 }

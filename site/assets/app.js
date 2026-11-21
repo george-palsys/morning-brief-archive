@@ -170,3 +170,31 @@ if (document.querySelector('.mb-motion-art')) {
     document.querySelectorAll('.mb-motion-art').forEach(art => observer.observe(art));
   }
 }
+
+/* Local theme preference: auto -> light -> dark -> auto. */
+(() => {
+  const button = document.querySelector('[data-theme-toggle]');
+  if (!button) return;
+  const root = document.documentElement;
+  const labels = {light:'亮色',dark:'深色',auto:'自動'};
+  const current = () => ['light','dark'].includes(root.dataset.theme) ? root.dataset.theme : 'auto';
+  const refresh = () => {
+    const value = current();
+    const next = value === 'auto' ? 'light' : value === 'light' ? 'dark' : 'auto';
+    button.textContent = labels[value];
+    button.setAttribute('aria-label', `配色：${labels[value]}，切換為${labels[next]}`);
+  };
+  button.hidden = false;
+  refresh();
+  button.addEventListener('click', () => {
+    const value = current(), next = value === 'auto' ? 'light' : value === 'light' ? 'dark' : 'auto';
+    if (next === 'auto') delete root.dataset.theme; else root.dataset.theme = next;
+    try { if (next === 'auto') localStorage.removeItem('mb-theme'); else localStorage.setItem('mb-theme', next); } catch { /* In-memory preference remains usable. */ }
+    refresh();
+  });
+  window.addEventListener('storage', event => {
+    if (event.key !== 'mb-theme') return;
+    if (event.newValue === 'light' || event.newValue === 'dark') root.dataset.theme = event.newValue; else delete root.dataset.theme;
+    refresh();
+  });
+})();

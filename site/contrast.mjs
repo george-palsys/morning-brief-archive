@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const source = fs.readFileSync(new URL('./assets/design-tokens.css', import.meta.url), 'utf8');
-const tokens = Object.fromEntries([...source.matchAll(/--([a-z0-9-]+):\s*(#[a-f\d]{6})\b/gi)].map(([, name, hex]) => [name, hex]));
+const parse = text => Object.fromEntries([...text.matchAll(/--([a-z0-9-]+):\s*(#[a-f\d]{6})\b/gi)].map(([, name, hex]) => [name, hex]));
+const light = parse(source.match(/:root\{([^}]+)\}/)[1]);
+const dark = parse(source.match(/:root\[data-theme=dark\]\{([^}]+)\}/)[1]);
+const system = parse(source.match(/@media \(prefers-color-scheme:dark\)\{\s*:root:not\(\[data-theme=light\]\)\{([^}]+)\}/)[1]);
+assert.deepEqual(system, dark, 'OS and manual dark tokens must stay identical');
 function luminance(hex) {
   const channels = hex.slice(1).match(/../g).map(value => parseInt(value, 16) / 255)
     .map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
@@ -23,6 +27,7 @@ const pairs = [
   ['sev-critical', 'sev-critical-bg', 4.5], ['expl-poc', 'expl-poc-bg', 4.5],
   ['expl-confirmed', 'expl-confirmed-bg', 4.5],
 ];
+for (const [theme, tokens] of [['light',light],['dark',dark]]) {
 for (const [fg, bg, min] of pairs) {
   assert.ok(tokens[fg] && tokens[bg], `${fg}/${bg}: missing token`);
   const a = luminance(tokens[fg]), b = luminance(tokens[bg]);
@@ -30,4 +35,5 @@ for (const [fg, bg, min] of pairs) {
   assert.ok(ratio >= min, `${fg}/${bg} ${ratio.toFixed(2)} < ${min}`);
   if (bg === 'source-warning-bg') console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
 }
-console.log(`CONTRAST OK: ${pairs.length} Proposal A color pairs (light)`);
+}
+console.log(`CONTRAST OK: ${pairs.length} pairs × 2 themes`);
