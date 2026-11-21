@@ -5,6 +5,65 @@ import path from 'node:path';
 import vm from 'node:vm';
 import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
+import {wrapCveText} from './visual-kit.mjs';
+
+test('Round 4 review: quoted greater-than attribute stays intact while CVE text wraps',()=>{
+ const source='<a title="details > CVE-2026-12345" data-note=\'other > CVE-2026-67890\'>CVE-2026-12345</a>';
+ assert.equal(wrapCveText(source),'<a title="details > CVE-2026-12345" data-note=\'other > CVE-2026-67890\'><span class="cve-id">CVE-2026-12345</span></a>');
+ const escaped='<a title="details &gt; CVE-2026-12345">CVE-2026-12345</a>';
+ assert.equal(wrapCveText(escaped),'<a title="details &gt; CVE-2026-12345"><span class="cve-id">CVE-2026-12345</span></a>');
+});
+
+test('Round 4 review: mixed CVE titles use block flow and selected controls use theme tokens',()=>{
+ const css=fs.readFileSync('site/assets/site.css','utf8');
+ const visual=fs.readFileSync('site/assets/visuals/visual.css','utf8');
+ assert.match(visual,/\.mb-news-card h3 a\{display:block;min-height:44px/);
+ assert.match(css,/\.d14 #results>li>a\{display:block;[^}]*min-height:44px/);
+ assert.match(css,/\.d14 \.section-tabs a\[aria-current="page"\]\{background:var\(--selected-bg\);color:var\(--selected-ink\);border-color:var\(--selected-border\)/);
+ assert.match(css,/label:has\(:checked\)\{color:var\(--selected-ink\);background:var\(--selected-bg\);border-color:var\(--selected-border\)/);
+});
+
+test('Round 4: dynamic CVE labels use text nodes without interpreting search content',()=>{
+ const helper=fs.readFileSync('site/assets/app.js','utf8').split("document.documentElement.classList.add('js');")[0];
+ const context=vm.createContext({document:{createElement:()=>({}),createTextNode:text=>({text})}});
+ vm.runInContext(helper,context);
+ const element={children:[],append(node){this.children.push(node)}};
+ context.setCveText(element,'<img src=x> CVE-2026-12345 text');
+ assert.equal(element.children[0].text,'<img src=x> ');
+ assert.equal(element.children[1].className,'cve-id');
+ assert.equal(element.children[1].textContent,'CVE-2026-12345');
+ assert.equal(element.children[2].text,' text');
+});
+
+test('Round 4: CVE text markup never rewrites attributes or raw head content',()=>{
+ const source='<title>CVE-2026-12345</title><a href="/CVE-2026-12345">CVE-2026-12345</a>';
+ assert.equal(wrapCveText(source),'<title>CVE-2026-12345</title><a href="/CVE-2026-12345"><span class="cve-id">CVE-2026-12345</span></a>');
+});
+
+test('Round 4: pre-CSS preference accepts only light/dark and handles blocked storage',()=>{
+ const script=fs.readFileSync('site/assets/theme-init.js','utf8');
+ for(const value of [null,'light','dark','unexpected']){
+  const root={dataset:{}};
+  vm.runInNewContext(script,{document:{documentElement:root},localStorage:{getItem:()=>value}});
+  assert.equal(root.dataset.theme,['light','dark'].includes(value)?value:undefined);
+ }
+ const root={dataset:{}};
+ vm.runInNewContext(script,{document:{documentElement:root},localStorage:{getItem(){throw Error('blocked')}}});
+ assert.deepEqual(root.dataset,{});
+});
+
+test('Round 4: manual theme cycles auto/light/dark and removes preference for auto',()=>{
+ const script=fs.readFileSync('site/assets/app.js','utf8').split('/* Local theme preference:')[1];
+ const handlers={},values=new Map(),root={dataset:{}};
+ const button={hidden:true,setAttribute(k,v){this[k]=v},addEventListener(k,v){handlers[k]=v}};
+ vm.runInNewContext('/* Local theme preference:'+script,{document:{documentElement:root,querySelector:()=>button},window:{addEventListener(k,v){handlers[k]=v}},localStorage:{setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)}});
+ assert.equal(button.textContent,'自動');assert.equal(button.hidden,false);
+ handlers.click();assert.equal(root.dataset.theme,'light');assert.equal(values.get('mb-theme'),'light');
+ handlers.click();assert.equal(root.dataset.theme,'dark');assert.equal(values.get('mb-theme'),'dark');
+ handlers.click();assert.equal(root.dataset.theme,undefined);assert.equal(values.has('mb-theme'),false);
+ handlers.storage({key:'mb-theme',newValue:'dark'});assert.equal(root.dataset.theme,'dark');
+ handlers.storage({key:'mb-theme',newValue:null});assert.equal(root.dataset.theme,undefined);
+});
 
 test('D14: eight page types, 26 source pages and real filter inputs retain their content', () => {
  fs.mkdirSync('.site-test',{recursive:true});
@@ -14,7 +73,11 @@ test('D14: eight page types, 26 source pages and real filter inputs retain their
   const type=/data-page-type="([^"]+)"/.exec(html)?.[1];
   if(type) types.add(type);
   assert.doesNotMatch(html, /class="legacy"|<span class="field">/,file);
-  assert.equal((html.match(/<script\b/g)||[]).length,1,file);
+  assert.equal((html.match(/<script\b/g)||[]).length,2,file);
+  assert.match(html, /<script src="[^"]*assets\/theme-init\.js"><\/script>/,file);
+  assert.ok(html.indexOf('assets/theme-init.js') < html.indexOf('<link rel="stylesheet"'),file);
+  assert.match(html,/default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'/,file);
+  assert.match(html,/assets\/visuals\/visual.css/,file);
   for (const anchor of html.match(/<a\b[^>]*>回到今日摘要<\/a>/g)||[]) assert.match(anchor,/class="btn back-to-overview"/,file);
   if(type==='legacy' && html.includes('同日演練分檔')) assert.match(html,/class="btn alternate-edition">同日演練分檔/,file);
  }
@@ -107,4 +170,30 @@ test('D14: seven lead-in labels remain text, never form fields',()=>{
  const quoted=markdown('## 內容\n\n> ## 引用內標題\n>\n> 內容保留。\n\n## 第二節',{cards:true}).html;
  assert.equal((quoted.match(/class="card d14-section"/g)||[]).length,2);
  assert.match(quoted,/<blockquote>[^]*?引用內標題[^]*?<\/blockquote>/);
+});
+
+
+test('Round 4 r3: CVE text boundaries preserve raw elements, comments and existing spans',()=>{
+ const id='CVE-2026-12345';
+ const wrapped=`<span class="cve-id">${id}</span>`;
+ for(const source of [
+  `<!-- > ${id} -->`, `<script>if (a < b) { const id="${id}"; }</script >`,
+  `<STYLE>.x::after{content:"${id}"}</STYLE>`, `<textarea>text < > ${id}</textarea>`,
+  `<title>${id}</title >`, `<pre><code>${id}</code></pre>`, wrapped,
+  `<span class='other cve-id'>${id}</span>`, `prefix${id}`, `${id}suffix`, `${id}-suffix`,
+  `<!-- unterminated ${id}`, `<script>unterminated ${id}`,
+ ]) assert.equal(wrapCveText(source),source,source);
+ assert.equal(wrapCveText(`(${id})、${id}。`),`(${wrapped})、${wrapped}。`);
+ assert.equal(wrapCveText(wrapCveText(`<p>${id}</p>`)),`<p>${wrapped}</p>`);
+ assert.equal(wrapCveText(`<code>${id}</code><p>${id}</p>`),`<code>${id}</code><p>${wrapped}</p>`);
+ console.log('CVE BOUNDARY PROBE: raw/comments/code/existing spans preserved; exact token and idempotency passed');
+});
+
+test('Round 4 r3: daily overviews, archive and legacy pages each include one hero',()=>{
+ const result=build({output:fs.mkdtempSync(path.resolve('.site-test/r3-hero-'))});
+ const pages=[...result.pages].filter(([,html])=>/data-page-type="(?:overview|archive|legacy)"/.test(html));
+ assert.ok(pages.some(([file])=>file==='daily/index.html'));
+ assert.ok(pages.some(([,html])=>html.includes('data-page-type="overview"')));
+ for(const [file,html] of pages) assert.equal((html.match(/class="mb-banner"/g)||[]).length,1,file);
+ console.log(`HERO PROBE: ${pages.length} overview/archive/legacy pages; one hero each`);
 });

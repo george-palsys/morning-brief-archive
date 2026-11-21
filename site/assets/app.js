@@ -1,3 +1,13 @@
+function setCveText(element, value) {
+ const text = String(value ?? '');
+ if (!/CVE-\d{4}-\d{4,}/.test(text)) { element.textContent = text; return; }
+ element.textContent = '';
+ for (const part of text.split(/(CVE-\d{4}-\d{4,})/g)) {
+  if (/^CVE-\d{4}-\d{4,}$/.test(part)) {
+   const span = document.createElement('span'); span.className = 'cve-id'; span.textContent = part; element.append(span);
+  } else element.append(document.createTextNode(part));
+ }
+}
 document.documentElement.classList.add('js');
 // Native details remains useful without JavaScript. Desktop expands the same DOM.
 const wide = matchMedia('(min-width:1380px)');
@@ -112,7 +122,7 @@ function render() {
   const a = document.createElement('a');
   // Only builder-produced relative page paths can become result destinations.
   if (!/^(?:daily|products)\/[a-zA-Z0-9/_-]+\.html(?:#item-\d+)?$/.test(item.file)) continue;
-  a.href = '../' + item.file; a.textContent = item.title;
+  a.href = '../' + item.file; setCveText(a, item.title);
   const meta = document.createElement('p');
   meta.className = 'search-meta';
   const category = document.createElement('span');
@@ -124,7 +134,7 @@ function render() {
   li.append(a,meta);
   if (item.summary) {
    const excerpt = document.createElement('p');
-   excerpt.className = 'search-excerpt'; excerpt.textContent = item.summary; li.append(excerpt);
+   excerpt.className = 'search-excerpt'; setCveText(excerpt, item.summary); li.append(excerpt);
   }
   results.append(li);
  }
@@ -141,3 +151,60 @@ ui.querySelectorAll('input[type=checkbox],select').forEach(el => el.addEventList
 document.querySelector('#all').addEventListener('click', () => update(true));
 
 }
+/* Visual preview motion */
+const groupedDirectory = document.querySelector('.mb-directory');
+if (groupedDirectory && bar) {
+  const syncGroups = () => {
+    for (const group of groupedDirectory.tBodies) {
+      const heading = group.querySelector('tr.grp');
+      if (heading) heading.hidden = !group.querySelector('tr[data-status]:not([hidden])');
+    }
+  };
+  bar.addEventListener('input', syncGroups);
+  bar.addEventListener('click', syncGroups);
+}
+if (document.querySelector('.mb-motion-art')) {
+  for (const image of document.querySelectorAll('.mb-art img')) {
+    const hide = () => { image.closest('picture').hidden = true; };
+    image.addEventListener('error', hide, { once: true });
+    if (image.complete && image.naturalWidth === 0) hide();
+  }
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add('mb-in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+    document.querySelectorAll('.mb-motion-art').forEach(art => observer.observe(art));
+  }
+}
+
+/* Local theme preference: auto -> light -> dark -> auto. */
+(() => {
+  const button = document.querySelector('[data-theme-toggle]');
+  if (!button) return;
+  const root = document.documentElement;
+  const labels = {light:'亮色',dark:'深色',auto:'自動'};
+  const current = () => ['light','dark'].includes(root.dataset.theme) ? root.dataset.theme : 'auto';
+  const refresh = () => {
+    const value = current();
+    const next = value === 'auto' ? 'light' : value === 'light' ? 'dark' : 'auto';
+    button.textContent = labels[value];
+    button.setAttribute('aria-label', `配色：${labels[value]}，切換為${labels[next]}`);
+  };
+  button.hidden = false;
+  refresh();
+  button.addEventListener('click', () => {
+    const value = current(), next = value === 'auto' ? 'light' : value === 'light' ? 'dark' : 'auto';
+    if (next === 'auto') delete root.dataset.theme; else root.dataset.theme = next;
+    try { if (next === 'auto') localStorage.removeItem('mb-theme'); else localStorage.setItem('mb-theme', next); } catch { /* In-memory preference remains usable. */ }
+    refresh();
+  });
+  window.addEventListener('storage', event => {
+    if (event.key !== 'mb-theme') return;
+    if (event.newValue === 'light' || event.newValue === 'dark') root.dataset.theme = event.newValue; else delete root.dataset.theme;
+    refresh();
+  });
+})();

@@ -2,13 +2,18 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const source = fs.readFileSync(new URL('./assets/design-tokens.css', import.meta.url), 'utf8');
-const tokens = Object.fromEntries([...source.matchAll(/--([a-z0-9-]+):\s*(#[a-f\d]{6})\b/gi)].map(([, name, hex]) => [name, hex]));
+const parse = text => Object.fromEntries([...text.matchAll(/--([a-z0-9-]+):\s*(#[a-f\d]{6})\b/gi)].map(([, name, hex]) => [name, hex]));
+const light = parse(source.match(/:root\{([^}]+)\}/)[1]);
+const dark = parse(source.match(/:root\[data-theme=dark\]\{([^}]+)\}/)[1]);
+const system = parse(source.match(/@media \(prefers-color-scheme:dark\)\{\s*:root:not\(\[data-theme=light\]\)\{([^}]+)\}/)[1]);
+assert.deepEqual(system, dark, 'OS and manual dark tokens must stay identical');
 function luminance(hex) {
   const channels = hex.slice(1).match(/../g).map(value => parseInt(value, 16) / 255)
     .map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
   return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
 }
 const pairs = [
+  ['selected-ink', 'selected-bg', 4.5], ['selected-border', 'selected-bg', 3],
   ['ink', 'source-warning-bg', 4.5],
   ['ink-2', 'factbox-bg', 4.5], ['muted', 'factbox-bg', 4.5],
   ['ink-2', 'directory-head-bg', 4.5], ['muted', 'directory-head-bg', 4.5],
@@ -23,11 +28,13 @@ const pairs = [
   ['sev-critical', 'sev-critical-bg', 4.5], ['expl-poc', 'expl-poc-bg', 4.5],
   ['expl-confirmed', 'expl-confirmed-bg', 4.5],
 ];
+for (const [theme, tokens] of [['light',light],['dark',dark]]) {
 for (const [fg, bg, min] of pairs) {
   assert.ok(tokens[fg] && tokens[bg], `${fg}/${bg}: missing token`);
   const a = luminance(tokens[fg]), b = luminance(tokens[bg]);
   const ratio = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
   assert.ok(ratio >= min, `${fg}/${bg} ${ratio.toFixed(2)} < ${min}`);
-  if (bg === 'source-warning-bg') console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
+  if (bg === 'source-warning-bg' || bg === 'selected-bg') console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
 }
-console.log(`CONTRAST OK: ${pairs.length} Proposal A color pairs (light)`);
+}
+console.log(`CONTRAST OK: ${pairs.length} pairs × 2 themes`);
