@@ -525,7 +525,7 @@ test('v4 accepts the product inventory summary and preserves Friday supplements'
  assert.match(knowledge, /<\/article>\s*<article class="news-card v4-entry"><h2[^>]*>本週回顧<\/h2>[^]*?<article class="news-card v4-entry"><h2[^>]*>本週動手題<\/h2>/);
  assert.equal((knowledge.match(/class="weekly-title"/g) || []).length, 2);
  assert.doesNotMatch(knowledge, /class="v4-keyword"/);
- assert.match(page('index'), /產品動態<\/a> <strong>6 則<\/strong>/);
+ assert.match(page('index'), /href="products.html"><strong>6 <small>則<\/small><\/strong><span class="lab">產品動態<\/span><\/a>/);
  f.edit('README.md', source => source.replace(/^\| \[CI\/CD\/Argo CD\][^\n]*\n/m, ''));
  assert.throws(() => f.run(), /products：摘要則數、段落標題與 display 則數不一致/);
 });

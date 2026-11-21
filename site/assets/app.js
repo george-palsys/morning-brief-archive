@@ -1,8 +1,15 @@
 document.documentElement.classList.add('js');
 // Native details remains useful without JavaScript. Desktop expands the same DOM.
-const wide = matchMedia('(min-width:921px)');
+const wide = matchMedia('(min-width:1380px)');
+function adaptTables() {
+ document.querySelectorAll('.table-scroll,.table-stack').forEach(el => {
+  const hint = el.previousElementSibling;
+  if (hint?.classList?.contains('scroll-hint')) hint.hidden = el.scrollWidth <= el.clientWidth || matchMedia('(max-width:680px)').matches;
+ });
+}
 function adaptTabs() {
  document.querySelectorAll('.tabs-scroll').forEach(el => { el.tabIndex = el.scrollWidth > el.clientWidth ? 0 : -1; });
+ adaptTables();
 }
 function adapt() { document.querySelectorAll('.page-toc').forEach(el => { el.open = wide.matches; }); adaptTabs(); }
 adapt();
@@ -11,6 +18,7 @@ window.addEventListener('resize', adaptTabs);
 if (typeof ResizeObserver === 'function') {
  const observer = new ResizeObserver(adaptTabs);
  document.querySelectorAll('.tabs-scroll').forEach(el => observer.observe(el));
+ document.querySelectorAll('.table-scroll,.table-stack').forEach(el => { if (el.previousElementSibling?.classList?.contains('scroll-hint')) observer.observe(el); });
 }
 
 const menu = document.querySelector?.('.menu');
@@ -89,6 +97,8 @@ async function load(all = false) {
 function render() {
  results.replaceChildren();
  results.hidden = true;
+ const empty = document.querySelector('#search-empty');
+ if (empty) empty.hidden = true;
  const terms = normalize(query.value).trim().split(/\s+/).filter(Boolean);
  if (!terms.length) { status.textContent = '輸入關鍵字搜尋，預設載入最近 3 個月。'; return; }
  const categories = [...ui.querySelectorAll('[name=category]:checked')].map(el => el.value);
@@ -104,7 +114,13 @@ function render() {
   if (!/^(?:daily|products)\/[a-zA-Z0-9/_-]+\.html(?:#item-\d+)?$/.test(item.file)) continue;
   a.href = '../' + item.file; a.textContent = item.title;
   const meta = document.createElement('p');
-  meta.textContent = `${item.date} · ${{cve:'CVE','taiwan-it':'台灣 IT',ai:'AI',product:'產品',knowledge:'新知識'}[item.category]} · ${item.products.join('、')}`;
+  meta.className = 'search-meta';
+  const category = document.createElement('span');
+  category.className = 'tag';
+  category.textContent = {cve:'CVE','taiwan-it':'台灣 IT',ai:'AI',product:'產品',knowledge:'新知識'}[item.category];
+  const date = document.createElement('span');
+  date.textContent = `${item.date} · ${item.products.join('、')}`;
+  meta.append(category,date);
   li.append(a,meta);
   if (item.summary) {
    const excerpt = document.createElement('p');
@@ -113,6 +129,7 @@ function render() {
   results.append(li);
  }
  results.hidden = results.childElementCount === 0;
+ if (empty) empty.hidden = matches.length !== 0;
  status.textContent = matches.length ? `找到 ${matches.length} 筆${matches.length > 50 ? `，還有 ${matches.length-50} 筆，請縮小條件` : ''}` : `沒有符合『${query.value}』的結果；請換關鍵字或取消類別篩選。`;
 }
 async function update(all = false) {

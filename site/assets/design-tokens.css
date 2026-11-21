@@ -4,6 +4,10 @@
    所有「文字色／底色」組合的對比值已用 WCAG 2.x 公式計算，見 design-spec.md §3。 */
 
 :root{
+  /* D14 extensions: the approved base tokens below are unchanged. */
+  --factbox-bg:#f9fafc;
+  --directory-head-bg:#f0f2f6;
+  --source-warning-bg:#fff4d6;
   color-scheme: light;
 
   /* ---- 色彩：中性 ---- */

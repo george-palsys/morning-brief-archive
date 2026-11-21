@@ -9,6 +9,9 @@ function luminance(hex) {
   return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
 }
 const pairs = [
+  ['ink', 'source-warning-bg', 4.5],
+  ['ink-2', 'factbox-bg', 4.5], ['muted', 'factbox-bg', 4.5],
+  ['ink-2', 'directory-head-bg', 4.5], ['muted', 'directory-head-bg', 4.5],
   ...['paper', 'canvas', 'wash'].flatMap(bg => ['ink', 'ink-2', 'muted', 'accent'].map(fg => [fg, bg, 4.5])),
   ['subtle', 'paper', 4.5], ['subtle', 'canvas', 4.5], ['faded', 'canvas', 4.5],
   ['accent', 'accent-soft', 4.5], ['line-strong', 'paper', 3], ['line-strong', 'canvas', 3],
@@ -25,5 +28,6 @@ for (const [fg, bg, min] of pairs) {
   const a = luminance(tokens[fg]), b = luminance(tokens[bg]);
   const ratio = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
   assert.ok(ratio >= min, `${fg}/${bg} ${ratio.toFixed(2)} < ${min}`);
+  if (bg === 'source-warning-bg') console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
 }
 console.log(`CONTRAST OK: ${pairs.length} Proposal A color pairs (light)`);

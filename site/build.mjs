@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { pageContent, productMeta } from './d14.mjs';
 import { shell, directory, homepage } from './round3.mjs';
 import { copy } from './display-v4-copy.mjs';
 import { readDisplay, renderOverview, renderEntry, renderDrill } from './display-v4.mjs';
@@ -26,8 +27,13 @@ export function url(s) {
   if (/^https?:\/\//i.test(s)) return s;
   return s.replace(/(^|\/)README\.md(?=$|[?#])/g, '$1index.html').replace(/\.md(?=$|[?#])/g, '.html');
 }
-export function markdown(source, { section = '', summary = false, display } = {}) {
+export function markdown(source, { section = '', summary = false, display, cards = false } = {}) {
   const md = new MarkdownIt({ html: false, linkify: true, typographer: false });
+  for (const rule of ['fence', 'code_block']) {
+    const original = md.renderer.rules[rule];
+    md.renderer.rules[rule] = (tokens, i, options, env, renderer) => original(tokens, i, options, env, renderer)
+      .replace('<pre>', '<pre tabindex="0" role="region" aria-label="程式碼區塊">');
+  }
   const closes = md.renderer.rules.link_close || ((t, i, o, e, r) => r.renderToken(t, i, o));
   let external = false;
   md.renderer.rules.link_close = (t, i, o, e, r) => {
@@ -109,7 +115,7 @@ export function markdown(source, { section = '', summary = false, display } = {}
   md.renderer.rules.table_open = (t, i) => {
     const { cls, caption } = t[i].meta;
     const wrapper = cls === 'table-wide'
-      ? `<p class="scroll-hint">可左右捲動</p><div class="table-scroll table-wide" role="region" aria-label="${esc(caption)}" tabindex="0">`
+      ? `<p class="scroll-hint" hidden>可左右捲動</p><div class="table-scroll table-wide" role="region" aria-label="${esc(caption)}" tabindex="0">`
       : '<div class="table-stack">';
     return `${wrapper}<table role="table"><caption class="sr-only">${esc(caption)}</caption>\n`;
   };
@@ -182,17 +188,20 @@ export function markdown(source, { section = '', summary = false, display } = {}
     if (entryIndex !== display.length) throw Error(`display.${section} 項目數與輸出條目數不一致`);
     return { html, toc };
   }
-  let html = md.renderer.render(tokens, md.options, {});
+  const renderTokens = part => md.renderer.render(part, md.options, {});
+  const starts = cards ? tokens.flatMap((token, i) => token.type === 'heading_open' && token.tag === 'h2' && token.level === 0 ? [i] : []) : [];
+  let html = starts.length ? renderTokens(tokens.slice(0, starts[0])) + starts.map((start, i) =>
+    `<section class="card d14-section">${renderTokens(tokens.slice(start, starts[i + 1]))}</section>`).join('') : renderTokens(tokens);
   // Explicit visual emphasis while preserving original wording.
   html = html.replace(/<li>(對我們的影響[：:][\s\S]*?)<\/li>/g, '<li class="impact">$1</li>');
   html = html.replace(/<li>類別[：:]([^<]+)<\/li>/g, '<li class="type-tag">類別：$1</li>');
   html = html.replace(/(<td[^>]*>)(無法開啟|需要登入|頁面沒有可比對的清單|已轉址)(<\/td>)/g, '$1<span class="source-warning"><span aria-hidden="true">△ </span>$2</span>$3');
-  html = html.replace(/(<li>[^<\n]*[：:])(有更新|無更新|無法確認)/g, (_, start, state) => start + badge(state));
+  html = html.replace(/(<li>[^<\n]*[：:])(有更新|無更新|無法確認|無公開來源)/g, (_, start, state) => start + badge(state));
   if (section === 'knowledge') html = html.replace(/<ul>\n((?:<li>(?:這是什麼|原理|用在哪裡|原文)[：:][\s\S]*?<\/li>\n){4})<\/ul>/g, (_, body) => '<dl class="knowledge">' + body.replace(/<li>([^：:]+)[：:]([\s\S]*?)<\/li>/g, '<dt>$1</dt><dd>$2</dd>') + '</dl>');
   if (section) html = html.replace(/(<h2[^>]*>[\s\S]*?)(?=<h2|$)/g, '<article class="news-card">$1</article>');
   if (section === 'cve' && !display) html = html.replace(/<h2\b[^>]*data-product-related="true"[^>]*>[\s\S]*?<\/h2>/g, heading => heading + '<span class="type-tag">與我們的產品線相關</span>');
   if (section === 'maintenance' && !html.trim()) html = '<p>今天沒有清單維護項目</p>\n';
-  html = html.replace(/(<li(?: class="[^"]*")?>)(發生什麼事|受影響產品與版本|嚴重度|是否已有修補|攻擊現況|影響|來源|對我們的影響)([：:])/g, '$1<span class="field">$2$3</span>');
+  html = html.replace(/(<li(?: class="[^"]*")?>)(發生什麼事|受影響產品與版本|嚴重度|是否已有修補|攻擊現況|影響|來源|對我們的影響)([：:])/g, '$1<span class="lead-in">$2$3</span>');
   if (section === 'maintenance' && html.trim() !== '<p>今天沒有清單維護項目</p>') {
     const first = html.match(/^\s*<p>([\s\S]*?)<\/p>/)?.[0] || '<p>本日清單維護紀錄如下。</p>';
     html = `${first}<details class="maintenance-record"><summary>查看維護紀錄</summary>${html.replace(first, '')}</details>`;
@@ -261,11 +270,15 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   const pages = new Map();
   // A Pages 404 is served at the failed request URL, not necessarily /404.html.
   const sitePath = (from, to) => from === '404.html' ? `${basePath}${to}` : relative(from, to);
-  const link = (from, to, label, current = false) => `<a href="${esc(sitePath(from, to))}"${current ? ' aria-current="page"' : ''}>${esc(label)}</a>`;
+  const link = (from, to, label, current = false) => {
+    const klass = label === copy.backToOverview ? 'btn back-to-overview'
+      : /^daily\/\d{4}-\d{2}-\d{2}\.html$/.test(from) && label.startsWith('同日') ? 'btn alternate-edition' : '';
+    return `<a href="${esc(sitePath(from, to))}"${current ? ' aria-current="page"' : ''}${klass ? ` class="${klass}"` : ''}>${esc(label)}</a>`;
+  };
   const crumbs = (file, area, title) => `<nav aria-label="目前位置"><ol class="breadcrumbs"><li>${link(file, 'index.html', '首頁')}</li><li>${link(file, `${area}/index.html`, area === 'daily' ? '每日' : '產品')}</li><li aria-current="page">${esc(title)}</li></ol></nav>`;
   function page(file, title, body, area = '', source = '') {
     const content = (allowRehearsal ? '<p role="note" class="notice">演練資料，非正式晨報</p>' : '') +
-      (file === 'index.html' || file === 'products/index.html' ? body : `<div class="legacy">${body}</div>`);
+      (file === 'index.html' || file === 'products/index.html' ? body : pageContent(file, body, (to, label) => link(file, to, label)));
     const chrome = shell({file, area, today:latest, time:latest ? collectionTime(latest) : '', url:sitePath, source, content});
     pages.set(file, externalLinks(`<!doctype html>\n<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'"><title>${esc(title)} – 晨報歸檔</title><link rel="stylesheet" href="${esc(sitePath(file, 'assets/design-tokens.css'))}"><link rel="stylesheet" href="${esc(sitePath(file, 'assets/site.css'))}"><script src="${esc(sitePath(file, 'assets/app.js'))}" defer></script></head>` + `<body>${chrome}</body></html>\n`));
   }
@@ -296,7 +309,8 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
       const title = `${d.date} ${label}`;
       const tabs = d.legacy ? '<p role="note" class="notice">這一天是舊版單檔格式：只有 CVE、台灣 IT、AI 三段，沒有產品動態與新知識。</p>' : `<div class="tabs-scroll" role="region" aria-label="段落導覽" tabindex="-1"><nav class="section-tabs" aria-label="本日段落">${sections.map(([key, name]) => link(file, `${d.base}/${key}.html`, name, part === key)).join('')}${link(file, 'products/index.html', '26 項產品現況')}</nav></div>`;
       const rendered = markdown(read(source), { section: !d.legacy && part !== 'index' ? part : '',
-        summary: !d.legacy && part === 'index', display: d.display?.groups[part]?.entries });
+        summary: !d.legacy && part === 'index', display: d.display?.groups[part]?.entries,
+        cards: d.legacy || (!d.display && part === 'index') });
       if (d.display && part === 'index') {
         page(file, `${d.meta.date} 摘要`, renderOverview(d, rows, file, link, collectionTime(d), days.find(day => !day.legacy && Date.parse(d.date) - Date.parse(day.date) === 86400000), days.find(day => !day.legacy && Date.parse(day.date) - Date.parse(d.date) === 86400000)), 'daily', source);
         continue;
@@ -305,11 +319,9 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
         const group = d.display.groups[part];
         const yesterday = new Date(Date.parse(d.date + 'T00:00:00Z') - 86400000).toISOString().slice(0,10);
         const previous = days.find(day => day.date === yesterday && !day.legacy);
-        const sectionHeading = part === 'cve'
-          ? `<nav class="crumbs" aria-label="所在位置">${link(file, 'index.html', '首頁')}<span aria-hidden="true">/</span><span aria-current="page">${esc(group.name)}</span></nav><div class="kicker">${esc(group.name)} · ${esc(d.date)}</div><h1 class="section-title">${esc(group.name)}</h1><p class="subhead">${esc(d.date)} 晨報，共 ${esc(group.countText)}。</p>`
-          : `<div class="v4-hero"><h1>${esc(group.heading)}</h1><p>${esc(group.countText)}</p>${part === 'ai' && d.display.aiSummary ? `<p>${esc(d.display.aiSummary)}</p>` : ''}</div>`;
+        const sectionHeading = `<nav class="crumbs" aria-label="所在位置">${link(file, 'index.html', '首頁')}<span aria-hidden="true">/</span><span aria-current="page">${esc(group.name)}</span></nav><div class="kicker">${esc(group.name)} · ${esc(d.date)}</div><h1 class="section-title">${esc(group.name)}</h1><p class="subhead">${esc(d.date)} 晨報，共 ${esc(group.countText)}。</p>${part === 'ai' && d.display.aiSummary ? `<p class="subhead">${esc(d.display.aiSummary)}</p>` : ''}`;
         page(file, `${group.name}－${d.date} 晨報`,
-          `<div class="v4-page" data-section="${part}">${renderDrill(d, collectionTime(d))}${sectionHeading}${tabs}${group.entries.length ? tocBody(rendered) : '<p>今天沒有</p>'}<nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, `${previous.base}/${part}.html`, `← ${previous.date}`) : ''}${link(file, d.href, copy.backToOverview)}</nav></div>`, 'daily', source);
+          `<div class="v4-page" data-section="${part}">${renderDrill(d, collectionTime(d))}${sectionHeading}${tabs}${group.entries.length ? tocBody(rendered) : '<p class="empty-state">今天沒有</p>'}<nav class="adjacent" aria-label="相鄰日期">${previous ? link(file, `${previous.base}/${part}.html`, `← ${previous.date}`) : ''}${link(file, d.href, copy.backToOverview)}</nav></div>`, 'daily', source);
         continue;
       }
       page(file, title, `${crumbs(file, 'daily', d.date)}<h1>${d.legacy && d.meta.title ? esc(d.meta.title) : `晨報 ${esc(d.date)}（${esc(d.meta.weekday || '')}）｜${label}`}</h1>${archiveNotice(d, file)}${d.publishedRehearsal ? '' : alternateEdition(d, file)}${tabs}${tocBody(rendered)}${timeline(d, part, file)}${!d.legacy && part !== 'index' ? link(file, d.href, copy.backToOverview) : ''}`, 'daily', source);
@@ -322,8 +334,10 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
   for (const [i, product] of catalog.entries()) {
     const slug = slugs[i]; const file = `products/${slug}.html`; const source = `products/${slug}.md`;
     const r = rows.find(r => r.id === product.id);
-    const content = exists(source) ? tocBody(markdown(read(source))) : empty;
-    page(file, `${product.name} – 產品現況`, `${crumbs(file, 'products', product.name)}<h1>${esc(product.name)}</h1>${link(file, 'products/index.html', '← 26 項產品現況')}${r ? `<p>${badge(r.state)} ${esc(r.reason)}</p>` : ''}${content}<nav class="adjacent" aria-label="相鄰產品">${i ? link(file, `products/${slugs[i - 1]}.html`, `← ${catalog[i - 1].name}`) : ''}${i < 25 ? link(file, `products/${slugs[i + 1]}.html`, `${catalog[i + 1].name} →`) : ''}</nav>`, 'products', exists(source) ? source : 'products.yaml');
+    const renderedProduct = exists(source) ? markdown(read(source), { cards: true }) : null;
+    if (renderedProduct) renderedProduct.html = productMeta(renderedProduct.html);
+    const content = renderedProduct ? tocBody(renderedProduct) : empty;
+    page(file, `${product.name} – 產品現況`, `${crumbs(file, 'products', product.name)}<h1>${esc(product.name)}${r ? badge(r.state) : ''}</h1>${link(file, 'products/index.html', '← 26 項產品現況')}${r?.reason ? `<p class="product-status-note">${esc(r.reason)}</p>` : ''}${content}<nav class="adjacent" aria-label="相鄰產品">${i ? link(file, `products/${slugs[i - 1]}.html`, `← ${catalog[i - 1].name}`) : ''}${i < 25 ? link(file, `products/${slugs[i + 1]}.html`, `${catalog[i + 1].name} →`) : ''}</nav>`, 'products', exists(source) ? source : 'products.yaml');
   }
   const directoryFile = 'products/index.html';
   const boundLink = file => (target,label,klass,decoration = '') => `<a${klass ? ` class="${klass}"` : ''} href="${esc(sitePath(file,target))}">${esc(label)}${decoration}</a>`;
@@ -387,7 +401,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     homepage({day:latest, time:latest ? collectionTime(latest) : '', rows, catalog, stories:linkedStories, link:boundLink(homeFile), badge, fallback}));
   page('about.html', '關於與產生規則', `<h1>關於晨報歸檔</h1><p>內容為彙整，以原廠頁面為準。</p><p><a href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer">晨報產生規則 SPEC.md</a></p><div class="prose">${markdown(read('README.md')).html.replace(/href="(SPEC|products)\.html"/g, (_, name) => name === 'SPEC' ? 'href="https://github.com/george-palsys/morning-brief-archive/blob/main/SPEC.md" rel="noopener noreferrer"' : 'href="products/index.html"')}</div>`, 'about', 'README.md');
   page('404.html', '找不到頁面', `<h1>找不到頁面</h1><p>這個網址可能已變更，或這一天還沒有晨報。可以從下面三個入口繼續。</p><p class="actions"><a class="btn btn--primary" href="${esc(sitePath('404.html', 'index.html'))}">回到首頁</a><a class="btn" href="${esc(sitePath('404.html', 'daily/index.html'))}">每日清單</a><a class="btn" href="${esc(sitePath('404.html', 'search/index.html'))}">搜尋晨報</a></p>`);
-  page('search/index.html', '搜尋晨報', `<h1>搜尋晨報</h1><noscript><p>搜尋需要 JavaScript，你也可以直接用瀏覽器的頁內搜尋或 <a href="https://github.com/george-palsys/morning-brief-archive/search" rel="noopener noreferrer">GitHub 倉庫搜尋</a>。</p></noscript><div id="search-ui" hidden><label for="query">搜尋晨報</label><input id="query" type="search" autofocus autocomplete="off" enterkeyhint="search"><fieldset><legend>類別</legend>${[['cve', 'CVE'], ['taiwan-it', '台灣 IT'], ['ai', 'AI'], ['product', '產品'], ['knowledge', '新知識']].map(([k, v]) => `<label><input type="checkbox" name="category" value="${k}" checked>${v}</label>`).join('')}</fieldset><label for="range">時間範圍</label><select id="range"><option value="all">全部</option><option value="30">近 30 天</option></select><button id="all" type="button">搜尋全部（較慢）</button><p id="search-status" aria-live="polite">輸入關鍵字搜尋，預設載入最近 3 個月。</p><ol id="results" hidden></ol></div>`, 'search');
+  page('search/index.html', '搜尋晨報', `<h1>搜尋晨報</h1><noscript><p class="notice">搜尋需要 JavaScript，你也可以直接用瀏覽器的頁內搜尋或 <a href="https://github.com/george-palsys/morning-brief-archive/search" rel="noopener noreferrer">GitHub 倉庫搜尋</a>。</p></noscript><div id="search-ui" hidden><div class="search-filterbar filterbar card"><div class="search-query"><label for="query">搜尋晨報</label><input id="query" type="search" autofocus autocomplete="off" enterkeyhint="search" class="field"></div><fieldset><legend>類別</legend>${[['cve', 'CVE'], ['taiwan-it', '台灣 IT'], ['ai', 'AI'], ['product', '產品'], ['knowledge', '新知識']].map(([k, v]) => `<label class="chip"><input type="checkbox" name="category" value="${k}" checked>${v}</label>`).join('')}</fieldset><div class="search-range"><label for="range">時間範圍</label><select id="range" class="field"><option value="all">全部</option><option value="30">近 30 天</option></select></div><button id="all" class="btn" type="button">搜尋全部（較慢）</button></div><p id="search-empty" class="empty-state" hidden>找不到符合的內容</p><p id="search-status" aria-live="polite">輸入關鍵字搜尋，預設載入最近 3 個月。</p><ol id="results" hidden></ol></div>`, 'search');
   const months = [...new Set(index.map(i => i.date.slice(0, 7)))].sort().reverse();
   const productIndex = catalog.map((p, i) => ({ id: `product-${p.id}`, date: '', category: 'product', title: p.name, products: [p.name], cve_ids: [], summary: '', file: `products/${slugs[i]}.html` }));
   const files = new Map(pages);
