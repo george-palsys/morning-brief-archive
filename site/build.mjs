@@ -55,7 +55,9 @@ export function markdown(source, { section = '', summary = false, display, cards
   };
   // Images from source content never make network requests (including tracking pixels).
   md.renderer.rules.image = (t, i) => esc(t[i].content);
-  md.renderer.rules.text = (t, i) => esc(t[i].content).replace(/\bCVE-\d{4}-\d+\b/g, '<code>$&</code>');
+  const codeMarkup = value => `<code${/^CVE-\d{4}-\d{4,}$/.test(value) ? ' class="cve-code"' : ''}>${esc(value)}</code>`;
+  md.renderer.rules.code_inline = (t, i) => codeMarkup(t[i].content);
+  md.renderer.rules.text = (t, i) => esc(t[i].content).replace(/\bCVE-\d{4}-\d+\b/g, id => codeMarkup(id));
   source = source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
     .split(/\r?\n/).filter(line => !/^\[← (?:今日摘要|26 項產品現況)\]/.test(line)).join('\n');
   source = source.replace(/^> 歷史演練分檔：[^\n]*(?:\n|$)/gm, '');
@@ -367,7 +369,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     rows, catalog:catalog.map((product,i)=>({ ...product, slug:slugs[i] })), link:boundLink(directoryFile),
     badge, warnings:warningHtml(), empty, visuals:true, warn,
   }), 'products', exists('products/README.md') ? 'products/README.md' : 'products.yaml');
-  const dayList = (file, list) => `<ul class="day-list">${list.map(d => `<li>${link(file, d.href, `${d.date} ${d.meta.weekday || ''}${d.publishedRehearsal ? `｜${collectionTime(d)} 演練分檔` : ''}`)} ${d.legacy ? '<span class="type-tag">舊版</span>' : `<span>${d.publishedRehearsal ? '原演練記錄：' : ''}有更新 ${d.meta.products_updated.length} 項產品</span>`}${alternateEdition(d, file)}${d.legacy ? '' : `<span class="day-sections"><span class="type-tag">${sections.length} 分頁</span>${sections.slice(1).map(([part,label]) => link(file,`${d.base}/${part}.html`,label)).join('')}</span>`}</li>`).join('')}</ul>`;
+  const dayList = (file, list) => `<ul class="day-list">${list.map(d => `<li>${link(file, d.href, `${d.date} ${d.meta.weekday || ''}${d.publishedRehearsal ? `｜${collectionTime(d)} 演練分檔` : ''}`).replace(/｜([^<]*)<\/a>/, '<span class="day-edition">｜$1</span></a>')} ${d.legacy ? '<span class="type-tag">舊版</span>' : `<span>${d.publishedRehearsal ? '原演練記錄：' : ''}有更新 ${d.meta.products_updated.length} 項產品</span>`}${alternateEdition(d, file)}${d.legacy ? '' : `<span class="day-sections"><span class="type-tag">${sections.length} 分頁</span>${sections.slice(1).map(([part,label]) => link(file,`${d.base}/${part}.html`,label)).join('')}</span>`}</li>`).join('')}</ul>`;
   page('daily/index.html', '每日清單', `<h1>每日清單</h1>${dayList('daily/index.html', calendarDays)}`, 'daily');
   let attention = ''; let summaryCards = '';
   if (latest) {
