@@ -1,0 +1,162 @@
+title: 晨報 2026-11-23
+date: '2026-11-23'
+weekday: 星期一
+type: morning-brief
+collected_at: '2026-11-23T02:20:00+08:00'
+cve_ids:
+- CVE-2026-125396
+- CVE-2026-65640
+products:
+- OpenShift
+- CI/CD
+tags:
+- OpenShift
+- JFrog Artifactory
+- Ghostscript
+- Microsoft Entra
+- Composite ML-DSA
+- PyPI
+- OpenShell
+- OpenRouter
+spec_version: 4
+products_checked: 26
+products_updated:
+- OpenShift
+- CI/CD
+products_unconfirmed:
+- Software Risk Manager (SRM)
+cicd_tools_updated:
+- JFrog Artifactory
+attention:
+  section: cve
+  title: Ghostscript 沙箱可被特製文件繞過
+  summary: Ghostscript 的 -dSAFER 沙箱可以被特製文件繞過（CVE-2026-125396），有上傳、預覽、轉檔、列印功能的系統都可能成為入口，修補版本是 Ghostscript 10.08.0。目前沒有被用於攻擊的報告；它不屬於我們 26 項產品。
+  facts:
+  - label: CVSS 4.0
+    value: '8.5'
+    source: VulnCheck（CNA）
+  - label: 修補版
+    value: 10.08.0
+  - label: 攻擊現況
+    value: 沒有被用於攻擊的報告
+display:
+  products:
+  - short: 四張 RHBA dpdk-base
+    keyword: ERRATA
+    date: 2026-11-22
+  - short: Artifactory 7.179.1 SaaS
+    keyword: JFROG
+    date: 2026-11-22
+    figures:
+    - label: 問題修正
+      value: 8 項
+  knowledge:
+  - short: Composite ML-DSA RFC
+    keyword: RFC10073
+    date: 2026-11-06
+  - short: Ghostscript -dSAFER 繞過
+    keyword: DSAFER
+    date: 2026-11-21
+  - short: PyPI 來源證明六種狀態
+    keyword: PYPI
+    date: 2026-11-17
+    figures:
+    - label: 比對區間
+      value: 14 天
+  - short: OpenShell 代理沙箱
+    keyword: OPENSHEL
+    date: 2026-11-11
+  - short: 安全基準是跨團隊協議
+    keyword: BASELINE
+    date: 2026-11-16
+  cve:
+  - short: Ghostscript 沙箱逃逸
+    keyword: GHOSTSCR
+    date: 2026-11-21
+    cve_ids:
+    - CVE-2026-125396
+    - CVE-2026-65640
+    cvss:
+    - score: 8.5
+      version: '4.0'
+      source: VulnCheck（CNA）
+    - score: 7.8
+      version: '3.1'
+      source: VulnCheck（CNA）
+    - score: 7.8
+      version: '3.1'
+      source: SUSE
+    - score: 8.5
+      version: '4.0'
+      source: SUSE
+    exploited: poc
+    exploited_detail: The Hacker News 寫沒有被用於攻擊的報告；pwn.ai 公開的 PoC 檔只示範核心的記憶體操作
+    patch: released
+    patch_detail: 上游 Ghostscript 10.08.0；Debian 已修正；SUSE CVE 頁的整體狀態是 Pending；Red Hat 未查到
+    related: false
+    caveat: 兩個評分的攻擊向量都是 Local，但 pwn.ai 的測試是從網路經由列印、郵件與網頁上傳到達 Ghostscript。
+  - short: Entra Connect Health
+    keyword: ENTRA
+    date: 2026-11-21
+    cve_ids: []
+    cvss: []
+    exploited: confirmed
+    exploited_detail: Microsoft 通知客戶漏洞已遭利用，未公布攻擊者與受影響租戶數（依 BleepingComputer 轉述）
+    patch: released
+    patch_detail: Microsoft 已在服務端修補（2026-11-19），客戶不需要更新軟體
+    related: false
+    caveat: Microsoft 的通知沒有公開網頁，內容全部依 BleepingComputer 的報導。
+  taiwan:
+  - short: 國銀偵測攻擊 2170 萬次
+    keyword: BANKSEC
+    kind: 其他
+    date: 2026-11-22
+    figures:
+    - label: 外部探測及攻擊
+      value: 2170 萬次
+    - label: 一銀 WAF 攔阻
+      value: 220 萬次
+  - short: 旅行社個資外洩 12 家
+    keyword: TRAVEL
+    kind: 個資
+    date: 2026-11-22
+    figures:
+    - label: 外洩個資
+      value: 155 萬筆
+    - label: 裁處金額
+      value: 365 萬元
+  - short: TeamT5 首度婉拒新客戶
+    keyword: TEAMT5
+    kind: 其他
+    date: 2026-11-22
+  - short: 行政院長邀金融科技業
+    keyword: TAIEX
+    kind: 政策
+    date: 2026-11-22
+    figures:
+    - label: 單週跌點
+      value: 7641.83 點
+    - label: 單週跌幅
+      value: 17.5%
+  ai:
+  - short: OpenRouter 下架三供應商
+    keyword: OPENROUT
+    date: 2026-11-22
+    figures:
+    - label: 移出 ZDR 的端點
+      value: 125 個
+  - short: 黎曼猜想證明通過檢查
+    keyword: RIEMANN
+    date: 2026-11-21
+    figures:
+    - label: Lean 程式碼
+      value: 1700 萬行
+  - short: OpenAI 提困惑度開發上限
+    keyword: PERPLEX
+    date: 2026-11-22
+  - short: 傳亞馬遜收購 Decart
+    keyword: DECART
+    date: 2026-11-22
+    figures:
+    - label: 收購金額
+      value: 75 億美元

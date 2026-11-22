@@ -17,6 +17,10 @@
 
 新的在上面，每天往上累加，舊的不刪。
 
+### 2026-11-23
+
+- 無法確認：文件入口頁 https://docs.blackduck.com/p/softwareriskmanagement 打得開，但頁面上找不到公開的 release notes 或版本號，也沒有公開的安全公告頁，無法確認最新版本與是否有更新。
+
 ### 2026-11-22
 
 - 無法確認：文件入口頁 https://docs.blackduck.com/p/softwareriskmanagement 打得開，但 release notes 的內容顯示要登入才能看，也沒有公開的安全公告頁，無法確認最新版本與是否有更新。

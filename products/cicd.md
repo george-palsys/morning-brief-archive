@@ -3,8 +3,8 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：多家
-- 最後檢查：2026-11-22
-- 當天狀態：無更新
+- 最後檢查：2026-11-23
+- 當天狀態：有更新
 
 ## 各來源目前看到的最新一筆
 
@@ -27,26 +27,30 @@
 | [goharbor/harbor Releases](https://github.com/goharbor/harbor/releases) | 新版本 | Harbor | v2.15.5（另有 v2.16.0） | 2026-11-12 | 讀得到 |
 | [goharbor/harbor Security Advisories](https://github.com/goharbor/harbor/security/advisories) | 安全公告 | Harbor | GHSA-x955-mxjx-g5cj（依發布日排序的第一筆，2026-10-28；先前記的是 GHSA-w5fq-xrhj-j7g2） | 2026-10-28 | 讀得到 |
 | [Sonatype Nexus Repository Release Notes](https://help.sonatype.com/en/release-notes.html) | 新版本 | Sonatype Nexus Repository | 3.98.3 | 2026-11-19 | 讀得到 |
-| [Artifactory Release Notes](https://docs.jfrog.com/releases/docs/artifactory-release-notes) | 新版本 | JFrog Artifactory | Self-managed 7.173.21 / SaaS 7.178.1 | 頁面沒有日期 | 讀得到 |
+| [Artifactory Release Notes](https://docs.jfrog.com/releases/docs/artifactory-release-notes) | 新版本 | JFrog Artifactory | Self-managed 7.173.21 / SaaS 7.179.1 | 2026-11-22 | 讀得到 |
 
 ## 各工具當天狀態
 
 - Jenkins：無更新
-- GitLab：有更新
+- GitLab：無更新
 - GitHub Actions：無更新
 - Azure DevOps：無更新
 - Tekton：無更新
 - OpenShift Pipelines：無更新
-- Argo CD：有更新
+- Argo CD：無更新
 - OpenShift GitOps：無更新
-- Flux：有更新
+- Flux：無更新
 - Harbor：無更新
 - Sonatype Nexus Repository：無更新
-- JFrog Artifactory：無更新
+- JFrog Artifactory：有更新
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-23
+
+- 新版本：JFrog Artifactory，Artifactory 7.179.1 SaaS 發布（2026-11-22），1 項功能調整、8 項問題修正，說明沒有列出安全性修正；自管版仍是 7.173.21。來源：https://docs.jfrog.com/releases/docs/artifactory-saas-releases → [當天產品動態](../daily/2026-11-23/products.md)
 
 ### 2026-11-21
 

@@ -3,7 +3,7 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：Red Hat
-- 最後檢查：2026-11-22
+- 最後檢查：2026-11-23
 - 當天狀態：有更新
 
 ## 各來源目前看到的最新一筆
@@ -11,12 +11,17 @@
 | 來源 | 類別 | 工具 | 最新一筆 | 日期 | 檢查結果 |
 |---|---|---|---|---|---|
 | [OpenShift Container Platform 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/openshift_container_platform/) | 新版本 | — | 5.0（最新 z-stream 5.0.1，RHSA-2026:94538） | 2026-11-09 | 已轉址 |
-| [Red Hat Product Errata，以產品 OpenShift Container Platform 篩選](https://access.redhat.com/errata-search/) | 安全公告 | — | RHBA-2026:100984 | 2026-11-21 | 讀得到 |
+| [Red Hat Product Errata，以產品 OpenShift Container Platform 篩選](https://access.redhat.com/errata-search/) | 安全公告 | — | RHBA-2026:101363 | 2026-11-22 | 讀得到 |
 | [Red Hat Security Bulletins(RHSB)](https://access.redhat.com/security/vulnerabilities/) | 安全公告 | — | RHSB-2026-021 | 2026-11-20 | 讀得到 |
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-23
+
+- 修補：四張 RHBA（2026-11-22），4.22、5.0、5.1 的 dpdk-base extras 映像更新：RHBA-2026:101363、RHBA-2026:101338、RHBA-2026:101335、RHBA-2026:101333。沒有新的 RHSA，最新 z-stream 仍是 5.0.1。來源：https://access.redhat.com/errata-search/ → [當天產品動態](../daily/2026-11-23/products.md)
+- 無法確認（個別來源，產品狀態不受影響）：四張 RHBA 的內文沒有逐張打開；RHBA-2026:101333 的標題寫 5.1，但文件站還沒有 5.1。
 
 ### 2026-11-22
 
