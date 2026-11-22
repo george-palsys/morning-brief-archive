@@ -1,0 +1,259 @@
+title: 晨報 2026-11-22
+date: '2026-11-22'
+weekday: 星期日
+type: morning-brief
+collected_at: '2026-11-22T09:14:00+08:00'
+cve_ids:
+- CVE-2026-127182
+- CVE-2026-127183
+- CVE-2026-127181
+- CVE-2026-127180
+- CVE-2026-96760
+- CVE-2026-78663
+- CVE-2026-114615
+- CVE-2026-114616
+- CVE-2026-116672
+- CVE-2026-84304
+- CVE-2026-5423
+- CVE-2026-114938
+- CVE-2026-114939
+- CVE-2026-114940
+- CVE-2026-114941
+- CVE-2026-114942
+- CVE-2025-42884
+- CVE-2026-123890
+- CVE-2026-76466
+- CVE-2026-129448
+- CVE-2026-129975
+- CVE-2026-99312
+- CVE-2026-133968
+products:
+- NeuVector
+- Concert
+- NKP
+- OpenShift
+tags:
+- NeuVector
+- Concert
+- NKP
+- OpenShift
+- CISA KEV
+- GPGME
+- KVM
+- MONAI Label
+- PostgreSQL
+- OpenTelemetry
+spec_version: 4
+products_checked: 26
+products_updated:
+- NeuVector
+- Concert
+- NKP
+- OpenShift
+products_unconfirmed:
+- Software Risk Manager (SRM)
+cicd_tools_updated: []
+attention:
+  section: products
+  title: NeuVector 四則安全公告（兩則 Critical）
+  summary: NeuVector 於 2026-11-20 發布四則安全公告，兩則 Critical 的修正都在 Enforcer 映像，修補版本 5.7.0、5.6.5、5.5.6。公告沒有提到已遭利用；離線環境要先把新版映像搬進私有 registry。
+  facts:
+  - label: CVSS 4.0
+    value: '9.4'
+    source: NeuVector（GitHub 公告，CVE-2026-127182）
+  - label: CVSS 4.0
+    value: '9.2'
+    source: NeuVector（GitHub 公告，CVE-2026-127183）
+  - label: 修補版
+    value: 5.7.0、5.6.5、5.5.6
+  - label: 攻擊現況
+    value: 公告沒有提到已遭利用
+display:
+  products:
+  - short: NeuVector 四則安全公告
+    keyword: NEUVECT
+    date: 2026-11-20
+    figures:
+    - label: CVSS 4.0
+      value: '9.4'
+  - short: NeuVector 5.7.0
+    keyword: NV570
+    date: 2026-11-20
+  - short: Concert 56 個 CVE
+    keyword: CONCERT
+    date: 2026-11-21
+    figures:
+    - label: CVSS
+      value: '9.8'
+  - short: Nutanix 公告 #0064
+    keyword: NKP
+    date: 2026-11-20
+    figures:
+    - label: CVSS 3.1
+      value: '8.1'
+  - short: 七張 RHBA dpdk-base
+    keyword: ERRATA
+    date: 2026-11-21
+  knowledge:
+  - short: 量子位置驗證
+    keyword: QPV
+    date: 2026-11-18
+  - short: KVM INIT 未重設 MMU
+    keyword: KVM
+    date: 2026-11-18
+  - short: OTel Collector 耗能
+    keyword: OTEL
+    date: 2026-11-17
+  - short: PostgreSQL 19 REPACK
+    keyword: POSTGRES
+    date: 2026-11-19
+  - short: 自管 K8s 的支援範圍
+    keyword: K8S
+    date: 2026-11-19
+  cve:
+  - short: NeuVector 兩則 Critical
+    keyword: NEUVECT
+    date: 2026-11-20
+    cve_ids:
+    - CVE-2026-127182
+    - CVE-2026-127183
+    - CVE-2026-127181
+    - CVE-2026-127180
+    cvss:
+    - score: 9.4
+      version: '4.0'
+      source: NeuVector（GitHub 公告，CVE-2026-127182）
+    - score: 9.2
+      version: '4.0'
+      source: NeuVector（GitHub 公告，CVE-2026-127183）
+    exploited: unknown
+    exploited_detail: 四則公告頁都沒有看到已遭利用的說明
+    patch: released
+    patch_detail: 5.7.0、5.6.5、5.5.6；scanner 4.331
+    related: true
+  - short: Concert 56 個 CVE
+    keyword: CONCERT
+    date: 2026-11-21
+    cve_ids:
+    - CVE-2026-96760
+    - CVE-2026-78663
+    - CVE-2026-114615
+    - CVE-2026-114616
+    - CVE-2026-116672
+    - CVE-2026-84304
+    - CVE-2026-5423
+    cvss:
+    - score: 9.8
+      version: null
+      source: CISA ADP（IBM 公告所列，CVE-2026-96760）
+    exploited: unknown
+    exploited_detail: IBM 公告沒有提到是否已遭利用
+    patch: released
+    patch_detail: 升級到 Concert 3.1.0
+    related: true
+    caveat: 公告共 56 個 CVE，這裡只列分數最高的 7 個。
+  - short: CISA KEV 新增四個
+    keyword: KEV
+    date: 2026-11-20
+    cve_ids:
+    - CVE-2025-42884
+    - CVE-2026-123890
+    - CVE-2026-76466
+    - CVE-2026-129448
+    cvss:
+    - score: 6.5
+      version: '3.1'
+      source: SAP（CVE-2025-42884）
+    exploited: confirmed
+    patch: released
+    patch_detail: 依 The Hacker News 的整理四個都已有修補；修補版號沒有查原廠公告
+    related: false
+    kev:
+    - cve_id: CVE-2025-42884
+      product: SAP NetWeaver
+      due: 2026-11-23
+    - cve_id: CVE-2026-123890
+      product: VMware vCenter
+      due: 2026-11-23
+    - cve_id: CVE-2026-76466
+      product: Cisco Expressway Series
+      due: 2026-11-23
+    - cve_id: CVE-2026-129448
+      product: Apache Roller
+      due: 2026-11-23
+    caveat: 後三個的 9.8 只出現在 The Hacker News，沒有寫評分來源與版本，這裡不列。
+  - short: GPGME double free
+    keyword: GPGME
+    date: 2026-11-20
+    cve_ids:
+    - CVE-2026-129975
+    cvss: []
+    exploited: unknown
+    exploited_detail: GnuPG 公告沒有提到實際攻擊
+    patch: released
+    patch_detail: GPGME 2.3.1
+    related: false
+  - short: KVM 巢狀虛擬化
+    keyword: KVM
+    date: 2026-11-18
+    cve_ids:
+    - CVE-2026-99312
+    cvss:
+    - score: 8.8
+      version: '3.1'
+      source: Linux kernel CVE 團隊
+    - score: 7.8
+      version: '3.1'
+      source: Red Hat（draft）
+    exploited: none_seen
+    exploited_detail: The Hacker News 引述 VirtFusion：沒有研究以外被利用的報告
+    patch: released
+    patch_detail: 上游核心已修正；各發行版的修補套件版號沒有查
+    related: true
+  - short: MONAI Label 任意寫檔
+    keyword: MONAI
+    date: 2026-11-21
+    cve_ids:
+    - CVE-2026-133968
+    cvss:
+    - score: 9.8
+      version: '3.1'
+      source: MITRE
+    exploited: confirmed
+    exploited_detail: Amazon Threat Intelligence 的報告（依 The Hacker News 轉述）
+    patch: none
+    patch_detail: 原始碼已修正，還沒有可安裝的修正版
+    related: false
+  taiwan:
+  - short: 金管會禁止平盤下放空
+    keyword: FSC
+    kind: 政策
+    date: 2026-11-21
+  - short: 詐騙話務轉接新手法
+    keyword: FRAUD
+    kind: 其他
+    date: 2026-11-20
+    figures:
+    - label: 查獲據點
+      value: 38 處
+  - short: 6G 實驗網啟用
+    keyword: 6G
+    kind: 其他
+    date: 2026-11-20
+  - short: 網擎投資微智安聯
+    keyword: OPENFIND
+    kind: 其他
+    date: 2026-11-22
+    figures:
+    - label: 股權
+      value: 37.6%
+  ai:
+  - short: Signal 擋 AI 螢幕擷取
+    keyword: SIGNAL
+    date: 2026-11-20
+  - short: 宣稱證明黎曼猜想
+    keyword: RIEMANN
+    date: 2026-11-20
+  - short: 川普揚言課資料中心稅
+    keyword: DCTAX
+    date: 2026-11-20
