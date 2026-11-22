@@ -17,6 +17,7 @@ const pairs = [
   // A solid selected control may share its border and fill. Check its boundary
   // against both surrounding surfaces and its fill against unselected controls.
   ['selected-border', 'paper', 3], ['selected-border', 'canvas', 3],
+  ['selected-border', 'wash', 3],
   ['selected-bg', 'paper', 3], ['selected-bg', 'canvas', 3],
   ['ink', 'source-warning-bg', 4.5],
   ['ink-2', 'factbox-bg', 4.5], ['muted', 'factbox-bg', 4.5],
@@ -38,7 +39,7 @@ for (const [fg, bg, min] of pairs) {
   const a = luminance(tokens[fg]), b = luminance(tokens[bg]);
   const ratio = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
   assert.ok(ratio >= min, `${fg}/${bg} ${ratio.toFixed(2)} < ${min}`);
-  if (bg === 'source-warning-bg' || bg === 'selected-bg') console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
+  if (bg === 'source-warning-bg' || bg === 'selected-bg' || (fg === 'selected-border' && bg === 'wash')) console.log(`CONTRAST D14: ${fg}/${bg} ${tokens[bg]} = ${ratio.toFixed(2)}:1 (minimum ${min}:1)`);
 }
 }
 console.log(`CONTRAST OK: ${pairs.length} pairs × 2 themes`);

@@ -3,9 +3,34 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import {spawnSync} from 'node:child_process';
 import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
 import {wrapCveText} from './visual-kit.mjs';
+
+test('Documentation contains no local user or application workspace paths',()=>{
+ const visit=dir=>{
+  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+   const file=path.join(dir,entry.name);
+   if(entry.isDirectory()) visit(file);
+   else assert.doesNotMatch(fs.readFileSync(file).toString('utf8'), /:\\Users\\|\.openmausbot/i,file);
+  }
+ };
+ visit('docs');
+});
+
+test('CLI preview flag enables indexing protection and records the actual mode',()=>{
+ fs.mkdirSync('.site-test',{recursive:true});
+ const output=fs.mkdtempSync(path.resolve('.site-test/cli-indexing-'));
+ const child=spawnSync(process.execPath,['site/build.mjs','--base-path','/morning-brief-preview/','--visual-preview','--output',output],{encoding:'utf8'});
+ assert.equal(child.status,0,child.stderr);
+ assert.match(fs.readFileSync(path.join(output,'404.html'),'utf8'),/<meta name="robots" content="noindex, nofollow">/);
+ assert.equal(JSON.parse(fs.readFileSync(path.join(output,'build-report.json'),'utf8')).visualPreview,true);
+});
+
+test('Production Pages workflow never enables the visual preview flag',()=>{
+ assert.doesNotMatch(fs.readFileSync('.github/workflows/pages.yml','utf8'),/--visual-preview/);
+});
 
 test('Preview indexing: every page and build report follow the actual visualPreview option',()=>{
  fs.mkdirSync('.site-test',{recursive:true});

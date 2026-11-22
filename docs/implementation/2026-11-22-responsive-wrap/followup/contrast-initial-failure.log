@@ -1,33 +1,32 @@
-
-> check:contrast
-> node site/contrast.mjs
-
-CONTRAST D14: selected-ink/selected-bg #151c2b = 17.03:1 (minimum 4.5:1)
-CONTRAST D14: selected-border/selected-bg #151c2b = 4.68:1 (minimum 3:1)
-CONTRAST D14: ink/source-warning-bg #fff4d6 = 15.54:1 (minimum 4.5:1)
-CONTRAST D14: selected-ink/selected-bg #9db3ff = 9.06:1 (minimum 4.5:1)
-npm.cmd : node:internal/modules/run_main:107
-At line:2 char:146
-+ ... testExit }; npm.cmd run check:contrast *> ../polish-contrast-first.lo ...
-+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (node:internal/modules/run_main:107:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
-    triggerUncaughtException(
-    ^
-
-AssertionError [ERR_ASSERTION]: selected-border/selected-bg 1.00 < 3
-    at file:///C:/Users/Administrator/.openmausbot/task-workspaces/205e5577-d1ff-417d-bb4f-c5acfb148995/3ddc02da-7c78-4
-aae-bdea-1e8467128674/archive/site/contrast.mjs:36:10
-    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
-    at async node:internal/modules/esm/loader:639:26
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
-  generatedMessage: false,
-  code: 'ERR_ASSERTION',
-  actual: false,
-  expected: true,
-  operator: '==',
-  diff: 'simple'
-}
-
-Node.js v25.8.2
+
+> check:contrast
+> node site/contrast.mjs
+
+CONTRAST D14: selected-ink/selected-bg #151c2b = 17.03:1 (minimum 4.5:1)
+CONTRAST D14: selected-border/selected-bg #151c2b = 4.68:1 (minimum 3:1)
+CONTRAST D14: ink/source-warning-bg #fff4d6 = 15.54:1 (minimum 4.5:1)
+CONTRAST D14: selected-ink/selected-bg #9db3ff = 9.06:1 (minimum 4.5:1)
+npm.cmd : node:internal/modules/run_main:107
+At line:2 char:146
++ ... testExit }; npm.cmd run check:contrast *> ../polish-contrast-first.lo ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (node:internal/modules/run_main:107:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: selected-border/selected-bg 1.00 < 3
+    at <workdir>/archive/site/contrast.mjs:36:10
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async node:internal/modules/esm/loader:639:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v25.8.2
