@@ -314,10 +314,11 @@ products:
     vendor: SUSE
     sources:
       - type: release
-        title: NeuVector 5.x Release Notes(SUSE Security 文件)
-        url: https://documentation.suse.com/cloudnative/security/latest/en/5x.html
+        title: NeuVector 5.x Release Notes(NeuVector 官方文件 open-docs)
+        url: https://open-docs.neuvector.com/releasenotes/5x
         status: verified
-        verified_on: 2026-11-20
+        verified_on: 2026-11-22
+        note: 2026-11-22 取代 https://documentation.suse.com/cloudnative/security/latest/en/5x.html(當天開兩次都是 404)。新網址當天實際開頁確認,最上面一筆是 5.7.0 November 2026
       - type: release
         title: neuvector-updates 郵件清單(新版本通知)
         url: https://lists.suse.com/mailman/listinfo/neuvector-updates
