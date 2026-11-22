@@ -1,0 +1,11 @@
+
+> check:contrast
+> node site/contrast.mjs
+
+CONTRAST D14: selected-ink/selected-bg #151c2b = 17.03:1 (minimum 4.5:1)
+CONTRAST D14: selected-border/wash #eef1f6 = 3.21:1 (minimum 3:1)
+CONTRAST D14: ink/source-warning-bg #fff4d6 = 15.54:1 (minimum 4.5:1)
+CONTRAST D14: selected-ink/selected-bg #9db3ff = 9.06:1 (minimum 4.5:1)
+CONTRAST D14: selected-border/wash #1c2638 = 7.46:1 (minimum 3:1)
+CONTRAST D14: ink/source-warning-bg #3a2b08 = 11.68:1 (minimum 4.5:1)
+CONTRAST OK: 46 pairs × 2 themes

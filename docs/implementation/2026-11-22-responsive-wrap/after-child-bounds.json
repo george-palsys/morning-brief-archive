@@ -1,0 +1,445 @@
+{
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36",
+  "rows": [
+    {
+      "w": 360,
+      "h": 800,
+      "page": "home",
+      "children": [
+        {
+          "text": "CVE-2026-127182",
+          "left": 41.66666793823242,
+          "right": 150.7395896911621,
+          "top": 232.05209350585938,
+          "bottom": 246.05209350585938,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127183",
+          "left": 163.65625,
+          "right": 272.7291717529297,
+          "top": 232.05209350585938,
+          "bottom": 246.05209350585938,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127181",
+          "left": 41.66666793823242,
+          "right": 150.7395896911621,
+          "top": 246.4479217529297,
+          "bottom": 260.4479217529297,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127180",
+          "left": 163.65625,
+          "right": 272.7291717529297,
+          "top": 246.4479217529297,
+          "bottom": 260.4479217529297,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 295,
+      "scrollWidth": 295
+    },
+    {
+      "w": 360,
+      "h": 800,
+      "page": "daily",
+      "children": [
+        {
+          "text": "產品動態",
+          "left": 16,
+          "right": 105.33333587646484,
+          "top": 447.40625,
+          "bottom": 491.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "新知識",
+          "left": 113.33333587646484,
+          "right": 188.6666717529297,
+          "top": 447.40625,
+          "bottom": 491.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE 重大新聞",
+          "left": 196.6666717529297,
+          "right": 315.3958435058594,
+          "top": 447.40625,
+          "bottom": 491.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "台灣 IT 重大事件",
+          "left": 16,
+          "right": 153.6979217529297,
+          "top": 499.40625,
+          "bottom": 543.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "全世界 AI 新功能及重大事件",
+          "left": 16,
+          "right": 225.34375,
+          "top": 551.40625,
+          "bottom": 595.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "清單維護",
+          "left": 233.34375,
+          "right": 322.67708587646484,
+          "top": 551.40625,
+          "bottom": 595.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 328,
+      "scrollWidth": 328
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "page": "home",
+      "children": [
+        {
+          "text": "CVE-2026-127182",
+          "left": 41.66666793823242,
+          "right": 150.7395896911621,
+          "top": 232.05209350585938,
+          "bottom": 246.05209350585938,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127183",
+          "left": 163.65625,
+          "right": 272.7291717529297,
+          "top": 232.05209350585938,
+          "bottom": 246.05209350585938,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127181",
+          "left": 41.66666793823242,
+          "right": 150.7395896911621,
+          "top": 246.4479217529297,
+          "bottom": 260.4479217529297,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127180",
+          "left": 163.65625,
+          "right": 272.7291717529297,
+          "top": 246.4479217529297,
+          "bottom": 260.4479217529297,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 325,
+      "scrollWidth": 325
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "page": "daily",
+      "children": [
+        {
+          "text": "產品動態",
+          "left": 16,
+          "right": 105.33333587646484,
+          "top": 447.40625,
+          "bottom": 491.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "新知識",
+          "left": 113.33333587646484,
+          "right": 188.6666717529297,
+          "top": 447.40625,
+          "bottom": 491.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE 重大新聞",
+          "left": 196.6666717529297,
+          "right": 315.3958435058594,
+          "top": 447.40625,
+          "bottom": 491.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "台灣 IT 重大事件",
+          "left": 16,
+          "right": 153.6979217529297,
+          "top": 499.40625,
+          "bottom": 543.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "全世界 AI 新功能及重大事件",
+          "left": 161.6979217529297,
+          "right": 371.0416717529297,
+          "top": 499.40625,
+          "bottom": 543.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "清單維護",
+          "left": 16,
+          "right": 105.33333587646484,
+          "top": 551.40625,
+          "bottom": 595.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 358,
+      "scrollWidth": 358
+    },
+    {
+      "w": 768,
+      "h": 1024,
+      "page": "home",
+      "children": [
+        {
+          "text": "CVE-2026-127182",
+          "left": 57.66666793823242,
+          "right": 166.7395896911621,
+          "top": 458.0833435058594,
+          "bottom": 472.0833435058594,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127183",
+          "left": 179.65625,
+          "right": 288.7291717529297,
+          "top": 458.0833435058594,
+          "bottom": 472.0833435058594,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127181",
+          "left": 301.6458435058594,
+          "right": 410.71876525878906,
+          "top": 458.0833435058594,
+          "bottom": 472.0833435058594,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127180",
+          "left": 57.66666793823242,
+          "right": 166.7395896911621,
+          "top": 472.47918701171875,
+          "bottom": 486.47918701171875,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 468,
+      "scrollWidth": 468
+    },
+    {
+      "w": 768,
+      "h": 1024,
+      "page": "daily",
+      "children": [
+        {
+          "text": "產品動態",
+          "left": 22,
+          "right": 111.33333587646484,
+          "top": 533.40625,
+          "bottom": 577.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "新知識",
+          "left": 119.33333587646484,
+          "right": 194.6666717529297,
+          "top": 533.40625,
+          "bottom": 577.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE 重大新聞",
+          "left": 202.6666717529297,
+          "right": 321.3958435058594,
+          "top": 533.40625,
+          "bottom": 577.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "台灣 IT 重大事件",
+          "left": 329.3958435058594,
+          "right": 467.09376525878906,
+          "top": 533.40625,
+          "bottom": 577.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "全世界 AI 新功能及重大事件",
+          "left": 475.09375,
+          "right": 684.4375,
+          "top": 533.40625,
+          "bottom": 577.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "清單維護",
+          "left": 22,
+          "right": 111.33333587646484,
+          "top": 585.40625,
+          "bottom": 629.40625,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 724,
+      "scrollWidth": 724
+    },
+    {
+      "w": 1366,
+      "h": 768,
+      "page": "home",
+      "children": [
+        {
+          "text": "CVE-2026-127182",
+          "left": 309.46875,
+          "right": 418.5416717529297,
+          "top": 517.8125,
+          "bottom": 531.8125,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127183",
+          "left": 431.4583435058594,
+          "right": 540.5312652587891,
+          "top": 517.8125,
+          "bottom": 531.8125,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127181",
+          "left": 553.4479370117188,
+          "right": 662.5208587646484,
+          "top": 517.8125,
+          "bottom": 531.8125,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE-2026-127180",
+          "left": 309.46875,
+          "right": 418.5416717529297,
+          "top": 532.2083740234375,
+          "bottom": 546.2083740234375,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 427,
+      "scrollWidth": 427
+    },
+    {
+      "w": 1366,
+      "h": 768,
+      "page": "daily",
+      "children": [
+        {
+          "text": "產品動態",
+          "left": 240,
+          "right": 329.33333587646484,
+          "top": 567.7708740234375,
+          "bottom": 611.7708740234375,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "新知識",
+          "left": 337.3333435058594,
+          "right": 412.6666793823242,
+          "top": 567.7708740234375,
+          "bottom": 611.7708740234375,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "CVE 重大新聞",
+          "left": 420.66668701171875,
+          "right": 539.3958587646484,
+          "top": 567.7708740234375,
+          "bottom": 611.7708740234375,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "台灣 IT 重大事件",
+          "left": 547.3958740234375,
+          "right": 685.0937957763672,
+          "top": 567.7708740234375,
+          "bottom": 611.7708740234375,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "全世界 AI 新功能及重大事件",
+          "left": 693.09375,
+          "right": 902.4375,
+          "top": 567.7708740234375,
+          "bottom": 611.7708740234375,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "清單維護",
+          "left": 910.4375,
+          "right": 999.7708358764648,
+          "top": 567.7708740234375,
+          "bottom": 611.7708740234375,
+          "inside": true,
+          "whiteSpace": "nowrap"
+        }
+      ],
+      "allInside": true,
+      "clientWidth": 1104,
+      "scrollWidth": 1104
+    }
+  ]
+}

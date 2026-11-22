@@ -1,0 +1,1937 @@
+{
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36",
+  "rows": [
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 360,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 465.57293701171875,
+          "bottom": 549.5729370117188,
+          "left": 32,
+          "right": 125.33333587646484,
+          "width": 93.33333587646484,
+          "height": 84,
+          "clientWidth": 93,
+          "scrollWidth": 95
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 360,
+      "title": {
+        "top": 758.15625,
+        "bottom": 822.9479217529297,
+        "left": 36,
+        "right": 324,
+        "width": 288,
+        "height": 64.79167175292969,
+        "clientWidth": 288,
+        "scrollWidth": 288
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 97.66667175292969,
+        "bottom": 185.6666717529297,
+        "left": 16,
+        "right": 344,
+        "width": 328,
+        "height": 88,
+        "clientWidth": 328,
+        "scrollWidth": 328
+      },
+      "jump": {
+        "top": 447.40625,
+        "bottom": 603.40625,
+        "left": 16,
+        "right": 344,
+        "width": 328,
+        "height": 156,
+        "clientWidth": 328,
+        "scrollWidth": 328
+      }
+    },
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 360,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 360,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 360,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 465.57293701171875,
+          "bottom": 549.5729370117188,
+          "left": 32,
+          "right": 125.33333587646484,
+          "width": 93.33333587646484,
+          "height": 84,
+          "clientWidth": 93,
+          "scrollWidth": 95
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 360,
+      "title": {
+        "top": 759.4896240234375,
+        "bottom": 824.2812957763672,
+        "left": 36,
+        "right": 324,
+        "width": 288,
+        "height": 64.79167175292969,
+        "clientWidth": 288,
+        "scrollWidth": 288
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 98.33333587646484,
+        "bottom": 186.33333587646484,
+        "left": 16.666667938232422,
+        "right": 343.3333549499512,
+        "width": 326.66668701171875,
+        "height": 88,
+        "clientWidth": 327,
+        "scrollWidth": 327
+      },
+      "jump": {
+        "top": 448.7395935058594,
+        "bottom": 604.7395935058594,
+        "left": 16,
+        "right": 344,
+        "width": 328,
+        "height": 156,
+        "clientWidth": 328,
+        "scrollWidth": 328
+      }
+    },
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 360,
+      "selected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 6.6517,
+        "unselectedText": 10.7089,
+        "stateFill": 1.2479,
+        "stateBorder": 1.7907,
+        "stateText": 1.2902,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 1.5523
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 360,
+      "sectionSelected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 390,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 465.57293701171875,
+          "bottom": 549.5729370117188,
+          "left": 32,
+          "right": 135.33333587646484,
+          "width": 103.33333587646484,
+          "height": 84,
+          "clientWidth": 103,
+          "scrollWidth": 103
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 390,
+      "title": {
+        "top": 758.15625,
+        "bottom": 822.9479217529297,
+        "left": 36,
+        "right": 354,
+        "width": 318,
+        "height": 64.79167175292969,
+        "clientWidth": 318,
+        "scrollWidth": 318
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 97.66667175292969,
+        "bottom": 185.6666717529297,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 88,
+        "clientWidth": 358,
+        "scrollWidth": 358
+      },
+      "jump": {
+        "top": 447.40625,
+        "bottom": 603.40625,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 156,
+        "clientWidth": 358,
+        "scrollWidth": 358
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 390,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 390,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 390,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 465.57293701171875,
+          "bottom": 549.5729370117188,
+          "left": 32,
+          "right": 135.33333587646484,
+          "width": 103.33333587646484,
+          "height": 84,
+          "clientWidth": 103,
+          "scrollWidth": 103
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 390,
+      "title": {
+        "top": 759.4896240234375,
+        "bottom": 824.2812957763672,
+        "left": 36,
+        "right": 354,
+        "width": 318,
+        "height": 64.79167175292969,
+        "clientWidth": 318,
+        "scrollWidth": 318
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 98.33333587646484,
+        "bottom": 186.33333587646484,
+        "left": 16.666667938232422,
+        "right": 373.3333549499512,
+        "width": 356.66668701171875,
+        "height": 88,
+        "clientWidth": 357,
+        "scrollWidth": 357
+      },
+      "jump": {
+        "top": 448.7395935058594,
+        "bottom": 604.7395935058594,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 156,
+        "clientWidth": 358,
+        "scrollWidth": 358
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 390,
+      "selected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 6.6517,
+        "unselectedText": 10.7089,
+        "stateFill": 1.2479,
+        "stateBorder": 1.7907,
+        "stateText": 1.2902,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 1.5523
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 390,
+      "sectionSelected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 768,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 767,
+          "bottom": 809,
+          "left": 48,
+          "right": 188.42709350585938,
+          "width": 140.42709350585938,
+          "height": 42,
+          "clientWidth": 140,
+          "scrollWidth": 140
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 768,
+      "title": {
+        "top": 804.15625,
+        "bottom": 836.5520858764648,
+        "left": 54,
+        "right": 714,
+        "width": 660,
+        "height": 32.395835876464844,
+        "clientWidth": 660,
+        "scrollWidth": 660
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 111.66667175292969,
+        "bottom": 271.6666717529297,
+        "left": 22,
+        "right": 746,
+        "width": 724,
+        "height": 160,
+        "clientWidth": 724,
+        "scrollWidth": 724
+      },
+      "jump": {
+        "top": 533.40625,
+        "bottom": 637.40625,
+        "left": 22,
+        "right": 746,
+        "width": 724,
+        "height": 104,
+        "clientWidth": 724,
+        "scrollWidth": 724
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 768,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 768,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 768,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 767,
+          "bottom": 809,
+          "left": 48,
+          "right": 188.42709350585938,
+          "width": 140.42709350585938,
+          "height": 42,
+          "clientWidth": 140,
+          "scrollWidth": 140
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 768,
+      "title": {
+        "top": 805.4896240234375,
+        "bottom": 837.8854598999023,
+        "left": 54,
+        "right": 714,
+        "width": 660,
+        "height": 32.395835876464844,
+        "clientWidth": 660,
+        "scrollWidth": 660
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 112.33333587646484,
+        "bottom": 272.33333587646484,
+        "left": 22.666667938232422,
+        "right": 745.3333549499512,
+        "width": 722.6666870117188,
+        "height": 160,
+        "clientWidth": 723,
+        "scrollWidth": 723
+      },
+      "jump": {
+        "top": 534.7396240234375,
+        "bottom": 638.7396240234375,
+        "left": 22,
+        "right": 746,
+        "width": 724,
+        "height": 104,
+        "clientWidth": 724,
+        "scrollWidth": 724
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 768,
+      "selected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 6.6517,
+        "unselectedText": 10.7089,
+        "stateFill": 1.2479,
+        "stateBorder": 1.7907,
+        "stateText": 1.2902,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 1.5523
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 768,
+      "sectionSelected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 1366,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 856.9166870117188,
+          "bottom": 919.9166870117188,
+          "left": 299.8020935058594,
+          "right": 426.62501525878906,
+          "width": 126.82292175292969,
+          "height": 63,
+          "clientWidth": 127,
+          "scrollWidth": 127
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 1366,
+      "title": {
+        "top": 786.5208740234375,
+        "bottom": 818.9167098999023,
+        "left": 272,
+        "right": 1312,
+        "width": 1040,
+        "height": 32.395835876464844,
+        "clientWidth": 1040,
+        "scrollWidth": 1040
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 123.66667175292969,
+        "bottom": 283.6666717529297,
+        "left": 240,
+        "right": 1344,
+        "width": 1104,
+        "height": 160,
+        "clientWidth": 1104,
+        "scrollWidth": 1104
+      },
+      "jump": {
+        "top": 567.7708740234375,
+        "bottom": 619.7708740234375,
+        "left": 240,
+        "right": 1344,
+        "width": 1104,
+        "height": 52,
+        "clientWidth": 1104,
+        "scrollWidth": 1104
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 1366,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 1366,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 1366,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 856.9166870117188,
+          "bottom": 919.9166870117188,
+          "left": 299.8020935058594,
+          "right": 426.62501525878906,
+          "width": 126.82292175292969,
+          "height": 63,
+          "clientWidth": 127,
+          "scrollWidth": 127
+        }
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 1366,
+      "title": {
+        "top": 787.8541870117188,
+        "bottom": 820.2500228881836,
+        "left": 272,
+        "right": 1312,
+        "width": 1040,
+        "height": 32.395835876464844,
+        "clientWidth": 1040,
+        "scrollWidth": 1040
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 124.33333587646484,
+        "bottom": 284.33333587646484,
+        "left": 240.6666717529297,
+        "right": 1343.3334197998047,
+        "width": 1102.666748046875,
+        "height": 160,
+        "clientWidth": 1103,
+        "scrollWidth": 1103
+      },
+      "jump": {
+        "top": 569.1041870117188,
+        "bottom": 621.1041870117188,
+        "left": 240,
+        "right": 1344,
+        "width": 1104,
+        "height": 52,
+        "clientWidth": 1104,
+        "scrollWidth": 1104
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 1366,
+      "selected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "none",
+      "contrast": {
+        "selectedText": 6.6517,
+        "unselectedText": 10.7089,
+        "stateFill": 1.2479,
+        "stateBorder": 1.7907,
+        "stateText": 1.2902,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 1.5523
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 1366,
+      "sectionSelected": {
+        "text": "rgb(157, 179, 255)",
+        "bg": "rgb(29, 43, 92)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 6.6517
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1280,
+      "h": 720,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 1280,
+      "title": {
+        "top": 782.3958740234375,
+        "bottom": 814.7917098999023,
+        "left": 272,
+        "right": 1226,
+        "width": 954,
+        "height": 32.395835876464844,
+        "clientWidth": 954,
+        "scrollWidth": 954
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 123.66667175292969,
+        "bottom": 283.6666717529297,
+        "left": 240,
+        "right": 1258,
+        "width": 1018,
+        "height": 160,
+        "clientWidth": 1018,
+        "scrollWidth": 1018
+      },
+      "jump": {
+        "top": 563.6458740234375,
+        "bottom": 615.6458740234375,
+        "left": 240,
+        "right": 1258,
+        "width": 1018,
+        "height": 52,
+        "clientWidth": 1018,
+        "scrollWidth": 1018
+      }
+    },
+    {
+      "phase": "before",
+      "w": 1280,
+      "h": 720,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 1280,
+      "title": {
+        "top": 783.7291870117188,
+        "bottom": 816.1250228881836,
+        "left": 272,
+        "right": 1226,
+        "width": 954,
+        "height": 32.395835876464844,
+        "clientWidth": 954,
+        "scrollWidth": 954
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 124.33333587646484,
+        "bottom": 284.33333587646484,
+        "left": 240.6666717529297,
+        "right": 1257.3333587646484,
+        "width": 1016.6666870117188,
+        "height": 160,
+        "clientWidth": 1017,
+        "scrollWidth": 1017
+      },
+      "jump": {
+        "top": 564.9791870117188,
+        "bottom": 616.9791870117188,
+        "left": 240,
+        "right": 1258,
+        "width": 1018,
+        "height": 52,
+        "clientWidth": 1018,
+        "scrollWidth": 1018
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 360,
+      "small": {
+        "display": "none",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0,
+          "clientWidth": 0,
+          "scrollWidth": 0
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 360,
+      "title": {
+        "top": 758.15625,
+        "bottom": 822.9479217529297,
+        "left": 36,
+        "right": 324,
+        "width": 288,
+        "height": 64.79167175292969,
+        "clientWidth": 288,
+        "scrollWidth": 288
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 97.66667175292969,
+        "bottom": 185.6666717529297,
+        "left": 16,
+        "right": 344,
+        "width": 328,
+        "height": 88,
+        "clientWidth": 328,
+        "scrollWidth": 328
+      },
+      "jump": {
+        "top": 447.40625,
+        "bottom": 603.40625,
+        "left": 16,
+        "right": 344,
+        "width": 328,
+        "height": 156,
+        "clientWidth": 328,
+        "scrollWidth": 328
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 360,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 360,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 360,
+      "small": {
+        "display": "none",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0,
+          "clientWidth": 0,
+          "scrollWidth": 0
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 360,
+      "title": {
+        "top": 759.4896240234375,
+        "bottom": 824.2812957763672,
+        "left": 36,
+        "right": 324,
+        "width": 288,
+        "height": 64.79167175292969,
+        "clientWidth": 288,
+        "scrollWidth": 288
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 98.33333587646484,
+        "bottom": 186.33333587646484,
+        "left": 16.666667938232422,
+        "right": 343.3333549499512,
+        "width": 326.66668701171875,
+        "height": 88,
+        "clientWidth": 327,
+        "scrollWidth": 327
+      },
+      "jump": {
+        "top": 448.7395935058594,
+        "bottom": 604.7395935058594,
+        "left": 16,
+        "right": 344,
+        "width": 328,
+        "height": 156,
+        "clientWidth": 328,
+        "scrollWidth": 328
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 360,
+      "selected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 9.0608,
+        "unselectedText": 10.7089,
+        "stateFill": 8.3004,
+        "stateBorder": 1.7907,
+        "stateText": 11.6901,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 10.3257
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 360,
+      "h": 800,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 360,
+      "sectionSelected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 390,
+      "small": {
+        "display": "none",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0,
+          "clientWidth": 0,
+          "scrollWidth": 0
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 390,
+      "title": {
+        "top": 758.15625,
+        "bottom": 822.9479217529297,
+        "left": 36,
+        "right": 354,
+        "width": 318,
+        "height": 64.79167175292969,
+        "clientWidth": 318,
+        "scrollWidth": 318
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 97.66667175292969,
+        "bottom": 185.6666717529297,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 88,
+        "clientWidth": 358,
+        "scrollWidth": 358
+      },
+      "jump": {
+        "top": 447.40625,
+        "bottom": 603.40625,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 156,
+        "clientWidth": 358,
+        "scrollWidth": 358
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 390,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 390,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 390,
+      "small": {
+        "display": "none",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0,
+          "clientWidth": 0,
+          "scrollWidth": 0
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 390,
+      "title": {
+        "top": 759.4896240234375,
+        "bottom": 824.2812957763672,
+        "left": 36,
+        "right": 354,
+        "width": 318,
+        "height": 64.79167175292969,
+        "clientWidth": 318,
+        "scrollWidth": 318
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 98.33333587646484,
+        "bottom": 186.33333587646484,
+        "left": 16.666667938232422,
+        "right": 373.3333549499512,
+        "width": 356.66668701171875,
+        "height": 88,
+        "clientWidth": 357,
+        "scrollWidth": 357
+      },
+      "jump": {
+        "top": 448.7395935058594,
+        "bottom": 604.7395935058594,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 156,
+        "clientWidth": 358,
+        "scrollWidth": 358
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 390,
+      "selected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 9.0608,
+        "unselectedText": 10.7089,
+        "stateFill": 8.3004,
+        "stateBorder": 1.7907,
+        "stateText": 11.6901,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 10.3257
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 390,
+      "h": 844,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 390,
+      "sectionSelected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 768,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 767,
+          "bottom": 809,
+          "left": 48,
+          "right": 188.42709350585938,
+          "width": 140.42709350585938,
+          "height": 42,
+          "clientWidth": 140,
+          "scrollWidth": 140
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 768,
+      "title": {
+        "top": 804.15625,
+        "bottom": 836.5520858764648,
+        "left": 54,
+        "right": 714,
+        "width": 660,
+        "height": 32.395835876464844,
+        "clientWidth": 660,
+        "scrollWidth": 660
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 111.66667175292969,
+        "bottom": 271.6666717529297,
+        "left": 22,
+        "right": 746,
+        "width": 724,
+        "height": 160,
+        "clientWidth": 724,
+        "scrollWidth": 724
+      },
+      "jump": {
+        "top": 533.40625,
+        "bottom": 637.40625,
+        "left": 22,
+        "right": 746,
+        "width": 724,
+        "height": 104,
+        "clientWidth": 724,
+        "scrollWidth": 724
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 768,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 768,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 768,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 767,
+          "bottom": 809,
+          "left": 48,
+          "right": 188.42709350585938,
+          "width": 140.42709350585938,
+          "height": 42,
+          "clientWidth": 140,
+          "scrollWidth": 140
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 768,
+      "title": {
+        "top": 805.4896240234375,
+        "bottom": 837.8854598999023,
+        "left": 54,
+        "right": 714,
+        "width": 660,
+        "height": 32.395835876464844,
+        "clientWidth": 660,
+        "scrollWidth": 660
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 112.33333587646484,
+        "bottom": 272.33333587646484,
+        "left": 22.666667938232422,
+        "right": 745.3333549499512,
+        "width": 722.6666870117188,
+        "height": 160,
+        "clientWidth": 723,
+        "scrollWidth": 723
+      },
+      "jump": {
+        "top": 534.7396240234375,
+        "bottom": 638.7396240234375,
+        "left": 22,
+        "right": 746,
+        "width": 724,
+        "height": 104,
+        "clientWidth": 724,
+        "scrollWidth": 724
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 768,
+      "selected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 9.0608,
+        "unselectedText": 10.7089,
+        "stateFill": 8.3004,
+        "stateBorder": 1.7907,
+        "stateText": 11.6901,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 10.3257
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 768,
+      "h": 1024,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 768,
+      "sectionSelected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "home",
+      "documentWidth": 1366,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 856.9166870117188,
+          "bottom": 919.9166870117188,
+          "left": 299.8020935058594,
+          "right": 426.62501525878906,
+          "width": 126.82292175292969,
+          "height": 63,
+          "clientWidth": 127,
+          "scrollWidth": 127
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 1366,
+      "title": {
+        "top": 714.5208740234375,
+        "bottom": 746.9167098999023,
+        "left": 272,
+        "right": 1312,
+        "width": 1040,
+        "height": 32.395835876464844,
+        "clientWidth": 1040,
+        "scrollWidth": 1040
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 123.66667175292969,
+        "bottom": 219.6666717529297,
+        "left": 240,
+        "right": 1344,
+        "width": 1104,
+        "height": 96,
+        "clientWidth": 1104,
+        "scrollWidth": 1104
+      },
+      "jump": {
+        "top": 495.7708435058594,
+        "bottom": 547.7708435058594,
+        "left": 240,
+        "right": 1344,
+        "width": 1104,
+        "height": 52,
+        "clientWidth": 1104,
+        "scrollWidth": 1104
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "products",
+      "documentWidth": 1366,
+      "selected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "unselected": {
+        "text": "rgb(61, 74, 95)",
+        "bg": "rgb(255, 255, 255)",
+        "border": "rgb(124, 135, 151)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 17.0334,
+        "unselectedText": 8.9622,
+        "stateFill": 17.0334,
+        "stateBorder": 1,
+        "stateText": 8.9622,
+        "selectedBorderToPaper": 3.6398,
+        "unselectedBorderToPaper": 3.6398,
+        "selectedFillToCanvas": 1.2329
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "light",
+      "page": "cve",
+      "documentWidth": 1366,
+      "sectionSelected": {
+        "text": "rgb(255, 255, 255)",
+        "bg": "rgb(21, 28, 43)",
+        "border": "rgb(124, 135, 151)",
+        "textContrast": 17.0334
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "home",
+      "documentWidth": 1366,
+      "small": {
+        "display": "block",
+        "text": "NeuVector（GitHub 公告，CVE-2026-127182）",
+        "rect": {
+          "top": 856.9166870117188,
+          "bottom": 919.9166870117188,
+          "left": 299.8020935058594,
+          "right": 426.62501525878906,
+          "width": 126.82292175292969,
+          "height": 63,
+          "clientWidth": 127,
+          "scrollWidth": 127
+        }
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 1366,
+      "title": {
+        "top": 715.8541870117188,
+        "bottom": 748.2500228881836,
+        "left": 272,
+        "right": 1312,
+        "width": 1040,
+        "height": 32.395835876464844,
+        "clientWidth": 1040,
+        "scrollWidth": 1040
+      },
+      "inFirstScreen": true,
+      "banner": {
+        "top": 124.33333587646484,
+        "bottom": 220.33333587646484,
+        "left": 240.6666717529297,
+        "right": 1343.3334197998047,
+        "width": 1102.666748046875,
+        "height": 96,
+        "clientWidth": 1103,
+        "scrollWidth": 1103
+      },
+      "jump": {
+        "top": 497.10418701171875,
+        "bottom": 549.1041870117188,
+        "left": 240,
+        "right": 1344,
+        "width": 1104,
+        "height": 52,
+        "clientWidth": 1104,
+        "scrollWidth": 1104
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "products",
+      "documentWidth": 1366,
+      "selected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)"
+      },
+      "unselected": {
+        "text": "rgb(195, 207, 224)",
+        "bg": "rgb(21, 29, 44)",
+        "border": "rgb(122, 135, 155)"
+      },
+      "tick": "\"✓\" / \"\"",
+      "contrast": {
+        "selectedText": 9.0608,
+        "unselectedText": 10.7089,
+        "stateFill": 8.3004,
+        "stateBorder": 1.7907,
+        "stateText": 11.6901,
+        "selectedBorderToPaper": 8.3004,
+        "unselectedBorderToPaper": 4.6354,
+        "selectedFillToCanvas": 10.3257
+      },
+      "ariaCurrentLive": 0,
+      "ariaCurrentProbe": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1366,
+      "h": 768,
+      "theme": "dark",
+      "page": "cve",
+      "documentWidth": 1366,
+      "sectionSelected": {
+        "text": "rgb(14, 20, 32)",
+        "bg": "rgb(157, 179, 255)",
+        "border": "rgb(157, 179, 255)",
+        "textContrast": 9.0608
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1280,
+      "h": 720,
+      "theme": "light",
+      "page": "daily",
+      "documentWidth": 1280,
+      "title": {
+        "top": 710.3958740234375,
+        "bottom": 742.7917098999023,
+        "left": 272,
+        "right": 1226,
+        "width": 954,
+        "height": 32.395835876464844,
+        "clientWidth": 954,
+        "scrollWidth": 954
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 123.66667175292969,
+        "bottom": 219.6666717529297,
+        "left": 240,
+        "right": 1258,
+        "width": 1018,
+        "height": 96,
+        "clientWidth": 1018,
+        "scrollWidth": 1018
+      },
+      "jump": {
+        "top": 491.6458435058594,
+        "bottom": 543.6458435058594,
+        "left": 240,
+        "right": 1258,
+        "width": 1018,
+        "height": 52,
+        "clientWidth": 1018,
+        "scrollWidth": 1018
+      }
+    },
+    {
+      "phase": "after",
+      "w": 1280,
+      "h": 720,
+      "theme": "dark",
+      "page": "daily",
+      "documentWidth": 1280,
+      "title": {
+        "top": 711.7291870117188,
+        "bottom": 744.1250228881836,
+        "left": 272,
+        "right": 1226,
+        "width": 954,
+        "height": 32.395835876464844,
+        "clientWidth": 954,
+        "scrollWidth": 954
+      },
+      "inFirstScreen": false,
+      "banner": {
+        "top": 124.33333587646484,
+        "bottom": 220.33333587646484,
+        "left": 240.6666717529297,
+        "right": 1257.3333587646484,
+        "width": 1016.6666870117188,
+        "height": 96,
+        "clientWidth": 1017,
+        "scrollWidth": 1017
+      },
+      "jump": {
+        "top": 492.97918701171875,
+        "bottom": 544.9791870117188,
+        "left": 240,
+        "right": 1258,
+        "width": 1018,
+        "height": 52,
+        "clientWidth": 1018,
+        "scrollWidth": 1018
+      }
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+
+> test
+> node --test site/test.mjs site/weekly-guards.test.mjs site/d14.test.mjs
+
+BUILD OK: 61 HTML pages; 26/26 product pages; 5 daily editions; 87 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\indexing-ucuAH0
+BUILD OK: 61 HTML pages; 26/26 product pages; 5 daily editions; 87 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\indexing-3U5TtT
+BUILD OK: 61 HTML pages; 26/26 product pages; 5 daily editions; 87 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\d14-yAMI0U
+BUILD OK: 61 HTML pages; 26/26 product pages; 5 daily editions; 87 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\d14-code-ZTbLw3
+D14 HREF PROBE: escaped=1; injected attributes=0
+CVE BOUNDARY PROBE: raw/comments/code/existing spans preserved; exact token and idempotency passed
+BUILD OK: 61 HTML pages; 26/26 product pages; 5 daily editions; 87 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\r3-hero-iDQDSl
+HERO PROBE: 6 overview/archive/legacy pages; one hero each
+✔ Documentation contains no local user or application workspace paths (91.0442ms)
+✔ CLI preview flag enables indexing protection and records the actual mode (985.7798ms)
+✔ Production Pages workflow never enables the visual preview flag (0.4868ms)
+✔ Preview indexing: every page and build report follow the actual visualPreview option (1273.9942ms)
+✔ PR35: only a single inline CVE gets a nowrap class, without nested spans or unsafe code (1.0486ms)
+✔ PR35: an unterminated quoted attribute tail is preserved without CVE markup (0.58ms)
+✔ PR35: archive reserves section width and preserves the edition group without shrinking headlines (0.4759ms)
+✔ Round 4 review: quoted greater-than attribute stays intact while CVE text wraps (0.1681ms)
+✔ Round 4 review: mixed CVE titles use block flow and selected controls use theme tokens (0.8308ms)
+✔ Round 4: dynamic CVE labels use text nodes without interpreting search content (2.4726ms)
+✔ Round 4: CVE text markup never rewrites attributes or raw head content (0.2165ms)
+✔ Round 4: pre-CSS preference accepts only light/dark and handles blocked storage (4.8168ms)
+✔ Round 4: manual theme cycles auto/light/dark and removes preference for auto (2.4775ms)
+✔ D14: eight page types, 26 source pages and real filter inputs retain their content (487.9646ms)
+✔ D14 v3: every rendered code block has bounded scrolling and keyboard access (487.0303ms)
+✔ D14 review: scroll hints follow actual overflow, resize and mobile cards (3.2282ms)
+✔ D14 review: overview count targets escape attribute quotes (0.724ms)
+✔ D14: seven lead-in labels remain text, never form fields (1.2068ms)
+✔ Round 4 r3: CVE text boundaries preserve raw elements, comments and existing spans (0.546ms)
+✔ Round 4 r3: daily overviews, archive and legacy pages each include one hero (499.1716ms)
+BUILD OK: 33 HTML pages; 26/26 product pages; 1 daily editions; 9 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\production-FuO8Ne
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 0 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-Snd0mk
+V3 PRODUCT EVIDENCE: products/websphere-application-server.html, products/websphere-liberty.html, products/mq.html, products/instana.html, products/turbonomic.html, products/black-duck-sca.html, products/coverity.html, products/seeker.html, products/srm.html, products/neuvector.html, products/appscan.html, products/jboss-eap.html, products/cicd.html, products/concert.html, products/gcm.html, products/qse.html, products/vault.html, products/bob.html, products/openshift.html, products/3scale.html, products/jbcs-httpd.html, products/rancher-rke2.html, products/nkp.html, products/confluent-platform.html, products/palsys-one.html, products/cmc.html
+V3 FIXTURE OUTPUT: <workdir>/archive\.site-test\output-Snd0mk
+WARNING: 搜尋項目 invalid 指向不存在的頁面 daily/../SPEC.html，不加入索引
+WARNING: 搜尋項目 oversize-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx… 指向不存在的頁面 daily/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…，不加入索引
+BUILD OK: 33 HTML pages; 26/26 product pages; 1 daily editions; 1 search items; 2 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-l138sM
+WARNING: products_updated 與產品總表不一致，請看原始檔
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 1 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-JWOJ1v
+WARNING: 產品總表只讀到 25 列（預期 26），資料不一致，請看原始檔
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 1 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-N7OoMZ
+BUILD OK: 33 HTML pages; 26/26 product pages; 1 daily editions; 9 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\404-If8Zeu
+✔ production: legacy banner, no-data state, 26 product pages and valid relative links (296.7563ms)
+✔ G2: search results appear only for rendered matches and hide on empty/error states (7.2726ms)
+✔ G3: tabs become a Tab stop only while overflowing, including resize and observation (2.0653ms)
+✔ v3 preview: 26 products, all status counts, sections, search and relative links (411.4784ms)
+✔ home and search reject unlisted story paths and keep legacy original links (145.5862ms)
+✔ missing meta.yaml fails before writing output (55.6433ms)
+✔ missing section fails before writing output (55.6081ms)
+✔ missing required meta field fails (61.9031ms)
+✔ malformed metadata types fail (66.8826ms)
+✔ meta/table mismatch warns in build and homepage (299.7913ms)
+✔ 25-row table warns visibly but still emits all 26 products (287.9017ms)
+✔ missing product page fails; rehearsal is blocked by default (89.735ms)
+✔ raw HTML, script, event handlers, images and dangerous URLs stay inert (3.8615ms)
+✔ workflow has SHA pins, read-only build, isolated gated deployment, no privileged PR trigger (5.206ms)
+BUILD OK: 33 HTML pages; 26/26 product pages; 1 daily editions; 9 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\404-658Xhy
+BUILD OK: 33 HTML pages; 26/26 product pages; 1 daily editions; 9 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\404-k9Dw56
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 0 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-xlfmKm
+WARNING: 歷史演練分檔未附 26 項產品來源快照，產品總表未建立；不能視為目前產品現況。
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 1 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\import-JFS7Vh
+BUILD OK: 47 HTML pages; 26/26 product pages; 3 daily editions; 9 search items; 0 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-S9vsfc
+WARNING: 歷史演練分檔未附 26 項產品來源快照，產品總表未建立；不能視為目前產品現況。
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 1 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\reading-GCnraZ
+WARNING: 歷史演練分檔未附 26 項產品來源快照，產品總表未建立；不能視為目前產品現況。
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 1 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\attention-preview-kP4aFy
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 0 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-lptMF3
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 0 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-RDZ4LJ
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\production-v4-harfed
+V4 FIXTURE OUTPUT: <workdir>/archive\.site-test\production-v4-harfed
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\fallback-v4-kguSyd
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-LEkW1P
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-ikqVjY
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-ro914f
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-XuU1gs
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-ZwEJUq
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-YKpWIn
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-EbVQGP
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-25NarP
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-Ll4JQX
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 5 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-x7C5Wv
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 9 search items; 0 warnings; mode=production
+OUTPUT: <workdir>/archive\.site-test\v4-edge-TDIWWF
+BUILD OK: 33 HTML pages; 26/26 product pages; 1 daily editions; 9 search items; 0 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-XYIvjn
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+WARNING: 首頁新聞錨點缺失：daily/2026-11-19.html，退回段落頁
+BUILD OK: 33 HTML pages; 26/26 product pages; 1 daily editions; 9 search items; 5 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-RcKmMc
+WARNING: products_updated 與產品總表不一致，請看原始檔
+BUILD OK: 40 HTML pages; 26/26 product pages; 2 daily editions; 21 search items; 1 warnings; mode=rehearsal
+OUTPUT: <workdir>/archive\.site-test\output-JHSpbi
+✔ R1: 404 resources and navigation resolve at deeply missing request URLs (1214.9387ms)
+✔ R2: summary cards have no false scroll hint; wide tables retain it (1.5754ms)
+✔ R3/R5: CVE badge survives inline code; TOC labels strip Markdown (0.5008ms)
+✔ R7: empty maintenance shows fallback without empty TOC and keeps meaningful prose (300.6634ms)
+✔ R8: breadcrumbs and footer links have minimum touch height (0.7423ms)
+✔ published historical import: 26 stories, explicit collection time, same-date primary and legacy links (247.1509ms)
+✔ published rehearsal exception is exact; ordinary missing product snapshots still fail (107.1091ms)
+✔ next-day timeline uses calendar days and matching section, never a same-date previous day (366.878ms)
+✔ reading layout: semantic shell, one archive notice, correct daily current item and safe links (214.9201ms)
+✔ maintenance presentation retains source details without changing Markdown (0.5605ms)
+✔ search controls and source badges can shrink without clipping (0.9679ms)
+✔ reading CSS retains mobile typography, nested indent and desktop navigation (0.7568ms)
+✔ home attention defaults by width while preserving manual toggles between breakpoints (2.4528ms)
+✔ home attention preview never cuts through a version at the 48-character boundary (184.6352ms)
+✔ daily metadata accepts numeric v3 and v4, rejects unsupported versions (585.3304ms)
+✔ score bars are static in either motion preference (3.1432ms)
+✔ v4 fixture builds structured panels, source-specific scores and optional fallbacks (570.1644ms)
+✔ v4 accepts the product inventory summary and preserves Friday supplements (361.7027ms)
+✔ product state totals remain consistent with inventory : (342.9899ms)
+✔ product state totals remain consistent with inventory ： (322.1062ms)
+✔ v4 E1: empty AI section has zero count and no wave (293.5226ms)
+✔ v4 E2: twelve CVEs have twelve articles and twelve reachable overview entries (360.7875ms)
+✔ v4 E3: all 26 products are 有更新 (322.8703ms)
+✔ v4 E4: all 26 products are 無更新 (301.7783ms)
+✔ v4 E5: 80-character article title is preserved (291.3409ms)
+✔ v4 E6: three CVSS scores retain all three labels and widths (297.1544ms)
+✔ v4 E7: omitted attention facts leave no empty column (320.7015ms)
+✔ v4 E8: v3 without display retains the legacy text view (288.2863ms)
+✔ visual preview publishes only allowlisted binary assets and adds preview paths (239.4646ms)
+✔ preview excerpts keep full sentences without changing source text (0.316ms)
+✔ visual asset copying rejects linked directories and non-files (4.3313ms)
+✔ asset copying rejects an allowlisted file that is a symbolic link (3.8121ms)
+✔ asset copying rejects a linked assets root in both build modes (1.78ms)
+✔ preview homepage links eight story titles to their actual rendered anchors (302.1246ms)
+✔ preview product filtering hides and restores the group heading rows (4.4903ms)
+✔ weekly guard: before (8.9623ms)
+✔ weekly guard: between (1.5459ms)
+✔ weekly guard: across-h2 (0.7937ms)
+✔ weekly guard: missing (0.4986ms)
+✔ overview: all ten product updates remain reachable and dates leave section tabs (2.532ms)
+ℹ tests 74
+ℹ suites 0
+ℹ pass 74
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10081.6493

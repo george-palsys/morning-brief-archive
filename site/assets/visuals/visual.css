@@ -199,3 +199,17 @@ td .cve-id{white-space:normal}
 @media(min-width:1024px) and (max-width:1180px){
  .metric-panel--wide .metric-link{margin-top:24px}
 }
+
+/* Keep the daily highlight visible on laptop viewports. */
+@media(min-width:1024px){
+ .d14 .mb-banner img{max-height:96px}
+ .d14 .mb-banner{margin-bottom:8px}
+}
+.chip[aria-pressed="true"]::before{content:"✓" / "";font-weight:700}
+@media(max-width:1023px){
+ .mb-home-feature .facts dd small{display:none}
+}
+@media(max-width:640px){
+ .d14 .v4-jump{gap:4px}
+ .d14 .v4-jump a{min-height:32px;font-size:12px;padding-inline:12px}
+}
