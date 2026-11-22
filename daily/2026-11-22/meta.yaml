@@ -209,7 +209,7 @@ display:
     exploited_detail: The Hacker News 引述 VirtFusion：沒有研究以外被利用的報告
     patch: released
     patch_detail: 上游核心已修正；各發行版的修補套件版號沒有查
-    related: true
+    related: false
   - short: MONAI Label 任意寫檔
     keyword: MONAI
     date: 2026-11-21
