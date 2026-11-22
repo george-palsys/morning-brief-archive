@@ -7,6 +7,22 @@ import {build, markdown} from './build.mjs';
 import {renderOverview} from './display-v4.mjs';
 import {wrapCveText} from './visual-kit.mjs';
 
+test('Preview indexing: every page and build report follow the actual visualPreview option',()=>{
+ fs.mkdirSync('.site-test',{recursive:true});
+ for(const visualPreview of [false,true]){
+  const output=fs.mkdtempSync(path.resolve('.site-test/indexing-'));
+  const result=build({output,visualPreview});
+  assert.ok(result.pages.has('404.html'));
+  assert.ok(result.pages.size>0);
+  for(const [file,html] of result.pages){
+   const robots=[...html.matchAll(/<meta\b[^>]*name="robots"[^>]*>/g)].map(match=>match[0]);
+   if(visualPreview) assert.deepEqual(robots,['<meta name="robots" content="noindex, nofollow">'],file);
+   else assert.deepEqual(robots,[],file);
+  }
+  assert.equal(JSON.parse(fs.readFileSync(path.join(output,'build-report.json'),'utf8')).visualPreview,visualPreview);
+ }
+});
+
 test('PR35: only a single inline CVE gets a nowrap class, without nested spans or unsafe code',()=>{
  const html=markdown('- `CVE-2026-123007`\n- CVE-2026-123634\n- `CVE-2026-123007, CVE-2026-123634`\n- `<img src=x>`\n\n```\nCVE-2026-123007\n```').html;
  assert.equal((html.match(/class="cve-code"/g)||[]).length,2);

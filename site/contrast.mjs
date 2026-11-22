@@ -13,7 +13,11 @@ function luminance(hex) {
   return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
 }
 const pairs = [
-  ['selected-ink', 'selected-bg', 4.5], ['selected-border', 'selected-bg', 3],
+  ['selected-ink', 'selected-bg', 4.5],
+  // A solid selected control may share its border and fill. Check its boundary
+  // against both surrounding surfaces and its fill against unselected controls.
+  ['selected-border', 'paper', 3], ['selected-border', 'canvas', 3],
+  ['selected-bg', 'paper', 3], ['selected-bg', 'canvas', 3],
   ['ink', 'source-warning-bg', 4.5],
   ['ink-2', 'factbox-bg', 4.5], ['muted', 'factbox-bg', 4.5],
   ['ink-2', 'directory-head-bg', 4.5], ['muted', 'directory-head-bg', 4.5],

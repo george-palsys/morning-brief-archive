@@ -464,7 +464,7 @@ export function build({ input = '.', output = '_site', allowRehearsal = false, b
     }
   }
   files.set('.nojekyll', '');
-  files.set('build-report.json', JSON.stringify({ mode: allowRehearsal ? 'rehearsal' : 'production', basePath, days: days.map(d => ({ date: d.date, legacy: d.legacy })), productPages: slugs.map(s => `products/${s}.html`), statusCounts: Object.fromEntries(Object.keys(states).map(s => [s, rows.filter(r => r.state === s).length])), warnings }, null, 2));
+  files.set('build-report.json', JSON.stringify({ mode: allowRehearsal ? 'rehearsal' : 'production', basePath, visualPreview, days: days.map(d => ({ date: d.date, legacy: d.legacy })), productPages: slugs.map(s => `products/${s}.html`), statusCounts: Object.fromEntries(Object.keys(states).map(s => [s, rows.filter(r => r.state === s).length])), warnings }, null, 2));
   // Never recursively delete an arbitrary caller-supplied output directory.
   if (fs.existsSync(output) && fs.readdirSync(output).length) throw Error(`輸出資料夾非空：${output}，請使用新的資料夾`);
   for (const [file, data] of files) { const target = path.join(output, file); fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, data); }

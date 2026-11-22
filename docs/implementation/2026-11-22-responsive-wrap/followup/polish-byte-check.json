@@ -1,0 +1,21 @@
+{
+  "builderOnlyDiff": [
+    "build-report.json"
+  ],
+  "fullDiffVsCcf2cf5": [
+    "assets/design-tokens.css",
+    "assets/site.css",
+    "assets/visuals/visual.css",
+    "build-report.json"
+  ],
+  "build-polish-after": {
+    "html": 61,
+    "noindex": 61,
+    "visualPreview": true
+  },
+  "build-polish-production": {
+    "html": 61,
+    "noindex": 0,
+    "visualPreview": false
+  }
+}
