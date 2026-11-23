@@ -43,7 +43,7 @@ cicd_tools_updated:
 attention:
   section: cve
   title: httpd HTTP/2 漏洞傳出已遭利用
-  summary: 新加坡網路安全局（CSA）於 2026-11-17 發布警示，寫 mod_http2 的漏洞 CVE-2026-119618 已遭利用。只有啟用 HTTP/2 的伺服器受影響；JBCS httpd 還沒升到 2.4.62 SP7 的，應排進最近的維護時段。
+  summary: 新加坡網路安全局（CSA）於 2026-11-17 發布警示，寫 mod_http2 的漏洞 CVE-2026-119618 已遭利用。客戶的 JBCS httpd 還沒升到 2.4.62 SP7、而且啟用了 HTTP/2 的，現在應該排進最近的維護時段。
   facts:
   - label: CVSS 3.1
     value: '9.8'
