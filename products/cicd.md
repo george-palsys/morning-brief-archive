@@ -3,7 +3,7 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：多家
-- 最後檢查：2026-11-23
+- 最後檢查：2026-11-24
 - 當天狀態：有更新
 
 ## 各來源目前看到的最新一筆
@@ -21,7 +21,7 @@
 | [Red Hat OpenShift Pipelines 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/) | 新版本 | OpenShift Pipelines | 1.24（文件 release notes 列到 1.24.2；errata 有 1.24.3） | 2026-10-31 | 已轉址 |
 | [argoproj/argo-cd Releases](https://github.com/argoproj/argo-cd/releases) | 新版本 | Argo CD | v3.6.2 / v3.5.8 / v3.4.14 | 2026-11-19 | 讀得到 |
 | [argoproj/argo-cd Security Advisories](https://github.com/argoproj/argo-cd/security/advisories) | 安全公告 | Argo CD | GHSA-jj8j-82j2-7ph7 | 2026-11-20 | 讀得到 |
-| [Red Hat OpenShift GitOps 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/) | 新版本 | OpenShift GitOps | 1.22.3（RHSA-2026:94584） | 2026-11-03 | 已轉址 |
+| [Red Hat OpenShift GitOps 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/) | 新版本 | OpenShift GitOps | 1.22.4（RHSA-2026:102591；文件站仍列到 1.22.3） | 2026-11-23 | 已轉址 |
 | [fluxcd/flux2 Releases](https://github.com/fluxcd/flux2/releases) | 新版本 | Flux | v2.10.1 | 2026-11-20 | 讀得到 |
 | [fluxcd/flux2 Security Advisories](https://github.com/fluxcd/flux2/security/advisories) | 安全公告 | Flux | GHSA-mwcp-qpcg-fr7c | 2026-08-11 | 讀得到 |
 | [goharbor/harbor Releases](https://github.com/goharbor/harbor/releases) | 新版本 | Harbor | v2.15.5（另有 v2.16.0） | 2026-11-12 | 讀得到 |
@@ -38,15 +38,20 @@
 - Tekton：無更新
 - OpenShift Pipelines：無更新
 - Argo CD：無更新
-- OpenShift GitOps：無更新
+- OpenShift GitOps：有更新
 - Flux：無更新
 - Harbor：無更新
 - Sonatype Nexus Repository：無更新
-- JFrog Artifactory：有更新
+- JFrog Artifactory：無更新
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-24
+
+- 安全公告：OpenShift GitOps，三張 RHSA（2026-11-23）：RHSA-2026:102591（v1.22.4）、RHSA-2026:102593（v1.21.8）、RHSA-2026:102596（v1.20.12）。CVE 清單相同，共 5 個：CVE-2026-119618（mod_http2，Critical，CVSS 3.1 為 9.8）、CVE-2025-61560、CVE-2026-116591、CVE-2026-78659、CVE-2026-78660。來源：https://access.redhat.com/errata/RHSA-2026:102591 → [當天產品動態](../daily/2026-11-24/products.md)
+- 無法確認（個別項目，產品狀態不受影響）：三張 RHSA 的網頁沒有逐張打開；文件站的 release notes 仍只列到 1.22.3。
 
 ### 2026-11-23
 

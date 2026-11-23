@@ -3,7 +3,7 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：Black Duck
-- 最後檢查：2026-11-23
+- 最後檢查：2026-11-24
 - 當天狀態：無更新
 
 ## 各來源目前看到的最新一筆
@@ -13,7 +13,7 @@
 | [Polaris release notes（會列出支援的 Coverity 版本與變更）](https://docs.blackduck.com/r/polaris/black-duck-polaris-platform/polaris-release-notes.html) | 新版本 | — | November 2026 | 2026-11-19 | 讀得到 |
 | [Black Duck News Releases](https://news.blackduck.com/) | 新版本 | — | Nov 17, 2026：Newly Discovered Software Vulnerabilities Outpace Fixes 18 to 1… | 2026-11-17 | 讀得到 |
 | [Coverity Connect CVE-2026-1496 安全公告（作為公告管道的範例）](https://www.blackduck.com/blog/coverity-connect-cve-2026-1496-security-advisory.html) | 安全公告 | — | Coverity Connect CVE-2026-1496 security advisory（March 26, 2026） | 2026-03-26 | 讀得到 |
-| [Coverity Release Notes（地端版，docs.blackduck.com）](https://docs.blackduck.com/r/coverity/latest/coverity-documentation/coverity-2026.9.1-release-notes.html) | 新版本 | — | Coverity 2026.9.1 | 2026-11-19 | 讀得到 |
+| [Coverity Release Notes（地端版，docs.blackduck.com）](https://docs.blackduck.com/r/coverity/latest/coverity-documentation/coverity-2026.9.1-release-notes.html) | 新版本 | — | Coverity 2026.9.1 | 2026-11-23 | 讀得到 |
 
 ## 最近動態
 
