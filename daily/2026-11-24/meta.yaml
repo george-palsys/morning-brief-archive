@@ -1,0 +1,225 @@
+title: 晨報 2026-11-24
+date: '2026-11-24'
+weekday: 星期二
+type: morning-brief
+collected_at: '2026-11-24T02:20:00+08:00'
+cve_ids:
+- CVE-2026-119618
+- CVE-2025-61560
+- CVE-2026-116591
+- CVE-2026-78659
+- CVE-2026-78660
+- CVE-2026-16192
+- CVE-2026-126714
+- CVE-2026-114938
+- CVE-2026-121481
+- CVE-2026-133325
+- CVE-2026-95517
+- CVE-2026-133968
+products:
+- WebSphere Liberty
+- OpenShift
+- CI/CD
+tags:
+- OpenShift GitOps
+- WebSphere Liberty
+- OpenShift
+- Apache HTTP Server
+- Java4Shell
+- OpenSSL
+- Apache Tomcat
+- Kubernetes
+- Nvidia
+spec_version: 4
+products_checked: 26
+products_updated:
+- WebSphere Liberty
+- OpenShift
+- CI/CD
+products_unconfirmed:
+- Software Risk Manager (SRM)
+cicd_tools_updated:
+- OpenShift GitOps
+attention:
+  section: cve
+  title: httpd HTTP/2 漏洞傳出已遭利用
+  summary: 新加坡網路安全局（CSA）於 2026-11-17 發布警示，寫 mod_http2 的漏洞 CVE-2026-119618 已遭利用。客戶的 JBCS httpd 還沒升到 2.4.62 SP7、而且啟用了 HTTP/2 的，現在應該排進最近的維護時段；OpenShift GitOps 也在 2026-11-23 發布了含這個 CVE 的三張安全更新。
+  facts:
+  - label: CVSS 3.1
+    value: '9.8'
+    source: Red Hat
+  - label: CVSS 3.1
+    value: '8.1'
+    source: CISA-ADP（NVD 紀錄所列）
+  - label: 上游修補版
+    value: 2.4.71
+  - label: JBCS 修補
+    value: RHSA-2026:100552
+display:
+  products:
+  - short: GitOps 三張 RHSA
+    keyword: GITOPS
+    date: 2026-11-23
+    figures:
+    - label: CVE
+      value: 5 個
+    - label: 最高 CVSS 3.1
+      value: '9.8'
+  - short: restConnector 阻斷服務
+    keyword: LIBERTY
+    date: 2026-11-23
+    figures:
+    - label: CVSS 3.1
+      value: '7.1'
+    - label: 修正版
+      value: 26.0.0.9
+  - short: 六張 RHBA extras 映像
+    keyword: ERRATA
+    date: 2026-11-23
+  knowledge:
+  - short: OAuth JWT aud 收緊
+    keyword: RFC10070
+    date: 2026-11-07
+  - short: mod_http2 執行緒缺陷
+    keyword: MODHTTP2
+    date: 2026-11-11
+  - short: phpAfterShell 機制
+    keyword: PHPSESS
+    date: 2026-11-20
+    figures:
+    - label: CVSS 4.0
+      value: '9.2'
+  - short: K8s 1.38 cgroup 驅動
+    keyword: K8S138
+    date: 2026-11-23
+  - short: Cloudflare DNS 持續探測
+    keyword: FLAMINGO
+    date: 2026-11-23
+  cve:
+  - short: httpd HTTP/2 漏洞遭利用
+    keyword: HTTPD
+    date: 2026-11-17
+    figures:
+    - label: 上游修補版
+      value: 2.4.71
+    cve_ids:
+    - CVE-2026-119618
+    cvss:
+    - score: 8.1
+      version: '3.1'
+      source: CISA-ADP（NVD 紀錄所列）
+    - score: 9.8
+      version: '3.1'
+      source: Red Hat
+    exploited: confirmed
+    exploited_detail: 新加坡 CSA 2026-11-17 警示寫已遭利用；CISA KEV 沒有收錄（2026-11-24 查看）
+    patch: released
+    patch_detail: 上游 2.4.71；JBCS 2.4.62.SP7 為 RHSA-2026:100552；OpenShift GitOps 於 2026-11-23 發布 RHSA-2026:102591、RHSA-2026:102593、RHSA-2026:102596
+    related: true
+    caveat: CSA 的警示內文沒有開到，只讀到清單頁的標題、日期與摘要。
+  - short: Java4Shell 出現嘗試利用
+    keyword: JAVA4SH
+    date: 2026-11-23
+    figures:
+    - label: 來源 IP
+      value: 7 個
+    cve_ids:
+    - CVE-2026-114938
+    cvss: []
+    exploited: unknown
+    exploited_detail: 有掃描與嘗試利用，GreyNoise 寫沒有確認成功的利用；CISA KEV 沒有收錄（2026-11-24 查看）
+    patch: released
+    patch_detail: Oracle 與 OpenJDK 於 2026-11-17 修補（iThome）；各產品以原廠公告為準
+    related: true
+    caveat: 261 次請求與 Previdian、Cloudforce One、watchTowr 的觀察只依 iThome 的彙整，沒有逐一對到各家原文。
+  - short: OpenSSL Base64 整數溢位
+    keyword: OPENSSL
+    date: 2026-11-18
+    cve_ids:
+    - CVE-2026-121481
+    cvss:
+    - score: 5.9
+      version: '3.1'
+      source: CISA-ADP（NVD 紀錄所列）
+    - score: 3.7
+      version: '3.1'
+      source: Red Hat
+    - score: 9.8
+      version: '3.1'
+      source: GitHub Advisory Database
+    exploited: none_seen
+    exploited_detail: OpenSSL 表示沒有找到攻擊者可觸發的途徑；未查到攻擊或 PoC 的報告
+    patch: unknown
+    patch_detail: 修補在 pull request 33652；iThome 寫截至 11 月 23 日還沒有合併，修補版本的版號未查到
+    related: true
+    caveat: GitHub 的 9.8 分是 unreviewed 狀態；OpenSSL 自評 Low，上游只影響 4.0 與 4.1。
+  - short: Tomcat 叢集 TLS-PSK 漏洞
+    keyword: TOMCAT
+    date: 2026-11-19
+    cve_ids:
+    - CVE-2026-133325
+    - CVE-2026-95517
+    cvss:
+    - score: 9.8
+      version: '3.1'
+      source: CISA-ADP（NVD 紀錄所列）
+    - score: 8.1
+      version: '3.1'
+      source: Red Hat
+    exploited: unknown
+    exploited_detail: 未查到攻擊或 PoC 的報告；CISA KEV 沒有收錄（2026-11-24 查看）
+    patch: pending
+    patch_detail: 修補版本 11.0.30、10.1.63、9.0.125 尚未釋出；Apache 建議叢集通訊改用 TLS 1.2
+    related: false
+  taiwan:
+  - short: 政府網路日均擋 280 萬次
+    keyword: MODA
+    kind: 政策
+    date: 2026-11-23
+    figures:
+    - label: 每日平均抵禦境外網攻
+      value: 280 萬次
+  - short: 兩開店平台訂單遭存取
+    keyword: ESHOP
+    kind: 個資
+    date: 2026-11-17
+  - short: 全國電會員收到假訂單信
+    keyword: ELIFE
+    kind: 個資
+    date: 2026-11-19
+  - short: 崇越子公司委外商異常
+    keyword: IBIZA
+    kind: 個資
+    date: 2026-11-19
+  - short: 尚凡遭不明 IP 侵入
+    keyword: IPAIR
+    kind: 入侵
+    date: 2026-11-21
+  ai:
+  - short: 黃仁勳回任 Nvidia 執行長
+    keyword: NVIDIA
+    date: 2026-11-23
+    figures:
+    - label: 股價（美東 9:51）
+      value: 159.95 美元
+    - label: 漲幅
+      value: 27%
+  - short: 亞馬遜公告買 Decart 技術
+    keyword: DECART
+    date: 2026-11-23
+    figures:
+    - label: 金額（媒體報導）
+      value: 75 億美元
+  - short: 印度示警 AI 輔助攻擊金融
+    keyword: CERTIN
+    date: 2026-11-23
+  - short: AI 代理 11 分鐘找到漏洞
+    keyword: CAIRN
+    date: 2026-11-20
+    figures:
+    - label: 分析 API 到利用成功
+      value: 11 分鐘
+    - label: Redis 攻擊操作數
+      value: 148 項
+    - label: 測試帳密
+      value: 3 萬組
