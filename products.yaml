@@ -304,6 +304,12 @@ products:
         status: unverified
         fetch: browser
         note: 原網址 documentation.blackduck.com 會轉到 docs.blackduck.com(2026-11-19 入口頁讀得到)。SRM 的 release notes 頁本身沒有打開過,正確路徑待確認。2026-11-21 把網址由文件站首頁 https://docs.blackduck.com/ 改為 SRM 文件入口頁(瀏覽器開啟確認讀得到,列出 getting-started、plugins、api-guide、install-and-deployment-options 四個章節),仍找不到 release notes 頁,狀態維持 unverified。2026-11-19 演練:文件站讀得到 SRM 文件,但目錄裡找不到 release notes 章節
+      - type: release
+        title: srm-k8s Releases(SRM 的 Kubernetes 部署 Helm chart,GitHub)
+        url: https://github.com/codedx/srm-k8s/releases
+        status: verified
+        verified_on: 2026-11-24
+        note: 2026-11-24 實際開頁確認讀得到,最新一筆 v1.91.0(2026-11-17);chart/Chart.yaml 的 appVersion 寫 v2026.9.3,即 chart 對應的 SRM 版本。這是 chart 的版本紀錄,不是 SRM 的 release notes,內容只有映像標籤更新與 chart 修正,看不到 SRM 本身改了什麼。repo 屬於 GitHub 的 codedx 組織,chart 的相依套件來自 repo.blackduck.com;是否為 Black Duck 原廠維護,尚未用原廠文件確認
       - type: security
         title: 未查到公開的安全公告頁
         url: null
