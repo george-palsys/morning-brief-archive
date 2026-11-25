@@ -12,10 +12,15 @@
 |---|---|---|---|---|---|
 | [Software Risk Manager 文件入口](https://docs.blackduck.com/p/softwareriskmanagement) | 新版本 | — | 無（入口頁打得開，找不到 release notes 頁） | 頁面沒有日期 | 頁面沒有可比對的清單 |
 | 未查到公開的安全公告頁 | 安全公告 | — | 無 | 頁面沒有日期 | 頁面沒有可比對的清單 |
+| [srm-k8s Releases（SRM 的 Kubernetes 部署 Helm chart，GitHub）](https://github.com/codedx/srm-k8s/releases) | 新版本 | — | v1.91.0（chart 的版本，不是 SRM 的 release notes） | 2026-11-17 | 讀得到 |
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-26
+
+- 無法確認：文件入口頁 https://docs.blackduck.com/p/softwareriskmanagement 打得開，但 release notes 要登入才看得到，也沒有公開的安全公告頁。GitHub 的 codedx/srm-k8s（部署用 Helm chart）最新仍是 v1.91.0（2026-11-17），它只是 chart 的版本紀錄，看不到 SRM 本身改了什麼，無法確認最新版本與是否有更新。
 
 ### 2026-11-24
 

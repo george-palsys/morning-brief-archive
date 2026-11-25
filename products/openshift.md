@@ -3,7 +3,7 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：Red Hat
-- 最後檢查：2026-11-24
+- 最後檢查：2026-11-26
 - 當天狀態：有更新
 
 ## 各來源目前看到的最新一筆
@@ -11,12 +11,17 @@
 | 來源 | 類別 | 工具 | 最新一筆 | 日期 | 檢查結果 |
 |---|---|---|---|---|---|
 | [OpenShift Container Platform 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/openshift_container_platform/) | 新版本 | — | 5.0（最新 z-stream 5.0.1，RHSA-2026:94538） | 2026-11-09 | 已轉址 |
-| [Red Hat Product Errata，以產品 OpenShift Container Platform 篩選](https://access.redhat.com/errata-search/) | 安全公告 | — | RHBA-2026:102338 | 2026-11-23 | 讀得到 |
+| [Red Hat Product Errata，以產品 OpenShift Container Platform 篩選](https://access.redhat.com/errata-search/) | 安全公告 | — | RHBA-2026:103409 | 2026-11-24 | 讀得到 |
 | [Red Hat Security Bulletins(RHSB)](https://access.redhat.com/security/vulnerabilities/) | 安全公告 | — | RHSB-2026-021 | 2026-11-20 | 讀得到 |
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-26
+
+- 修補：五張 RHBA（2026-11-24）：RHBA-2026:103409、RHBA-2026:103404、RHBA-2026:103403、RHBA-2026:103390（5.0 的 openperouter-operator extras）、RHBA-2026:100495（OCP 4.19 的 Helm 3.20.2.4 CVE 修補版）。沒有新的 RHSA，最新 z-stream 仍是 5.0.1。來源：https://access.redhat.com/errata-search/ → [當天產品動態](../daily/2026-11-26/products.md)
+- 無法確認（個別來源，產品狀態不受影響）：五張 RHBA 的內文沒有逐張打開。
 
 ### 2026-11-24
 
