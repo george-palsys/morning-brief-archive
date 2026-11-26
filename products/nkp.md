@@ -4,19 +4,24 @@
 
 - 全名：Nutanix Kubernetes Platform
 - 原廠：Nutanix
-- 最後檢查：2026-11-26
-- 當天狀態：無更新
+- 最後檢查：2026-11-27
+- 當天狀態：有更新
 
 ## 各來源目前看到的最新一筆
 
 | 來源 | 類別 | 工具 | 最新一筆 | 日期 | 檢查結果 |
 |---|---|---|---|---|---|
 | [Nutanix Community Product Updates（NKP 各版公告）](https://next.nutanix.com/product-updates) | 新版本 | — | Nutanix Kubernetes Platform (NKP) 2.19 | 2026-10-20 | 讀得到 |
-| [Nutanix Security Advisories](https://portal.nutanix.com/page/security/security-advisories/list) | 安全公告 | — | #0061（2026-11-24 更新；同批另有 #0065、#0060） | 2026-11-24 | 讀得到 |
+| [Nutanix Security Advisories](https://portal.nutanix.com/page/security/security-advisories/list) | 安全公告 | — | #0066（清單日期 2026-11-26，共 65 筆；同批修訂 #0061、#0064、#0063、#0057） | 2026-11-26 | 讀得到 |
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-27
+
+- 安全公告：Nutanix Security Advisory #0066（Critical，Version 1.0；PDF 寫 Published: November 25, 2026，清單日期 Nov 26, 2026）。NGINX 的兩個 HTTP/2 漏洞 CVE-2026-123007、CVE-2026-123633，CVSS 4.0 為 9.2、CVSS 3.1 為 8.1。NKP 2.17.x、2.18.x、2.19.x 受影響；Workaround 寫「Under Investigation」，修正版寫「Fix Version and Release Date Pending」，下一次更新預定 December 10, 2026。同批修訂的舊公告：#0061 改到 Version 1.3（NKP 仍寫在 2.19.1 修正，NKP 2.18.x 待公布）、#0064 改到 Version 1.1（NKP Not Impacted）、#0063 改到 Version 1.1（NKP Not Impacted）、#0057 改到 Version 1.2（對象是 AOS 與 Prism Central）。來源：https://download.nutanix.com/alerts/Security_Advisory_0066.pdf → [當天產品動態](../daily/2026-11-27/products.md)
+- 無法確認（個別項目，產品狀態不受影響）：公告 PDF 的表格欄位對應有一部分不能確定；NKP 裡是哪一個元件帶 NGINX，公告沒有寫；產品更新頁最新仍是 NKP 2.19，沒有看到 2.19.1 的發布公告。
 
 ### 2026-11-25
 

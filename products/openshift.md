@@ -3,20 +3,25 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：Red Hat
-- 最後檢查：2026-11-26
-- 當天狀態：無更新
+- 最後檢查：2026-11-27
+- 當天狀態：有更新
 
 ## 各來源目前看到的最新一筆
 
 | 來源 | 類別 | 工具 | 最新一筆 | 日期 | 檢查結果 |
 |---|---|---|---|---|---|
 | [OpenShift Container Platform 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/openshift_container_platform/) | 新版本 | — | 5.0（最新 z-stream 5.0.1，RHSA-2026:94538） | 2026-11-09 | 已轉址 |
-| [Red Hat Product Errata，以產品 OpenShift Container Platform 篩選](https://access.redhat.com/errata-search/) | 安全公告 | — | RHBA-2026:103409 | 2026-11-24 | 讀得到 |
+| [Red Hat Product Errata，以產品 OpenShift Container Platform 篩選](https://access.redhat.com/errata-search/) | 安全公告 | — | RHSA-2026:103542 | 2026-11-25 | 讀得到 |
 | [Red Hat Security Bulletins(RHSB)](https://access.redhat.com/security/vulnerabilities/) | 安全公告 | — | RHSB-2026-021 | 2026-11-20 | 讀得到 |
 
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-27
+
+- 安全公告：RHSA-2026:103542「DevWorkspace Operator 1.1.1 release.」（Important，Issued 2026-11-25）。修 CVE-2026-78669（Go net/http 與 golang.org/x/net/http2 的 HTTP/2 SETTINGS frame 阻斷服務，CVSS 3.1 為 7.5）；公告寫從 OperatorHub 安裝在 OpenShift Container Platform 4.16 或更新的版本上。叢集本身沒有新版，最新 z-stream 仍是 5.0.1。來源：https://access.redhat.com/errata/RHSA-2026:103542 → [當天產品動態](../daily/2026-11-27/products.md)
+- 無法確認（個別項目，產品狀態不受影響）：Red Hat 的 CVE-2026-78669 頁面另把 cert-manager Operator、Compliance Operator、ExternalDNS Operator、File Integrity Operator、Multicluster Engine 等列為 Affected，這些元件的修正版沒有逐一查。
 
 ### 2026-11-25
 

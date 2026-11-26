@@ -3,8 +3,8 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：多家
-- 最後檢查：2026-11-26
-- 當天狀態：有更新
+- 最後檢查：2026-11-27
+- 當天狀態：無更新
 
 ## 各來源目前看到的最新一筆
 
@@ -20,19 +20,19 @@
 | [tektoncd/pipeline Security Advisories](https://github.com/tektoncd/pipeline/security/advisories) | 安全公告 | Tekton | GHSA-wjxp-xrpv-xpff（最新一筆 2026-04-21） | 2026-04-21 | 讀得到 |
 | [Red Hat OpenShift Pipelines 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/) | 新版本 | OpenShift Pipelines | 1.24（文件 release notes 列到 1.24.2；errata 有 1.24.3） | 2026-10-31 | 已轉址 |
 | [argoproj/argo-cd Releases](https://github.com/argoproj/argo-cd/releases) | 新版本 | Argo CD | v3.6.3 / v3.5.9 / v3.4.15 | 2026-11-24 | 讀得到 |
-| [argoproj/argo-cd Security Advisories](https://github.com/argoproj/argo-cd/security/advisories) | 安全公告 | Argo CD | GHSA-jj8j-82j2-7ph7 | 2026-11-20 | 讀得到 |
+| [argoproj/argo-cd Security Advisories](https://github.com/argoproj/argo-cd/security/advisories) | 安全公告 | Argo CD | GHSA-w7rw-fg89-2cjf | 2026-11-24 | 讀得到 |
 | [Red Hat OpenShift GitOps 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/) | 新版本 | OpenShift GitOps | 1.22.4（RHSA-2026:102591；文件站已列出 1.22.4） | 2026-11-23 | 已轉址 |
 | [fluxcd/flux2 Releases](https://github.com/fluxcd/flux2/releases) | 新版本 | Flux | v2.10.1 | 2026-11-20 | 讀得到 |
 | [fluxcd/flux2 Security Advisories](https://github.com/fluxcd/flux2/security/advisories) | 安全公告 | Flux | GHSA-mwcp-qpcg-fr7c | 2026-08-11 | 讀得到 |
 | [goharbor/harbor Releases](https://github.com/goharbor/harbor/releases) | 新版本 | Harbor | v2.15.5（另有 v2.16.0） | 2026-11-12 | 讀得到 |
 | [goharbor/harbor Security Advisories](https://github.com/goharbor/harbor/security/advisories) | 安全公告 | Harbor | GHSA-x955-mxjx-g5cj（依發布日排序的第一筆，2026-10-28；先前記的是 GHSA-w5fq-xrhj-j7g2） | 2026-10-28 | 讀得到 |
 | [Sonatype Nexus Repository Release Notes](https://help.sonatype.com/en/release-notes.html) | 新版本 | Sonatype Nexus Repository | 3.98.3 | 2026-11-19 | 讀得到 |
-| [Artifactory Release Notes](https://docs.jfrog.com/releases/docs/artifactory-release-notes) | 新版本 | JFrog Artifactory | Self-managed 7.173.27（SaaS 今天沒有讀到，上次是 7.179.1） | 2026-11-24 | 讀得到 |
+| [Artifactory Release Notes](https://docs.jfrog.com/releases/docs/artifactory-release-notes) | 新版本 | JFrog Artifactory | Self-managed 7.173.27（SaaS 7.180.1，頁面沒有讀到日期） | 2026-11-24 | 讀得到 |
 
 ## 各工具當天狀態
 
-- Jenkins：有更新
-- GitLab：有更新
+- Jenkins：無更新
+- GitLab：無更新
 - GitHub Actions：無更新
 - Azure DevOps：無更新
 - Tekton：無更新
