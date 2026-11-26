@@ -40,40 +40,13 @@ cve_ids:
 - CVE-2026-135636
 - CVE-2026-105437
 - CVE-2026-129975
-- CVE-2023-4860
-- CVE-2024-7966
-- CVE-2026-9998
-- CVE-2026-111497
-- CVE-2026-123158
-- CVE-2026-91403
-- CVE-2026-114820
-- CVE-2026-114406
-- CVE-2026-111943
-- CVE-2026-123903
-- CVE-2026-132165
-- CVE-2026-123167
-- CVE-2026-129514
 products: &id001
-- Instana
 - CI/CD
-- OpenShift
 - Rancher / RKE2
-- NKP
-- Confluent Platform
-- Palsys One
 tags:
 - Jenkins
 - GitLab
-- Argo CD
-- JFrog Artifactory
-- Instana
 - Rancher
-- NKP
-- Confluent Platform
-- AppScan on Cloud
-- OpenShift
-- VMware vCenter
-- Drupal
 - MCP
 - RFC 8693
 spec_version: 4
@@ -84,12 +57,10 @@ products_unconfirmed:
 cicd_tools_updated:
 - Jenkins
 - GitLab
-- Argo CD
-- JFrog Artifactory
 attention:
   section: products
-  title: Jenkins、GitLab、Argo CD 同時出安全更新
-  summary: 'CI/CD 三個工具在 11-24、11-25 都發了安全更新：Jenkins 11 項外掛漏洞（含 Pipeline: Groovy 的 sandbox 繞過）、GitLab 19.6.2 修 13 個、Argo CD v3.6.3 修 7 個。客戶的 CI/CD 平台可排同一個維護時段升級。'
+  title: Jenkins、GitLab 同時出安全更新
+  summary: 'Jenkins 於 2026-11-25 發布安全公告，11 項外掛漏洞（含 Pipeline: Groovy 的 sandbox 繞過）全部有修正版；GitLab 同日發布 19.6.2，修 13 個漏洞。客戶的 CI/CD 平台可排同一個維護時段升級。'
   facts:
   - label: Jenkins 外掛漏洞
     value: 11 個
@@ -97,11 +68,6 @@ attention:
   - label: GitLab 安全修正
     value: 13 個
     source: GitLab
-  - label: Argo CD 安全修正
-    value: 7 個
-    source: Argo CD
-  - label: Argo CD 修正版
-    value: v3.6.3
 display:
   products:
   - short: Jenkins 11 項外掛漏洞
@@ -120,59 +86,12 @@ display:
       value: 13 個
     - label: 最高 CVSS
       value: '6.7'
-  - short: Argo CD 修 7 個漏洞
-    keyword: ARGOCD
-    date: 2026-11-24
-    figures:
-    - label: 安全修正
-      value: 7 個
-    - label: 最新版
-      value: v3.6.3
-  - short: Artifactory 安全修補
-    keyword: JFROG
-    date: 2026-11-24
-    figures:
-    - label: 版本
-      value: 7.173.27
-  - short: Instana 自架版公告
-    keyword: INSTANA
-    date: 2026-11-24
-    figures:
-    - label: 修正 build
-      value: 1.0.329
-    - label: 最高 CVSS
-      value: '9.6'
   - short: Rancher 四個 patch 版
     keyword: RANCHER
     date: 2026-11-25
     figures:
     - label: 最新版
       value: v2.15.4
-  - short: NKP 公告更新
-    keyword: NKP
-    date: 2026-11-24
-    figures:
-    - label: CVSS 4.0
-      value: '9.2'
-    - label: 修正版
-      value: 2.19.1
-  - short: Flink 管理元件繞過
-    keyword: CONFSA38
-    date: 2026-11-19
-    figures:
-    - label: CVSS 3.1
-      value: '8.8'
-    - label: 修正版
-      value: 2.4.5
-  - short: DAST 引擎 10.13.0
-    keyword: ASOC
-    date: 2026-11-24
-    figures:
-    - label: DAST 引擎
-      value: 10.13.0
-  - short: 五張 RHBA
-    keyword: ERRATA
-    date: 2026-11-24
   knowledge:
   - short: Token Exchange 與 agent
     keyword: RFC8693
@@ -185,102 +104,12 @@ display:
       value: 26 個
     - label: 提示詞降低比率
       value: 68% 到 96%
-  - short: Rekor 只收 5 種紀錄
-    keyword: REKOR
-    date: 2026-11-16
-  - short: Agent Host Protocol
-    keyword: AHP
-    date: 2026-11-17
-  - short: RPKI 信任錨挑選順序
-    keyword: RFC10097
-    date: 2026-11-18
-  cve:
-  - short: vCenter 驗證繞過
-    keyword: VCENTER
-    date: 2026-11-24
-    figures:
-    - label: 同批漏洞
-      value: 23 個
-    cve_ids:
-    - CVE-2026-123903
-    cvss:
-    - score: 9.8
-      version: '3.1'
-      source: Broadcom
-    exploited: none_seen
-    exploited_detail: 公告沒有提到遭利用
-    patch: released
-    patch_detail: vCenter 9.1.2、9.0.2.0300、8.0 U3m，VCF 5.2.5；沒有緩解做法
-    related: false
-    caveat: 公告只寫 CVSSv3，沒有寫是 3.0 還是 3.1；受影響版本以公告對照表為準。
-  - short: Drupal 安裝程式遭利用
-    keyword: DRUPAL
-    date: 2026-11-18
-    figures:
-    - label: KEV 期限
-      value: '2026-11-27'
-    cve_ids:
-    - CVE-2026-132165
-    cvss: []
-    exploited: confirmed
-    exploited_detail: Drupal 公告寫最早 2026-11-19 19:00 UTC 遭利用；CISA KEV 於 2026-11-24 收錄
-    patch: released
-    patch_detail: Drupal 11.4.13、11.3.22、10.6.22
-    related: false
-    caveat: Drupal 公告沒有 CVSS 分數，自己的評分是 Highly critical 20 ∕ 25。
-  - short: Serv-U 權限提升
-    keyword: SERVU
-    date: 2026-11-24
-    cve_ids:
-    - CVE-2026-123167
-    cvss:
-    - score: 9.1
-      version: '3.1'
-      source: SolarWinds
-    exploited: none_seen
-    exploited_detail: 公告沒有提到遭利用
-    patch: released
-    patch_detail: Serv-U 2026.4
-    related: false
-  - short: Hex.pm 套件庫遭入侵
-    keyword: HEXPM
-    date: 2026-11-24
-    figures:
-    - label: 惡意請求
-      value: 69 個
-    - label: 受影響伺服器
-      value: 6 台
-    cve_ids:
-    - CVE-2026-129514
-    cvss: []
-    exploited: confirmed
-    exploited_detail: Hex.pm 事件報告：2026-11-23 遭入侵
-    patch: released
-    patch_detail: 服務端已修補；registry 簽章金鑰尚未輪替
-    related: false
-    caveat: 分數沒有在原始頁面讀到；iThome 報導寫 CVSS 4.0 為 10 分。
+  cve: []
   taiwan:
-  - short: 葡眾會員資料遭存取
-    keyword: GRAPE
-    kind: 個資
-    date: 2026-11-24
   - short: 黑貓宅急便個資外洩
     keyword: TCAT
     kind: 個資
     date: 2026-11-25
-  - short: 車麗屋遭自動化攻擊
-    keyword: CARMALL
-    kind: 入侵
-    date: 2026-11-24
-  - short: 資安署談修補順序
-    keyword: ACS
-    kind: 政策
-    date: 2026-11-24
-    figures:
-    - label: 評估指標
-      value: 4 項
-    - label: 情況
-      value: 16 種
   - short: AI 風險分類框架
     keyword: MODA
     kind: 政策
@@ -289,17 +118,3 @@ display:
   - short: Workspace MCP 上線
     keyword: GOOGLE
     date: 2026-11-25
-  - short: DeepMind 可靠性測試
-    keyword: HFE
-    date: 2026-11-24
-    figures:
-    - label: 題目
-      value: 544 道
-    - label: 平均可靠性
-      value: 85.6%
-  - short: Strands Decider v2
-    keyword: STRANDS
-    date: 2026-11-23
-    figures:
-    - label: 模型
-      value: 5 款

@@ -37,12 +37,12 @@
 - Azure DevOps：無更新
 - Tekton：無更新
 - OpenShift Pipelines：無更新
-- Argo CD：有更新
+- Argo CD：無更新
 - OpenShift GitOps：無更新
 - Flux：無更新
 - Harbor：無更新
 - Sonatype Nexus Repository：無更新
-- JFrog Artifactory：有更新
+- JFrog Artifactory：無更新
 
 ## 最近動態
 
@@ -53,9 +53,13 @@
 - 安全公告：Jenkins Security Advisory 2026-11-25，11 個 SECURITY 項目，全部是外掛、全部有修正版：Pipeline: Groovy（CVE-2026-136834，sandbox 繞過）、Script Security（CVE-2026-136835，sandbox 繞過）、Gradle（CVE-2026-136836）、Warnings（CVE-2026-136837）、Subversion（CVE-2026-136838、CVE-2026-136839）、Configuration as Code（CVE-2026-136840）、Nested View（CVE-2026-136841）、Performance（CVE-2026-136842）、Spira Importer（CVE-2026-136843、CVE-2026-136844）、Pipeline DORA Metrics（CVE-2026-136845 到 CVE-2026-136853）、Rich Text Publisher（CVE-2026-136854）。來源：https://www.jenkins.io/security/advisory/2026-11-25/ → [當天產品動態](../daily/2026-11-26/products.md)
 - 新版本：Jenkins LTS 2.580.3（2026-11-25），相依套件更新。來源：https://www.jenkins.io/changelog-stable/ → [當天產品動態](../daily/2026-11-26/products.md)
 - 安全公告：GitLab Patch Release 19.6.2、19.5.9、19.4.11（2026-11-25），13 個安全修正（12 個 Medium、1 個 Low，最高 CVSS 6.7 的 CVE-2026-119452），內附 NGINX 升到 1.31.9。來源：https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-6-2-released/ → [當天產品動態](../daily/2026-11-26/products.md)
-- 安全公告：Argo CD v3.6.3、v3.5.9、v3.4.15（2026-11-24），7 個安全修正（4 個 High、3 個 Moderate，沒有 CVE 編號）：GHSA-mfgm-4p7x-3ccr、GHSA-w7rw-fg89-2cjf、GHSA-rxm8-qc6h-3c8h、GHSA-rvmf-gjc9-wjgq、GHSA-q4f6-wc8m-r246、GHSA-v2hj-322q-6cg4、GHSA-8cfq-7w4v-ggm3。Helm release name 改成照字面傳入，必須是合法名稱。來源：https://github.com/argoproj/argo-cd/releases/tag/v3.6.3 → [當天產品動態](../daily/2026-11-26/products.md)
-- 安全公告：JFrog Artifactory 7.173.27 Self-Managed（2026-11-24），原廠寫含安全性錯誤修正、強烈建議升級。來源：https://docs.jfrog.com/releases/docs/artifactory-release-notes → [當天產品動態](../daily/2026-11-26/products.md)
-- 無法確認（個別項目，產品狀態不受影響）：Artifactory 7.173.27 修了哪些漏洞要登入 MyJFrog 才看得到，沒有讀；SaaS 版的最新版號今天沒有讀到。Jenkins 公告頁沒有 CVSS 分數。Argo CD 的 Security Advisories 頁最上面一筆今天沒有重新記錄，表中仍是 11-24 的紀錄。
+- 無法確認（個別項目，產品狀態不受影響）：Jenkins 公告頁沒有 CVSS 分數。
+
+### 2026-11-25
+
+- 安全公告：Argo CD v3.6.3、v3.5.9、v3.4.15（2026-11-24），7 個安全修正（4 個 High、3 個 Moderate，沒有 CVE 編號）：GHSA-mfgm-4p7x-3ccr、GHSA-w7rw-fg89-2cjf、GHSA-rxm8-qc6h-3c8h、GHSA-rvmf-gjc9-wjgq、GHSA-q4f6-wc8m-r246、GHSA-v2hj-322q-6cg4、GHSA-8cfq-7w4v-ggm3。Helm release name 改成照字面傳入，必須是合法名稱。來源：https://github.com/argoproj/argo-cd/releases/tag/v3.6.3 → [當天產品動態](../daily/2026-11-25/products.md)
+- 安全公告：JFrog Artifactory 7.173.27 Self-Managed（2026-11-24），原廠寫含安全性錯誤修正、強烈建議升級。來源：https://docs.jfrog.com/releases/docs/artifactory-release-notes → [當天產品動態](../daily/2026-11-25/products.md)
+- 無法確認（個別項目，產品狀態不受影響）：Artifactory 7.173.27 修了哪些漏洞要登入 MyJFrog 才看得到，沒有讀；SaaS 版的最新版號沒有讀到。Argo CD 的 Security Advisories 頁最上面一筆沒有重新記錄，表中仍是 11-24 的紀錄。
 
 ### 2026-11-24
 

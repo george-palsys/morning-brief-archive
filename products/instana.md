@@ -4,7 +4,7 @@
 
 - 原廠：IBM
 - 最後檢查：2026-11-26
-- 當天狀態：有更新
+- 當天狀態：無更新
 
 ## 各來源目前看到的最新一筆
 
@@ -21,7 +21,7 @@
 
 新的在上面，每天往上累加，舊的不刪。
 
-### 2026-11-26
+### 2026-11-25
 
-- 安全公告：IBM Security Bulletin node/7297963（2026-11-24）「Multiple vulnerabilities in IBM Observability with Instana (OnPrem)」，自架版 Build 1.0.285 到 1.0.327 受影響，修在 build 1.0.329；公告列出的 CVE 包括 CVE-2023-4860（CVSS 9.6，NVD）、CVE-2024-7966（CVSS 8.8，CISA ADP）、CVE-2026-9998。來源：https://www.ibm.com/support/pages/node/7297963 → [當天產品動態](../daily/2026-11-26/products.md)
+- 安全公告：IBM Security Bulletin node/7297963（2026-11-24）「Multiple vulnerabilities in IBM Observability with Instana (OnPrem)」，自架版 Build 1.0.285 到 1.0.327 受影響，修在 build 1.0.329；公告列出的 CVE 包括 CVE-2023-4860（CVSS 9.6，NVD）、CVE-2024-7966（CVSS 8.8，CISA ADP）、CVE-2026-9998。來源：https://www.ibm.com/support/pages/node/7297963 → [當天產品動態](../daily/2026-11-25/products.md)
 - 無法確認（個別項目，產品狀態不受影響）：公告的完整 CVE 清單沒有逐一抄錄。

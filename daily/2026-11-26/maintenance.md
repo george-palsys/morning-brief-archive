@@ -159,7 +159,7 @@
 
 ## 七、其他觀察
 
-- 上一份晨報是 2026-11-24，11-25 沒有產出；今天比對的是 11-24 02:20 之後的變化。
+- 上一份晨報是 2026-11-24，11-25 沒有產出；今天比對的是 11-24 02:20 之後的變化。2026-11-26 上午依 George 指示把這次的蒐集結果照來源發布日期拆成兩份：發布日期在 2026-11-24（含）以前的項目移到 2026-11-25 的晨報，這一份只留 2026-11-25 發布的項目。新知識 5 則不是當日新聞，3 則放 2026-11-25、2 則留在這一份。來源檢查只做了這一次，紀錄都留在這一份。
 - Palsys One：HCL AppScan on Cloud 的 What's new 頁在 products.yaml 裡屬於 Palsys One，所以今天的 DAST 引擎 10.13.0 更新記在 Palsys One，AppScan（地端三個版本來源）列為無更新。
 - Confluent Platform：CONFSA-2026-38 的發布日是 2026-11-19，早於上一份晨報。先前只比對公告清單最上面一筆，它不在最上面所以漏掉；今天補列，並把比對紀錄改成同時記「最上面一筆」與「編號最新的 CONFSA」。 網址：https://support.confluent.io/hc/en-us/sections/360008413952-Security-Advisories-and-Security-Release-Notes
 - NKP：公告清單上 #0061 的日期是 Nov 24, 2026，PDF 內寫 Last Updated November 23, 2026，兩者不一致，產品動態照實列出。三份 PDF 在瀏覽器裡讀不到文字，是下載公開的 PDF 後抽取文字讀的，表格欄位對應有一部分不能確定。 網址：https://portal.nutanix.com/page/security/security-advisories/list
@@ -177,7 +177,7 @@
 - CISA KEV：catalogVersion 2026.11.25，共 1796 筆，最新的 dateAdded 是 2026-11-25。 網址：https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - 新聞來源今天沒有讀到的：HashiCorp blog 被網站的機器人檢查擋下。
 - 台灣 IT 段落的 5 則讀的都是 iThome 的報導，各公司的重訊原文、資安署指引原文與數發部的框架原文沒有打開。CVE 段落裡 Drupal 的 CVSS 9.8 與 Hex.pm 的 CVSS 10 分是 iThome 報導的說法，沒有在原始頁面核對。AI 段落 Google 一則的兩個日期（February 1, 2027、April 1, 2027）只確認出現在原文，對應的事項沒有細讀。
-- 網站測試：本機歸檔的 daily/2026-11-24/meta.yaml 和 repo main 上的不一樣，本機這份的 attention.summary 超過 200 寬（多了「；OpenShift GitOps 也在 2026-11-23 發布了含這個 CVE 的三張安全更新。」），原樣覆蓋到 main 後 74 項測試有 5 項失敗；改用 main 上那份 11-24 meta.yaml 後 74 項全過。今天的資料沒有因為測試而修改，11-24 的本機檔案依規定沒有動。早上的備份不會覆蓋 repo 已經有的每日檔案，所以 main 不受影響；本機這份 11-24 meta.yaml 要不要改回和 main 一致，留給 George 決定。
+- 網站測試：本機歸檔的 daily/2026-11-24/meta.yaml 和 repo main 上的不一樣，本機這份的 attention.summary 超過 200 寬（多了「；OpenShift GitOps 也在 2026-11-23 發布了含這個 CVE 的三張安全更新。」），原樣覆蓋到 main 後 74 項測試有 5 項失敗；改用 main 上那份 11-24 meta.yaml 後 74 項全過。今天的資料沒有因為測試而修改，11-24 的本機檔案依規定沒有動。早上的備份不會覆蓋 repo 已經有的每日檔案，所以 main 不受影響；本機這份 11-24 meta.yaml 要不要改回和 main 一致，留給 George 決定。（2026-11-26 上午已把本機這份改成和 main 一致。）
 
 ### 今天沒有重新打開的來源
 

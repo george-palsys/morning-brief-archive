@@ -9,7 +9,7 @@
 | 1 | [WebSphere Application Server](websphere-application-server.md) | IBM | 無更新 | 見產品頁 | 2026-11-26 |
 | 2 | [WebSphere Liberty](websphere-liberty.md) | IBM | 無更新 | 26.0.0.11 | 2026-11-26 |
 | 3 | [MQ](mq.md) | IBM | 無更新 | 見產品頁 | 2026-11-26 |
-| 4 | [Instana](instana.md) | IBM | 有更新 | 見產品頁 | 2026-11-26 |
+| 4 | [Instana](instana.md) | IBM | 無更新 | 見產品頁 | 2026-11-26 |
 | 5 | [Turbonomic](turbonomic.md) | IBM | 無更新 | 8.21.5 | 2026-11-26 |
 | 6 | [Black Duck SCA](black-duck-sca.md) | Black Duck | 無更新 | 2026.7.2 | 2026-11-26 |
 | 7 | [Coverity](coverity.md) | Black Duck | 無更新 | 2026.9.1 | 2026-11-26 |
@@ -24,11 +24,11 @@
 | 16 | [QSE](qse.md) | IBM | 無更新 | 2.3.3 | 2026-11-26 |
 | 17 | [Vault](vault.md) | HashiCorp (IBM) | 無更新 | 2.2.2 | 2026-11-26 |
 | 18 | [Bob](bob.md) | IBM | 無更新 | 見產品頁 | 2026-11-26 |
-| 19 | [OpenShift](openshift.md) | Red Hat | 有更新 | 5.0.1 | 2026-11-26 |
+| 19 | [OpenShift](openshift.md) | Red Hat | 無更新 | 5.0.1 | 2026-11-26 |
 | 20 | [3scale](3scale.md) | Red Hat | 無更新 | 2.16.4 | 2026-11-26 |
 | 21 | [JBCS httpd](jbcs-httpd.md) | Red Hat | 無更新 | 2.4.62 SP7 | 2026-11-26 |
 | 22 | [Rancher / RKE2](rancher-rke2.md) | SUSE | 有更新 | 見產品頁 | 2026-11-26 |
-| 23 | [NKP](nkp.md) | Nutanix | 有更新 | 2.19 | 2026-11-26 |
-| 24 | [Confluent Platform](confluent-platform.md) | Confluent | 有更新 | 8.4.1 | 2026-11-26 |
-| 25 | [Palsys One](palsys-one.md) | Palsys（底層為 HCL AppScan 雲端掃描） | 有更新 | 見產品頁 | 2026-11-26 |
+| 23 | [NKP](nkp.md) | Nutanix | 無更新 | 2.19 | 2026-11-26 |
+| 24 | [Confluent Platform](confluent-platform.md) | Confluent | 無更新 | 8.4.1 | 2026-11-26 |
+| 25 | [Palsys One](palsys-one.md) | Palsys（底層為 HCL AppScan 雲端掃描） | 無更新 | 見產品頁 | 2026-11-26 |
 | 26 | [CMC](cmc.md) | IBM Expert Labs | 無公開來源 | — | — |

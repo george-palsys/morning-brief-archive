@@ -4,7 +4,7 @@
 
 - 原廠：Red Hat
 - 最後檢查：2026-11-26
-- 當天狀態：有更新
+- 當天狀態：無更新
 
 ## 各來源目前看到的最新一筆
 
@@ -18,9 +18,9 @@
 
 新的在上面，每天往上累加，舊的不刪。
 
-### 2026-11-26
+### 2026-11-25
 
-- 修補：五張 RHBA（2026-11-24）：RHBA-2026:103409、RHBA-2026:103404、RHBA-2026:103403、RHBA-2026:103390（5.0 的 openperouter-operator extras）、RHBA-2026:100495（OCP 4.19 的 Helm 3.20.2.4 CVE 修補版）。沒有新的 RHSA，最新 z-stream 仍是 5.0.1。來源：https://access.redhat.com/errata-search/ → [當天產品動態](../daily/2026-11-26/products.md)
+- 修補：五張 RHBA（2026-11-24）：RHBA-2026:103409、RHBA-2026:103404、RHBA-2026:103403、RHBA-2026:103390（5.0 的 openperouter-operator extras）、RHBA-2026:100495（OCP 4.19 的 Helm 3.20.2.4 CVE 修補版）。沒有新的 RHSA，最新 z-stream 仍是 5.0.1。來源：https://access.redhat.com/errata-search/ → [當天產品動態](../daily/2026-11-25/products.md)
 - 無法確認（個別來源，產品狀態不受影響）：五張 RHBA 的內文沒有逐張打開。
 
 ### 2026-11-24

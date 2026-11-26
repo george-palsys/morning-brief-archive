@@ -4,7 +4,7 @@
 
 - 原廠：Confluent
 - 最後檢查：2026-11-26
-- 當天狀態：有更新
+- 當天狀態：無更新
 
 ## 各來源目前看到的最新一筆
 
@@ -17,9 +17,9 @@
 
 新的在上面，每天往上累加，舊的不刪。
 
-### 2026-11-26
+### 2026-11-25
 
-- 安全公告：CONFSA-2026-38（2026-11-19 發布，今天補列）：Confluent Manager for Apache Flink 2.4.0 到 2.4.4 與 2.5.0 的驗證與授權繞過（使用遠端 MDS 且 CMF 與 MDS 之間用 mTLS 時），CVSS 3.1 為 8.8，修正版 2.4.5 與 2.5.1，沒有 CVE 編號。來源：https://support.confluent.io/hc/en-us/articles/54012122578068-CONFSA-2026-38-Confluent-Platform-Vulnerability-Authentication-and-Authorization-Bypass-in-Con → [當天產品動態](../daily/2026-11-26/products.md)
+- 安全公告：CONFSA-2026-38（2026-11-19 發布，今天補列）：Confluent Manager for Apache Flink 2.4.0 到 2.4.4 與 2.5.0 的驗證與授權繞過（使用遠端 MDS 且 CMF 與 MDS 之間用 mTLS 時），CVSS 3.1 為 8.8，修正版 2.4.5 與 2.5.1，沒有 CVE 編號。來源：https://support.confluent.io/hc/en-us/articles/54012122578068-CONFSA-2026-38-Confluent-Platform-Vulnerability-Authentication-and-Authorization-Bypass-in-Con → [當天產品動態](../daily/2026-11-25/products.md)
 
 ### 2026-11-20
 
