@@ -1,0 +1,258 @@
+title: 晨報 2026-11-27
+date: '2026-11-27'
+weekday: 星期五
+type: morning-brief
+collected_at: '2026-11-27T02:05:00+08:00'
+cve_ids:
+- CVE-2026-123007
+- CVE-2026-123633
+- CVE-2026-78669
+- CVE-2026-132825
+- CVE-2026-133323
+- CVE-2026-133303
+- CVE-2026-133275
+- CVE-2026-133311
+- CVE-2026-133324
+- CVE-2026-133469
+- CVE-2026-136716
+- CVE-2026-46300
+- CVE-2026-121481
+products:
+- Quantum Safe Explorer (QSE)
+- OpenShift
+- NKP
+tags:
+- NKP
+- NGINX
+- OpenShift
+- DevWorkspace Operator
+- Quantum Safe Explorer
+- Mitel MiCollab
+- Xen Orchestra
+- Drupal
+- Linux kernel
+- OpenSSL
+- PayNow
+- Vault
+- Zarf
+spec_version: 4
+products_checked: 26
+products_updated:
+- Quantum Safe Explorer (QSE)
+- OpenShift
+- NKP
+products_unconfirmed:
+- Software Risk Manager (SRM)
+cicd_tools_updated: []
+attention:
+  section: products
+  title: NKP：NGINX HTTP/2 兩個漏洞，修正版待公布
+  summary: 'Nutanix 公告 #0066（Critical）：NGINX 的兩個 HTTP/2 漏洞，CVSS 4.0 為 9.2。NKP 2.17.x、2.18.x、2.19.x 受影響，修正版與緩解做法還沒公布，下次更新預定 December 10, 2026。先盤點對外的 NGINX 入口。'
+  facts:
+  - label: CVSS 4.0
+    value: '9.2'
+    source: https://download.nutanix.com/alerts/Security_Advisory_0066.pdf
+  - label: 受影響
+    value: NKP 2.17.x、2.18.x、2.19.x
+    source: https://download.nutanix.com/alerts/Security_Advisory_0066.pdf
+  - label: 修正版
+    value: Fix Version and Release Date Pending
+    source: https://download.nutanix.com/alerts/Security_Advisory_0066.pdf
+  - label: 下次更新
+    value: December 10, 2026
+    source: https://download.nutanix.com/alerts/Security_Advisory_0066.pdf
+display:
+  products:
+  - short: 'NKP 公告 #0066 待修正'
+    keyword: NKP
+    date: 2026-11-25
+    figures:
+    - label: CVSS 4.0
+      value: '9.2'
+    - label: 受影響
+      value: 2.17.x、2.18.x、2.19.x
+    - label: 下次更新
+      value: December 10, 2026
+    caveat: 清單日期是 Nov 26, 2026，PDF 寫 November 25, 2026。
+  - short: DevWorkspace 1.1.1 更新
+    keyword: ERRATA
+    date: 2026-11-25
+    figures:
+    - label: CVSS 3.1
+      value: '7.5'
+    - label: 公告
+      value: RHSA-2026:103542
+  - short: QSE 2.3.3.1 補列
+    keyword: QSE
+    date: 2026-10-23
+    figures:
+    - label: 版本
+      value: 2.3.3.1
+    caveat: 發布日早於先前的晨報，今天補列。
+  knowledge:
+  - short: AWS-LC 與後量子升級
+    keyword: PQC
+    date: 2026-11-26
+    figures:
+    - label: ML-KEM-768 耗時降低
+      value: 50 percent
+  - short: RFC 10069 QUIC 多路徑
+    keyword: QUIC
+    date: 2026-11-07
+    caveat: 只讀了 Abstract 與 Introduction。
+  - short: ruby2shell 的成因
+    keyword: RUBY
+    date: 2026-11-20
+    figures:
+    - label: 溢位門檻
+      value: 21 個
+    - label: 修正版
+      value: 3.3.14、3.4.13、4.0.10
+  - short: Zarf 1.0 離線交付
+    keyword: AIRGAP
+    date: 2026-11-09
+  - short: Vault 的 K8s 三項更新
+    keyword: VAULT
+    date: 2026-11-18
+  cve:
+  - short: Mitel MiCollab 五漏洞
+    keyword: MITEL
+    date: 2026-11-24
+    cve_ids:
+    - CVE-2026-133323
+    - CVE-2026-133303
+    - CVE-2026-133275
+    - CVE-2026-133311
+    - CVE-2026-133324
+    cvss:
+    - score: 10.0
+      version: '3.1'
+      source: Mitel
+    - score: 9.8
+      version: '3.1'
+      source: NVD
+    exploited: confirmed
+    exploited_detail: 五個都在 2026-11-25 列入 CISA KEV
+    patch: released
+    patch_detail: 10.3 (10.3.0.18) 的修補程式，做法見 KB000129195
+    related: false
+    kev:
+    - cve_id: CVE-2026-133323
+      product: Mitel MiCollab
+      due: 2026-11-28
+    - cve_id: CVE-2026-133303
+      product: Mitel MiCollab
+      due: 2026-11-28
+    - cve_id: CVE-2026-133275
+      product: Mitel MiCollab
+      due: 2026-11-28
+    - cve_id: CVE-2026-133324
+      product: Mitel MiCollab
+      due: 2026-11-28
+    - cve_id: CVE-2026-133311
+      product: Mitel MiCollab
+      due: 2026-12-09
+  - short: Xen Orchestra 驗證繞過
+    keyword: XEN
+    date: 2026-11-10
+    cve_ids:
+    - CVE-2026-133469
+    cvss:
+    - score: 9.8
+      version: '3.1'
+      source: NVD（GitHub 提供）
+    exploited: confirmed
+    exploited_detail: 原廠公告寫明已有實際攻擊；2026-11-25 列入 CISA KEV
+    patch: released
+    patch_detail: 6.9.2（stable）與 6.10.1（latest）
+    related: false
+    kev:
+    - cve_id: CVE-2026-133469
+      product: Vates Xen Orchestra
+      due: 2026-11-28
+  - short: Drupal 再發緊急公告
+    keyword: DRUPAL
+    date: 2026-11-25
+    figures:
+    - label: Drupal 評分
+      value: 21 ∕ 25
+    cve_ids:
+    - CVE-2026-136716
+    cvss: []
+    exploited: confirmed
+    exploited_detail: 公告寫 This is being exploited in the wild
+    patch: released
+    patch_detail: Drupal 11.4.14、11.3.23、10.6.23
+    related: false
+    caveat: CVSS 分數沒有查到。
+  - short: Fragnesia 遭利用
+    keyword: KERNEL
+    date: 2026-11-25
+    cve_ids:
+    - CVE-2026-46300
+    cvss:
+    - score: 7.8
+      version: '3.1'
+      source: NVD
+    exploited: confirmed
+    exploited_detail: Palo Alto 觀察到在對外開放的 PAN-OS 管理介面上被利用
+    patch: released
+    patch_detail: PAN-OS 有修正版；各 Linux 發行版的修補狀況今天沒有查
+    related: true
+    caveat: 公告頁的日期互相不一致；各 Linux 發行版的修補狀況沒有查。
+  - short: OpenSSL 12/1 釋出新版
+    keyword: OPENSSL
+    date: 2026-11-25
+    cve_ids:
+    - CVE-2026-121481
+    cvss:
+    - score: 5.9
+      version: '3.1'
+      source: CISA（oss-security 郵件轉述）
+    exploited: none_seen
+    exploited_detail: 未見利用報告
+    patch: pending
+    patch_detail: 新版預定 1st December 2026；這個漏洞的修補還在審查
+    related: true
+  taiwan:
+  - short: PayNow 發票 API 外洩
+    keyword: PAYNOW
+    kind: 個資
+    date: 2026-11-26
+    figures:
+    - label: 商家
+      value: 約 500 家
+    - label: 電子發票
+      value: 約 281 萬張
+    caveat: 兩個數字只在 iThome 看到，官方公告沒有寫。
+  - short: 瓦城子公司資安重訊
+    keyword: MOPS
+    kind: 個資
+    date: 2026-11-25
+    figures:
+    - label: 影響人數
+      value: 290 人
+  - short: 假短劇 App 木馬盜轉
+    keyword: TROJAN
+    kind: 入侵
+    date: 2026-11-26
+    figures:
+    - label: 案件
+      value: 超過 100 起
+    - label: 財損
+      value: 1,742 萬元
+    - label: 金融機構
+      value: 22 家
+    caveat: 數字只在 iThome 看到。
+  ai:
+  - short: Claude artifact 裝成 App
+    keyword: CLAUDE
+    date: 2026-11-24
+    caveat: 頁面日期是不是發布日沒有確認。
+  - short: ChatGPT 分頁合併傳聞
+    keyword: CHATGPT
+    date: 2026-11-26
+    caveat: 只有媒體報導，OpenAI 官方頁面沒有找到。
+  - short: AWS Sign-In 支援 EMA
+    keyword: IDJAG
+    date: 2026-11-25
