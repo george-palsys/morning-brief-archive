@@ -1,0 +1,253 @@
+title: 晨報 2026-11-28
+date: '2026-11-28'
+weekday: 星期六
+type: morning-brief
+collected_at: '2026-11-28T02:05:00+08:00'
+cve_ids:
+- CVE-2026-83745
+- CVE-2026-86535
+- CVE-2026-94646
+- CVE-2026-96294
+- CVE-2026-19203
+- CVE-2026-1605
+- CVE-2026-120705
+- CVE-2026-129243
+- CVE-2026-137481
+- CVE-2026-136716
+- CVE-2026-120353
+- CVE-2026-137686
+- CVE-2026-137705
+- CVE-2026-137706
+- CVE-2026-137707
+- CVE-2026-137704
+products:
+- Instana
+- CI/CD
+tags:
+- Instana
+- OpenShift Pipelines
+- PQC
+- GeoServer
+- Traefik
+- Drupal
+- Apache Airflow
+- Apache Shiro
+- CISA KEV
+- 金管會
+- TWCERT/CC
+- ARTEX
+- eBPF
+- NIST
+spec_version: 4
+products_checked: 26
+products_updated:
+- Instana
+- CI/CD
+products_unconfirmed:
+- Software Risk Manager (SRM)
+cicd_tools_updated:
+- OpenShift Pipelines
+attention:
+  section: taiwan
+  title: 金管會：金融業年底前完成 14 項資安自評
+  summary: 金管會 2026-11-26 發布「金融業資安防護強化措施」：金融機構要在 115 年底前完成 14 項自評並提報董事會。內容涵蓋漏洞修補動態排序、停止支援系統的汰換、金鑰與憑證管理。金融業客戶會問各項拿什麼當佐證。
+  facts:
+  - label: 發布
+    value: '2026-11-26'
+    source: https://www.fsc.gov.tw/ch/home.jsp?id=96&parentpath=0,2&mcustomize=news_view.jsp&dataserno=202611260005&dtable=News
+  - label: 自評
+    value: 14 項
+    source: https://www.fsc.gov.tw/ch/home.jsp?id=96&parentpath=0,2&mcustomize=news_view.jsp&dataserno=202611260005&dtable=News
+  - label: 期限
+    value: 115 年底前
+    source: https://www.fsc.gov.tw/ch/home.jsp?id=96&parentpath=0,2&mcustomize=news_view.jsp&dataserno=202611260005&dtable=News
+  - label: 分類
+    value: 五大類
+    source: https://www.fsc.gov.tw/ch/home.jsp?id=96&parentpath=0,2&mcustomize=news_view.jsp&dataserno=202611260005&dtable=News
+display:
+  products:
+  - short: Instana 再發安全公告
+    keyword: INSTANA
+    date: 2026-11-27
+    figures:
+    - label: CVE 數
+      value: 70 個
+    - label: 最高分（CVSS 4.0）
+      value: '8.7'
+    - label: 修正 build
+      value: 1.0.329
+    caveat: 70 個 CVE 沒有逐一抄錄。
+  - short: Pipelines 1.24.3 說明
+    keyword: TEKTON
+    date: 2026-10-31
+    figures:
+    - label: 版本
+      value: 1.24.3
+    - label: 修正
+      value: 兩項
+    caveat: 文件頁沒有寫日期；日期是 errata 的 2026-10-31。
+  knowledge:
+  - short: Rust 改寫與流量比對
+    keyword: SHADOW
+    date: 2026-11-25
+    figures:
+    - label: 測試通過
+      value: 約 98%
+    - label: CPU 減少
+      value: 約 70%
+    caveat: 只讀了前半與 shadowing 一節。
+  - short: GKE ambient 正式推出
+    keyword: AMBIENT
+    date: 2026-11-21
+  - short: STS 縮小憑證權限
+    keyword: STS
+    date: 2026-11-20
+  - short: Shirudo eBPF 防護
+    keyword: EBPF
+    date: 2026-11-23
+    caveat: 只讀了介紹文，沒有實際安裝或測試。
+  - short: NIST 對抗式 ML 分類草案
+    keyword: NIST
+    date: 2026-11-09
+    figures:
+    - label: 徵求意見到
+      value: 12 月 18 日
+    caveat: 只讀了新聞頁摘要，草案 PDF 沒有打開。
+  cve:
+  - short: GeoServer 兩漏洞入 KEV
+    keyword: GEOSRV
+    date: 2026-11-23
+    cve_ids:
+    - CVE-2026-120705
+    - CVE-2026-129243
+    cvss:
+    - score: 8.6
+      version: '3.1'
+      source: GitHub Security Advisory（頁面寫 CVSS v3）
+    - score: 8.8
+      version: '4.0'
+      source: GitHub Security Advisory（頁面寫 CVSS v4）
+    exploited: confirmed
+    exploited_detail: 兩個都在 2026-11-27 列入 CISA KEV；原廠頁面沒有寫遭利用
+    patch: released
+    patch_detail: GeoServer 3.0.2、2.28.6、2.27.7；GeoTools 33.7、34.6、35.2
+    related: false
+    kev:
+    - cve_id: CVE-2026-120705
+      product: OSGeo GeoServer
+      due: 2026-11-30
+    - cve_id: CVE-2026-129243
+      product: OSGeo GeoServer
+      due: 2026-11-30
+    caveat: NVD 與 CVE.org 還查不到這兩筆。
+  - short: Traefik 路徑參數繞過
+    keyword: TRAEFIK
+    date: 2026-11-12
+    cve_ids:
+    - CVE-2026-137481
+    cvss:
+    - score: 7.8
+      version: '4.0'
+      source: Traefik
+    - score: 9.3
+      version: '3.1'
+      source: VulnCheck
+    - score: 7.5
+      version: '3.1'
+      source: Red Hat
+    exploited: none_seen
+    exploited_detail: 未見利用報告
+    patch: released
+    patch_detail: v2.11.62、v3.7.18、v3.8.0-rc.2
+    related: true
+    caveat: 三個來源的分數不一致；RKE2 與 Rancher 內附的 Traefik 版本沒有查。
+  - short: Drupal 漏洞列入 KEV
+    keyword: DRUPAL
+    date: 2026-11-27
+    cve_ids:
+    - CVE-2026-136716
+    cvss: []
+    exploited: confirmed
+    exploited_detail: 2026-11-27 列入 CISA KEV
+    patch: released
+    patch_detail: 版本見 2026-11-27 的晨報
+    related: false
+    kev:
+    - cve_id: CVE-2026-136716
+      product: Drupal Core
+      due: 2026-11-30
+    caveat: CVSS 分數沒有查到；公告頁今天沒有重讀。
+  - short: Airflow 範本重複求值
+    keyword: AIRFLOW
+    date: 2026-11-26
+    cve_ids:
+    - CVE-2026-120353
+    cvss: []
+    exploited: none_seen
+    exploited_detail: 未見利用報告
+    patch: released
+    patch_detail: standard 1.22.0、cncf-kubernetes 11.0.0、common-sql 3.0.0、common-ai 1.2.0
+    related: false
+    caveat: 'CVSS 分數沒有查到，公告寫 Severity: important。'
+  - short: Shiro AD 空白帳密
+    keyword: SHIRO
+    date: 2026-11-26
+    cve_ids:
+    - CVE-2026-137686
+    cvss:
+    - score: 6.3
+      version: '4.0'
+      source: Apache
+    exploited: none_seen
+    exploited_detail: 未見利用報告
+    patch: released
+    patch_detail: 3.0.2
+    related: false
+  taiwan:
+  - short: 金管會 14 項資安自評
+    keyword: FSC
+    kind: 政策
+    date: 2026-11-26
+    figures:
+    - label: 自評
+      value: 14 項
+    - label: 期限
+      value: 115 年底前
+    - label: 分類
+      value: 五大類
+    caveat: 14 項沒有逐條抄錄，以新聞稿為準。
+  - short: Roo.Cash 個資外洩
+    keyword: ROOCASH
+    kind: 個資
+    date: 2026-11-26
+    caveat: 重訊沒有揭露受影響的人數與資料欄位。
+  - short: TWCERT 三則漏洞公告
+    keyword: TWCERT
+    kind: 漏洞
+    date: 2026-11-27
+    figures:
+    - label: 最高（CVSS 3.1）
+      value: '9.9'
+    - label: 公告
+      value: 三則
+  ai:
+  - short: 瑞士確認 AI agent 入侵
+    keyword: NCSC
+    date: 2026-11-24
+    caveat: 「5 起中 4 起成功」只在媒體報導看到，和公告不一致。
+  - short: ARTEX 攻擊框架拆解
+    keyword: ARTEX
+    date: 2026-11-25
+    figures:
+    - label: 威脅組織
+      value: 六個
+    caveat: 文章後半的偵測特徵沒有讀。
+  - short: GPT-6.2 計費修正
+    keyword: OPENAI
+    date: 2026-11-27
+    figures:
+    - label: Astra
+      value: 40%
+    - label: Sol
+      value: 25%
+    caveat: 只有媒體報導，OpenAI 官方頁面沒有找到。
