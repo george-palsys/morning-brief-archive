@@ -3,8 +3,8 @@
 [← 26 項產品現況](README.md)
 
 - 原廠：多家
-- 最後檢查：2026-11-27
-- 當天狀態：無更新
+- 最後檢查：2026-11-28
+- 當天狀態：有更新
 
 ## 各來源目前看到的最新一筆
 
@@ -18,7 +18,7 @@
 | [Azure DevOps Server Release Notes](https://learn.microsoft.com/en-us/azure/devops/server/release-notes/azuredevopsserver?view=azure-devops) | 新版本 | Azure DevOps | Azure DevOps Server Patch 9 | 2026-10-13 | 讀得到 |
 | [tektoncd/pipeline Releases](https://github.com/tektoncd/pipeline/releases) | 新版本 | Tekton | v1.18.0 | 2026-10-30 | 讀得到 |
 | [tektoncd/pipeline Security Advisories](https://github.com/tektoncd/pipeline/security/advisories) | 安全公告 | Tekton | GHSA-wjxp-xrpv-xpff（最新一筆 2026-04-21） | 2026-04-21 | 讀得到 |
-| [Red Hat OpenShift Pipelines 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/) | 新版本 | OpenShift Pipelines | 1.24（文件 release notes 列到 1.24.2；errata 有 1.24.3） | 2026-10-31 | 已轉址 |
+| [Red Hat OpenShift Pipelines 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/) | 新版本 | OpenShift Pipelines | 1.24（文件 release notes 列到 1.24.3） | 2026-10-31 | 已轉址 |
 | [argoproj/argo-cd Releases](https://github.com/argoproj/argo-cd/releases) | 新版本 | Argo CD | v3.6.3 / v3.5.9 / v3.4.15 | 2026-11-24 | 讀得到 |
 | [argoproj/argo-cd Security Advisories](https://github.com/argoproj/argo-cd/security/advisories) | 安全公告 | Argo CD | GHSA-w7rw-fg89-2cjf | 2026-11-24 | 讀得到 |
 | [Red Hat OpenShift GitOps 文件（各版 Release notes）](https://docs.redhat.com/en/documentation/red_hat_openshift_gitops/) | 新版本 | OpenShift GitOps | 1.22.4（RHSA-2026:102591；文件站已列出 1.22.4） | 2026-11-23 | 已轉址 |
@@ -36,7 +36,7 @@
 - GitHub Actions：無更新
 - Azure DevOps：無更新
 - Tekton：無更新
-- OpenShift Pipelines：無更新
+- OpenShift Pipelines：有更新
 - Argo CD：無更新
 - OpenShift GitOps：無更新
 - Flux：無更新
@@ -47,6 +47,11 @@
 ## 最近動態
 
 新的在上面，每天往上累加，舊的不刪。
+
+### 2026-11-28
+
+- 修補：OpenShift Pipelines 1.24.3 的 release notes 出現在文件上（頁面沒有寫日期；errata RHEA-2026:93149、RHEA-2026:93150、RHEA-2026:93151 是 2026-10-31）。可用在 OpenShift Container Platform 4.14 與之後仍受支援的版本。兩項 Fixed issues：SRVKP-14944（bundle 裡重複的 `tektonmulticlusterproxyaaes.operator.tekton.dev` CRD 造成 OLMv1 安裝失敗）、SRVKP-15070（容器映像的 OpenSSL 預設密碼政策改成 DEFAULT:PQ；FIPS 模式下仍強制 FIPS 140，PQC 演算法停用）。沒有列 CVE。來源：https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/1.24/html-single/release_notes/index#op-release-notes-1-24-3_op-release-notes-1-24 → [當天產品動態](../daily/2026-11-28/products.md)
+- 無法確認（個別項目，產品狀態不受影響）：1.24.3 這一節是哪一天加到文件裡的無法確認。
 
 ### 2026-11-26
 
